@@ -29,7 +29,7 @@ func update_size():
 	size = image_size
 
 
-func _init(new_image_size := image_size, new_checker_size := cell_size):
+func _init(new_image_size: Vector2i = image_size, new_checker_size: Vector2i = cell_size):
 	show_behind_parent = true
 	# Apply material.
 	material = ShaderMaterial.new()
@@ -37,3 +37,4 @@ func _init(new_image_size := image_size, new_checker_size := cell_size):
 	# Set cell and image size.
 	image_size = new_image_size
 	cell_size = new_checker_size
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
