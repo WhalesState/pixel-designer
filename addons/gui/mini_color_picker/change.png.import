@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dq5ysd1qr4e5i"
-path="res://.godot/imported/icon.png-a297e735761d433791a7eb1c962254a9.ctex"
+uid="uid://l53bf0p1ikss"
+path="res://.godot/imported/change.png-6204749f5f1176b37f92ef2abd3b8136.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/mini_color_button/icon.png"
-dest_files=["res://.godot/imported/icon.png-a297e735761d433791a7eb1c962254a9.ctex"]
+source_file="res://addons/gui/mini_color_picker/change.png"
+dest_files=["res://.godot/imported/change.png-6204749f5f1176b37f92ef2abd3b8136.ctex"]
 
 [params]
 

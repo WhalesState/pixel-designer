@@ -17,4 +17,4 @@ config/icon="res://icon.svg"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/checker/plugin.cfg", "res://addons/mini_color_button/plugin.cfg")
+enabled=PackedStringArray("res://addons/gui/plugin.cfg")

@@ -21,10 +21,10 @@ func _init(col: Color = color):
 	
 	checker = Checker.new(Vector2i(96, 32), Vector2i(2, 2))
 	add_child(checker)
-
+	
 	color_button.pressed.connect(_color_button_pressed)
 	add_child(color_button)
-
+	
 	size_flags_horizontal = SIZE_EXPAND | SIZE_SHRINK_CENTER
 
 
@@ -34,12 +34,13 @@ func _draw():
 	# center
 	draw_rect(Rect2i(Vector2i(2, 2), Vector2i(size.x - 4, size.y - 4)), color)
 
+
 func _color_button_pressed():
 	emit_signal("pressed", color)
 
 
 class ColButton:
 	extends Button
-
+	
 	func _init():
 		theme_type_variation = "ColButton"

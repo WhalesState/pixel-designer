@@ -33,7 +33,7 @@ func _init(new_image_size: Vector2i = image_size, new_checker_size: Vector2i = c
 	show_behind_parent = true
 	# Apply material.
 	material = ShaderMaterial.new()
-	material.shader = preload("./checker.gdshader")
+	material.shader = load("res://addons/gui/shaders/checker.gdshader")
 	# Set cell and image size.
 	image_size = new_image_size
 	cell_size = new_checker_size
