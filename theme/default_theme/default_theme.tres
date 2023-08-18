@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=52 format=3 uid="uid://dmgt1badak5wl"]
+[gd_resource type="Theme" load_steps=53 format=3 uid="uid://dmgt1badak5wl"]
 
 [ext_resource type="StyleBox" uid="uid://bftcw0uxm6gvm" path="res://theme/default_theme/styles/button_normal.tres" id="1_iw4dq"]
 [ext_resource type="StyleBox" uid="uid://cs4uxajtwk85l" path="res://theme/default_theme/styles/button_focus.tres" id="1_p3roe"]
@@ -63,6 +63,18 @@ expand_margin_top = 3.0
 expand_margin_right = 3.0
 expand_margin_bottom = 3.0
 anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v7xlh"]
+content_margin_left = 1.0
+content_margin_top = 1.0
+content_margin_right = 1.0
+content_margin_bottom = 1.0
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="FontVariation" id="FontVariation_kgr5k"]
 base_font = ExtResource("49_vnxgf")
@@ -162,6 +174,8 @@ OptionButton/styles/normal = ExtResource("7_qkq06")
 OptionButton/styles/normal_mirrored = ExtResource("7_qkq06")
 OptionButton/styles/pressed = ExtResource("7_qkq06")
 OptionButton/styles/pressed_mirrored = ExtResource("7_qkq06")
+OutlinePanel/base_type = &"PanelContainer"
+OutlinePanel/styles/panel = SubResource("StyleBoxFlat_v7xlh")
 Panel/styles/panel = ExtResource("23_5t12h")
 PanelContainer/styles/panel = ExtResource("23_5t12h")
 Picker/base_type = &"ColorPicker"

@@ -9,7 +9,7 @@ extends Window
 func _ready():
 	wrap_controls = true
 	close_requested.connect(_on_close_requested)
-	if Engine.is_editor_hint():
+	if Engine.is_editor_hint() && get_tree().edited_scene_root:
 		visible = visible_in_editor
 	else:
 		visible = false

@@ -1,12 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://ptjdhr8gdub6"]
+[gd_scene load_steps=3 format=3 uid="uid://ptjdhr8gdub6"]
 
 [ext_resource type="Script" path="res://pixel_editor/pixel_editor.gd" id="1_1hgfc"]
+[ext_resource type="Theme" uid="uid://dmgt1badak5wl" path="res://theme/default_theme/default_theme.tres" id="1_qn17k"]
 
-[node name="PixelEditor" type="Control"]
-layout_mode = 3
+[node name="PixelEditor" type="PanelContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_qn17k")
+theme_type_variation = &"OutlinePanel"
 script = ExtResource("1_1hgfc")

@@ -1,5 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://dp5go8yw6rfmn"]
+[gd_scene load_steps=3 format=3 uid="uid://dp5go8yw6rfmn"]
 
+[ext_resource type="Theme" uid="uid://dmgt1badak5wl" path="res://theme/default_theme/default_theme.tres" id="1_0ofsk"]
 [ext_resource type="Script" path="res://pixel_designer/pixel_designer.gd" id="1_7fjn5"]
 
 [node name="PixelDesigner" type="Control"]
@@ -9,4 +10,5 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_0ofsk")
 script = ExtResource("1_7fjn5")
