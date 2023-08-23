@@ -15,7 +15,7 @@ var checker: Checker
 var color_button := ColButton.new()
 
 
-func _init(col: Color = color):
+func _init(col: Color = color, mat_name := ""):
 	for m in ["left", "right", "top", "bottom"]:
 		add_theme_constant_override("margin_%s" % m, 2)
 	

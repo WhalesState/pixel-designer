@@ -1,12 +1,15 @@
-[gd_resource type="Theme" load_steps=53 format=3 uid="uid://dmgt1badak5wl"]
+[gd_resource type="Theme" load_steps=57 format=3 uid="uid://dmgt1badak5wl"]
 
-[ext_resource type="StyleBox" uid="uid://bftcw0uxm6gvm" path="res://theme/default_theme/styles/button_normal.tres" id="1_iw4dq"]
-[ext_resource type="StyleBox" uid="uid://cs4uxajtwk85l" path="res://theme/default_theme/styles/button_focus.tres" id="1_p3roe"]
-[ext_resource type="StyleBox" uid="uid://cngh48blerhqc" path="res://theme/default_theme/styles/button_hover.tres" id="1_rv6d6"]
+[ext_resource type="StyleBox" uid="uid://m8u88325xkh0" path="res://theme/default_theme/styles/button_disabled.tres" id="1_2s2b7"]
+[ext_resource type="StyleBox" uid="uid://brh0jgnv1xrcv" path="res://theme/default_theme/styles/button_normal.tres" id="1_iw4dq"]
+[ext_resource type="StyleBox" uid="uid://bftcw0uxm6gvm" path="res://theme/default_theme/styles/flat_button_normal.tres" id="1_ku3ue"]
+[ext_resource type="StyleBox" uid="uid://773q12rijpjw" path="res://theme/default_theme/styles/button_hover.tres" id="1_rv6d6"]
 [ext_resource type="Texture2D" uid="uid://cu0oinhfgfjys" path="res://theme/default_theme/icons/checked_large.png" id="1_sfxpg"]
 [ext_resource type="Texture2D" uid="uid://bxgw8un5wx25a" path="res://theme/default_theme/icons/unchecked_large.png" id="2_01bfo"]
-[ext_resource type="StyleBox" uid="uid://bf3nm5kcmyiya" path="res://theme/default_theme/styles/button_pressed.tres" id="4_qpuxp"]
+[ext_resource type="StyleBox" uid="uid://c7beqbkwdc2c1" path="res://theme/default_theme/styles/button_focus.tres" id="2_ja3n2"]
+[ext_resource type="StyleBox" uid="uid://cs4uxajtwk85l" path="res://theme/default_theme/styles/flat_button_focus.tres" id="2_keimd"]
 [ext_resource type="Texture2D" uid="uid://7cwsbbwculmj" path="res://theme/default_theme/icons/down_large.png" id="5_msp82"]
+[ext_resource type="StyleBox" uid="uid://ckrr1u6tde4ms" path="res://theme/default_theme/styles/button_pressed.tres" id="5_vdhdh"]
 [ext_resource type="Texture2D" uid="uid://da3e360wpg863" path="res://theme/default_theme/icons/right_large.png" id="6_ywx2l"]
 [ext_resource type="StyleBox" uid="uid://cfcfl13g20scx" path="res://theme/default_theme/styles/checkbox_normal.tres" id="7_qkq06"]
 [ext_resource type="Texture2D" uid="uid://bs5lbt6y3n0a7" path="res://theme/default_theme/icons/clear_large.png" id="8_1bssu"]
@@ -21,6 +24,7 @@
 [ext_resource type="StyleBox" uid="uid://k82ci4q8anww" path="res://theme/default_theme/styles/h_grabber_highlight.tres" id="13_mmb0i"]
 [ext_resource type="Texture2D" uid="uid://2sogrkfwu3ag" path="res://theme/default_theme/icons/h_grabber.png" id="14_cmdki"]
 [ext_resource type="StyleBox" uid="uid://b1k6gcmxmj8yv" path="res://theme/default_theme/styles/h_grabber_pressed.tres" id="14_f4oro"]
+[ext_resource type="StyleBox" uid="uid://b6hbcicwkccqo" path="res://theme/default_theme/styles/h_separator.tres" id="14_sdnsm"]
 [ext_resource type="StyleBox" uid="uid://c7khsqn3t0jea" path="res://theme/default_theme/styles/h_slider_grabber.tres" id="15_8upn2"]
 [ext_resource type="StyleBox" uid="uid://bh4iuuaa4ukla" path="res://theme/default_theme/styles/h_slider_grabber_highlight.tres" id="15_ac61q"]
 [ext_resource type="StyleBox" uid="uid://bln0pv3oyq46d" path="res://theme/default_theme/styles/label_normal.tres" id="18_p1hry"]
@@ -64,17 +68,7 @@ expand_margin_right = 3.0
 expand_margin_bottom = 3.0
 anti_aliasing = false
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v7xlh"]
-content_margin_left = 1.0
-content_margin_top = 1.0
-content_margin_right = 1.0
-content_margin_bottom = 1.0
-draw_center = false
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 1, 1, 1)
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kcexn"]
 
 [sub_resource type="FontVariation" id="FontVariation_kgr5k"]
 base_font = ExtResource("49_vnxgf")
@@ -84,11 +78,11 @@ default_font = SubResource("FontVariation_kgr5k")
 default_font_size = 16
 Button/colors/font_hover_pressed_color = Color(0.258824, 0.760784, 1, 1)
 Button/colors/font_pressed_color = Color(0.258824, 0.760784, 1, 1)
-Button/styles/disabled = ExtResource("1_iw4dq")
-Button/styles/focus = ExtResource("1_p3roe")
+Button/styles/disabled = ExtResource("1_2s2b7")
+Button/styles/focus = ExtResource("2_ja3n2")
 Button/styles/hover = ExtResource("1_rv6d6")
 Button/styles/normal = ExtResource("1_iw4dq")
-Button/styles/pressed = ExtResource("4_qpuxp")
+Button/styles/pressed = ExtResource("5_vdhdh")
 CheckBox/colors/font_hover_pressed_color = Color(0.258824, 0.760784, 1, 1)
 CheckBox/colors/font_pressed_color = Color(0.258824, 0.760784, 1, 1)
 CheckBox/icons/checked = ExtResource("1_sfxpg")
@@ -100,6 +94,7 @@ CheckBox/icons/radio_unchecked_disabled = ExtResource("2_01bfo")
 CheckBox/icons/unchecked = ExtResource("2_01bfo")
 CheckBox/icons/unchecked_disabled = ExtResource("2_01bfo")
 CheckBox/styles/disabled = ExtResource("7_qkq06")
+CheckBox/styles/focus = ExtResource("2_keimd")
 CheckBox/styles/hover = ExtResource("7_qkq06")
 CheckBox/styles/hover_pressed = ExtResource("7_qkq06")
 CheckBox/styles/normal = ExtResource("7_qkq06")
@@ -115,6 +110,7 @@ CheckButton/icons/unchecked_disabled = ExtResource("2_01bfo")
 CheckButton/icons/unchecked_disabled_mirrored = ExtResource("2_01bfo")
 CheckButton/icons/unchecked_mirrored = ExtResource("2_01bfo")
 CheckButton/styles/disabled = ExtResource("7_qkq06")
+CheckButton/styles/focus = ExtResource("2_keimd")
 CheckButton/styles/hover = ExtResource("7_qkq06")
 CheckButton/styles/hover_pressed = ExtResource("7_qkq06")
 CheckButton/styles/normal = ExtResource("7_qkq06")
@@ -127,12 +123,13 @@ ColButton/styles/focus = SubResource("StyleBoxFlat_1lpa4")
 ColButton/styles/hover = ExtResource("10_umkqq")
 ColButton/styles/normal = ExtResource("10_umkqq")
 ColButton/styles/pressed = ExtResource("10_umkqq")
-ColorPickerButton/styles/normal = ExtResource("1_iw4dq")
+ColorPickerButton/styles/normal = ExtResource("1_ku3ue")
 HScrollBar/styles/grabber = ExtResource("12_3qpls")
 HScrollBar/styles/grabber_highlight = ExtResource("13_mmb0i")
 HScrollBar/styles/grabber_pressed = ExtResource("14_f4oro")
 HScrollBar/styles/scroll = ExtResource("13_jqgh1")
 HScrollBar/styles/scroll_focus = ExtResource("13_jqgh1")
+HSeparator/styles/separator = ExtResource("14_sdnsm")
 HSlider/constants/grabber_offset = 0
 HSlider/icons/grabber = ExtResource("14_cmdki")
 HSlider/icons/grabber_disabled = ExtResource("14_cmdki")
@@ -147,9 +144,10 @@ Label/styles/normal = ExtResource("18_p1hry")
 LineEdit/colors/caret_color = Color(0.258824, 0.760784, 1, 1)
 LineEdit/colors/selection_color = Color(0.486275, 0.486275, 0.486275, 1)
 LineEdit/icons/clear = ExtResource("8_1bssu")
-LineEdit/styles/focus = ExtResource("1_p3roe")
+LineEdit/styles/focus = ExtResource("2_keimd")
 LineEdit/styles/normal = ExtResource("20_4ytgw")
 LineEdit/styles/read_only = ExtResource("20_4ytgw")
+LinkButton/constants/underline_spacing = 0
 MaterialButton/base_type = &"Button"
 MaterialButton/styles/disabled = ExtResource("21_oc1ss")
 MaterialButton/styles/focus = ExtResource("22_5or12")
@@ -168,6 +166,7 @@ OptionButton/colors/font_pressed_color = Color(0.258824, 0.760784, 1, 1)
 OptionButton/icons/arrow = ExtResource("5_msp82")
 OptionButton/styles/disabled = ExtResource("7_qkq06")
 OptionButton/styles/disabled_mirrored = ExtResource("7_qkq06")
+OptionButton/styles/focus = ExtResource("2_keimd")
 OptionButton/styles/hover = ExtResource("7_qkq06")
 OptionButton/styles/hover_mirrored = ExtResource("7_qkq06")
 OptionButton/styles/normal = ExtResource("7_qkq06")
@@ -175,7 +174,7 @@ OptionButton/styles/normal_mirrored = ExtResource("7_qkq06")
 OptionButton/styles/pressed = ExtResource("7_qkq06")
 OptionButton/styles/pressed_mirrored = ExtResource("7_qkq06")
 OutlinePanel/base_type = &"PanelContainer"
-OutlinePanel/styles/panel = SubResource("StyleBoxFlat_v7xlh")
+OutlinePanel/styles/panel = SubResource("StyleBoxEmpty_kcexn")
 Panel/styles/panel = ExtResource("23_5t12h")
 PanelContainer/styles/panel = ExtResource("23_5t12h")
 Picker/base_type = &"ColorPicker"
@@ -198,11 +197,11 @@ PopupMenu/icons/visibility_hidden = ExtResource("2_01bfo")
 PopupMenu/icons/visibility_visible = ExtResource("1_sfxpg")
 PopupMenu/icons/visibility_xray = ExtResource("1_sfxpg")
 PopupMenu/styles/hover = ExtResource("26_sckph")
-PopupMenu/styles/labeled_separator_left = ExtResource("7_qkq06")
-PopupMenu/styles/labeled_separator_right = ExtResource("7_qkq06")
+PopupMenu/styles/labeled_separator_left = ExtResource("14_sdnsm")
+PopupMenu/styles/labeled_separator_right = ExtResource("14_sdnsm")
 PopupMenu/styles/panel = ExtResource("27_ineox")
 PopupMenu/styles/panel_disabled = ExtResource("27_ineox")
-PopupMenu/styles/separator = ExtResource("7_qkq06")
+PopupMenu/styles/separator = ExtResource("14_sdnsm")
 PopupPanel/styles/panel = ExtResource("27_ineox")
 ProgressBar/styles/background = ExtResource("28_5oibs")
 ProgressBar/styles/fill = ExtResource("29_5r3ta")
@@ -236,12 +235,12 @@ TabPanel/base_type = &"PanelContainer"
 TabPanel/styles/panel = ExtResource("42_qqcms")
 TextEdit/colors/caret_color = Color(0.258824, 0.760784, 1, 1)
 TextEdit/colors/selection_color = Color(0.486275, 0.486275, 0.486275, 1)
-TextEdit/styles/focus = ExtResource("1_p3roe")
+TextEdit/styles/focus = ExtResource("2_keimd")
 TextEdit/styles/normal = ExtResource("20_4ytgw")
 TextEdit/styles/read_only = ExtResource("20_4ytgw")
 ToolButton/base_type = &"Button"
 ToolButton/styles/disabled = ExtResource("37_rfsru")
-ToolButton/styles/focus = null
+ToolButton/styles/focus = ExtResource("2_keimd")
 ToolButton/styles/hover = ExtResource("37_rfsru")
 ToolButton/styles/normal = ExtResource("37_rfsru")
 ToolButton/styles/pressed = ExtResource("32_i6fx4")
