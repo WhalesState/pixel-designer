@@ -38,6 +38,7 @@
 [ext_resource type="StyleBox" uid="uid://d010x8m1emups" path="res://theme/default_theme/styles/popup_menu.tres" id="27_ineox"]
 [ext_resource type="StyleBox" uid="uid://cj0be7t73kmkk" path="res://theme/default_theme/styles/progress_bg.tres" id="28_5oibs"]
 [ext_resource type="StyleBox" uid="uid://d0wuucjrrmd2k" path="res://theme/default_theme/styles/progress_bar_fill.tres" id="29_5r3ta"]
+[ext_resource type="StyleBox" uid="uid://xdqaveielqg3" path="res://theme/default_theme/styles/outline_panel.tres" id="30_j6mjh"]
 [ext_resource type="StyleBox" uid="uid://du8ltrcsygvn2" path="res://theme/default_theme/styles/sprite_button_normal.tres" id="31_5aom2"]
 [ext_resource type="StyleBox" uid="uid://dfer3vhxdw3it" path="res://theme/default_theme/styles/tab_selected.tres" id="32_62s75"]
 [ext_resource type="StyleBox" uid="uid://cvuvpqoceq5ol" path="res://theme/default_theme/styles/tool_button_pressed.tres" id="32_i6fx4"]
@@ -67,8 +68,6 @@ expand_margin_top = 3.0
 expand_margin_right = 3.0
 expand_margin_bottom = 3.0
 anti_aliasing = false
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kcexn"]
 
 [sub_resource type="FontVariation" id="FontVariation_kgr5k"]
 base_font = ExtResource("49_vnxgf")
@@ -174,7 +173,7 @@ OptionButton/styles/normal_mirrored = ExtResource("7_qkq06")
 OptionButton/styles/pressed = ExtResource("7_qkq06")
 OptionButton/styles/pressed_mirrored = ExtResource("7_qkq06")
 OutlinePanel/base_type = &"PanelContainer"
-OutlinePanel/styles/panel = SubResource("StyleBoxEmpty_kcexn")
+OutlinePanel/styles/panel = ExtResource("30_j6mjh")
 Panel/styles/panel = ExtResource("23_5t12h")
 PanelContainer/styles/panel = ExtResource("23_5t12h")
 Picker/base_type = &"ColorPicker"

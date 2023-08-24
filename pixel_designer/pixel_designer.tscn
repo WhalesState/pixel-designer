@@ -1,10 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://dp5go8yw6rfmn"]
+[gd_scene load_steps=4 format=3 uid="uid://dp5go8yw6rfmn"]
 
 [ext_resource type="Theme" uid="uid://dmgt1badak5wl" path="res://theme/default_theme/default_theme.tres" id="1_0ofsk"]
 [ext_resource type="Script" path="res://pixel_designer/pixel_designer.gd" id="1_7fjn5"]
+[ext_resource type="Script" path="res://addons/gui/tab_box/tab_box.gd" id="3_g7ujh"]
 
-[node name="PixelDesigner" type="Control"]
-layout_mode = 3
+[node name="PixelDesigner" type="VBoxContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -12,3 +12,101 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_0ofsk")
 script = ExtResource("1_7fjn5")
+metadata/_edit_lock_ = true
+
+[node name="MenuPanel" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="MenuBox" type="HBoxContainer" parent="MenuPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SpriteMenu" type="MenuButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+localize_numeral_system = false
+focus_mode = 2
+text = "Sprite"
+item_count = 11
+popup/item_0/text = "New"
+popup/item_0/id = 0
+popup/item_1/text = "Change"
+popup/item_1/id = 1
+popup/item_2/text = ""
+popup/item_2/id = 100
+popup/item_2/disabled = true
+popup/item_2/separator = true
+popup/item_3/text = "Save"
+popup/item_3/id = 2
+popup/item_4/text = "Save As.."
+popup/item_4/id = 3
+popup/item_5/text = ""
+popup/item_5/id = 101
+popup/item_5/disabled = true
+popup/item_5/separator = true
+popup/item_6/text = "Import"
+popup/item_6/id = 4
+popup/item_7/text = "Export"
+popup/item_7/id = 5
+popup/item_8/text = ""
+popup/item_8/id = 102
+popup/item_8/disabled = true
+popup/item_8/separator = true
+popup/item_9/text = "Settings"
+popup/item_9/id = 6
+popup/item_10/text = "Exit"
+popup/item_10/id = 7
+
+[node name="LayerMenu" type="MenuButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+localize_numeral_system = false
+focus_mode = 2
+text = "Layer"
+
+[node name="AnimationMenu" type="MenuButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+localize_numeral_system = false
+focus_mode = 2
+text = "Animation"
+
+[node name="MaterialMenu" type="MenuButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+localize_numeral_system = false
+focus_mode = 2
+text = "Material"
+
+[node name="PaletteMenu" type="MenuButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+localize_numeral_system = false
+focus_mode = 2
+text = "Palette"
+
+[node name="HelpMenu" type="MenuButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+localize_numeral_system = false
+focus_mode = 2
+text = "Help"
+
+[node name="LanguageMenu" type="OptionButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+size_flags_horizontal = 10
+item_count = 1
+selected = 0
+popup/item_0/text = "US"
+popup/item_0/id = 0
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LayerPanel" type="PanelContainer" parent="HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LayerTab" type="VBoxContainer" parent="HSplitContainer/LayerPanel"]
+layout_mode = 2
+theme_override_constants/separation = 0
+script = ExtResource("3_g7ujh")
+
+[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3

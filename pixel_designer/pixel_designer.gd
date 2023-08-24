@@ -1,2 +1,4 @@
 @tool
-extends Control
+extends VBoxContainer
+
+var sprite_size := Vector2i(32, 32)

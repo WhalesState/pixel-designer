@@ -1,9 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://ptjdhr8gdub6"]
+[gd_scene load_steps=7 format=3 uid="uid://ptjdhr8gdub6"]
 
 [ext_resource type="Script" path="res://pixel_editor/pixel_editor.gd" id="1_1hgfc"]
 [ext_resource type="Theme" uid="uid://dmgt1badak5wl" path="res://theme/default_theme/default_theme.tres" id="1_qn17k"]
+[ext_resource type="Texture2D" uid="uid://cj4gxeaa7jh6t" path="res://icon.svg" id="3_hdsx6"]
+[ext_resource type="Script" path="res://addons/gui/tool_button/tool_button.gd" id="3_y8ehu"]
+[ext_resource type="Script" path="res://pixel_editor/camera.gd" id="4_1w5ex"]
+[ext_resource type="Script" path="res://pixel_editor/sprite.gd" id="4_fkitd"]
 
-[node name="PixelEditor" type="PanelContainer"]
+[node name="PixelEditor" type="VBoxContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -14,3 +18,50 @@ size_flags_vertical = 3
 theme = ExtResource("1_qn17k")
 theme_type_variation = &"OutlinePanel"
 script = ExtResource("1_1hgfc")
+
+[node name="MenuPanel" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="MenuBox" type="HBoxContainer" parent="MenuPanel"]
+layout_mode = 2
+
+[node name="ImageMenu" type="MenuButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+focus_mode = 2
+text = "Image"
+
+[node name="ToolButton" type="Button" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+size_flags_horizontal = 10
+theme_type_variation = &"ToolButton"
+text = "Back to Designer"
+script = ExtResource("3_y8ehu")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"OutlinePanel"
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="PanelContainer"]
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="PanelContainer/SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1144, 608)
+render_target_update_mode = 4
+
+[node name="Node2D" type="Node2D" parent="PanelContainer/SubViewportContainer/SubViewport"]
+
+[node name="Sprite" type="Sprite2D" parent="PanelContainer/SubViewportContainer/SubViewport/Node2D"]
+unique_name_in_owner = true
+texture = ExtResource("3_hdsx6")
+centered = false
+script = ExtResource("4_fkitd")
+
+[node name="Camera" type="Camera2D" parent="PanelContainer/SubViewportContainer/SubViewport/Node2D"]
+unique_name_in_owner = true
+offset = Vector2(64, 64)
+zoom = Vector2(4, 4)
+script = ExtResource("4_1w5ex")
