@@ -1,4 +1,3 @@
 # Godot 4+ specific ignores
 .godot/
 /addons/p_tools/
-/addons/pixel_designer/

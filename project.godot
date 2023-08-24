@@ -13,8 +13,19 @@ config_version=5
 config/name="pixel-designer"
 run/main_scene="res://main/main.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
+boot_splash/bg_color=Color(0.121569, 0.113725, 0.145098, 1)
 config/icon="res://icon.svg"
 
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gui/plugin.cfg")
+
+[gui]
+
+fonts/dynamic_fonts/use_oversampling=false
+
+[rendering]
+
+textures/default_filters/use_nearest_mipmap_filter=true
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true
