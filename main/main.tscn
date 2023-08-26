@@ -3,7 +3,8 @@
 [ext_resource type="Script" path="res://main/main.gd" id="1_7ngk0"]
 [ext_resource type="Theme" uid="uid://dmgt1badak5wl" path="res://theme/default_theme/default_theme.tres" id="1_pvdys"]
 [ext_resource type="PackedScene" uid="uid://dp5go8yw6rfmn" path="res://pixel_designer/pixel_designer.tscn" id="4_2ij11"]
-[ext_resource type="PackedScene" uid="uid://ptjdhr8gdub6" path="res://pixel_editor/pixel_editor.tscn" id="5_y5fym"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xxtn1"]
 
 [node name="Main" type="MarginContainer"]
 anchors_preset = 15
@@ -22,61 +23,62 @@ script = ExtResource("1_7ngk0")
 metadata/_edit_vertical_guides_ = []
 metadata/_edit_lock_ = true
 
-[node name="TabContainer" type="TabContainer" parent="."]
+[node name="MainTab" type="TabContainer" parent="."]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_xxtn1")
 tabs_visible = false
 
-[node name="MainBox" type="VBoxContainer" parent="TabContainer"]
+[node name="MainBox" type="VBoxContainer" parent="MainTab"]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="TabContainer/MainBox"]
+[node name="VBox" type="VBoxContainer" parent="MainTab/MainBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/MainBox/VBox"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainTab/MainBox/VBox"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Create" type="Button" parent="TabContainer/MainBox/VBox/HBoxContainer"]
+[node name="Create" type="Button" parent="MainTab/MainBox/VBox/HBoxContainer"]
 layout_mode = 2
 text = "Create New"
 
-[node name="Import" type="Button" parent="TabContainer/MainBox/VBox/HBoxContainer"]
+[node name="Import" type="Button" parent="MainTab/MainBox/VBox/HBoxContainer"]
 layout_mode = 2
 text = "Import
 "
 
-[node name="Export" type="Button" parent="TabContainer/MainBox/VBox/HBoxContainer"]
+[node name="Export" type="Button" parent="MainTab/MainBox/VBox/HBoxContainer"]
 layout_mode = 2
 disabled = true
 text = "Export"
 
-[node name="Edit" type="Button" parent="TabContainer/MainBox/VBox/HBoxContainer"]
+[node name="Edit" type="Button" parent="MainTab/MainBox/VBox/HBoxContainer"]
 layout_mode = 2
 disabled = true
 text = "Edit"
 
-[node name="Delete" type="Button" parent="TabContainer/MainBox/VBox/HBoxContainer"]
+[node name="Delete" type="Button" parent="MainTab/MainBox/VBox/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 disabled = true
 text = "Delete"
 
-[node name="Panel" type="PanelContainer" parent="TabContainer/MainBox/VBox"]
+[node name="Panel" type="PanelContainer" parent="MainTab/MainBox/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"OutlinePanel"
 
-[node name="Scroll" type="ScrollContainer" parent="TabContainer/MainBox/VBox/Panel"]
+[node name="Scroll" type="ScrollContainer" parent="MainTab/MainBox/VBox/Panel"]
 custom_minimum_size = Vector2(0, 128)
 layout_mode = 2
 size_flags_vertical = 3
 follow_focus = true
 horizontal_scroll_mode = 0
 
-[node name="Margin" type="MarginContainer" parent="TabContainer/MainBox/VBox/Panel/Scroll"]
+[node name="Margin" type="MarginContainer" parent="MainTab/MainBox/VBox/Panel/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -85,40 +87,37 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="SpritesFlow" type="HFlowContainer" parent="TabContainer/MainBox/VBox/Panel/Scroll/Margin"]
+[node name="SpritesFlow" type="HFlowContainer" parent="MainTab/MainBox/VBox/Panel/Scroll/Margin"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/h_separation = 4
-theme_override_constants/v_separation = 4
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
 alignment = 1
 
-[node name="InfoPanel" type="PanelContainer" parent="TabContainer/MainBox"]
+[node name="InfoPanel" type="PanelContainer" parent="MainTab/MainBox"]
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 
-[node name="InfoBox" type="HBoxContainer" parent="TabContainer/MainBox/InfoPanel"]
+[node name="InfoBox" type="HBoxContainer" parent="MainTab/MainBox/InfoPanel"]
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="Label" type="Label" parent="TabContainer/MainBox/InfoPanel/InfoBox"]
+[node name="SpriteName" type="Label" parent="MainTab/MainBox/InfoPanel/InfoBox"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Free Space ! ..............................................................................................................................................................................................."
+text = "Name: Default Character , Size: (24, 24)"
 clip_text = true
 
-[node name="VersionButton" type="LinkButton" parent="TabContainer/MainBox/InfoPanel/InfoBox"]
+[node name="VersionButton" type="LinkButton" parent="MainTab/MainBox/InfoPanel/InfoBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "Pixel Designer v1.1.alpha"
 
-[node name="PixelDesigner" parent="TabContainer" instance=ExtResource("4_2ij11")]
-visible = false
-layout_mode = 2
-
-[node name="PixelEditor" parent="TabContainer" instance=ExtResource("5_y5fym")]
+[node name="PixelDesigner" parent="MainTab" instance=ExtResource("4_2ij11")]
 visible = false
 layout_mode = 2

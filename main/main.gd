@@ -8,20 +8,42 @@ const CLASS = preload("./classes.gd")
 func _init():
 	if GLOBAL.is_first_run():
 		var err = GLOBAL.save_sprite(GLOBAL.get_default_character())
-		print_debug("Save Default Character sprite: %s" % err == OK)
+		print_debug("Save Default Character sprite: %s" % (err == OK))
 
 
 func _ready():
+	# Root
 	get_tree().get_root().min_size = Vector2i(1024, 768)
+	get_tree().get_root().close_requested.connect(_on_close_requested)
+	# Tool
 	$"%VersionButton".text = "Pixel Designer v%s" % GLOBAL.VERSION
-	# load sprites
+	reload_sprites()
+
+
+func reload_sprites():
+	var sprites_flow = get_node("%SpritesFlow")
+	for spr in sprites_flow.get_children():
+		sprites_flow.remove_child(spr)
+		spr.queue_free()
 	var sprites = GLOBAL.get_saved_sprites()
 	for spr in sprites.values():
 		var new_spr = CLASS.SpriteButton.new(spr, GLOBAL.SPRITES_GROUP)
+		new_spr.tooltip_text = "%s %s" % [spr["name"], spr["size"]]
 		new_spr.edit_sprite.connect(_on_edit_sprite)
-		get_node("%SpritesFlow").add_child(new_spr)
-	get_node("%SpritesFlow").get_child(0).button_pressed = true
+		new_spr.sprite_selected.connect(_on_sprite_selected)
+		sprites_flow.add_child(new_spr)
+	sprites_flow.get_child(0).button_pressed = true
 
 
 func _on_edit_sprite(spr: Dictionary):
-	print(spr["name"])
+	$MainTab.current_tab = 1
+	$MainTab/PixelDesigner.load_sprite(spr)
+
+
+func _on_sprite_selected(spr_name: String, spr_size: Vector2i):
+	get_node("%SpriteName").text = "Name: %s , Size: %s" % [spr_name, spr_size]
+
+
+func _on_close_requested():
+	print_debug("close!")
+	pass

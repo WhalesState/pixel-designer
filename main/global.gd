@@ -72,6 +72,20 @@ static func save_sprite(sprite: Dictionary, path := "") -> int:
 	return OK
 
 
+static func create_new_sprite(spr_name: String, spr_size: Vector2i) -> int:
+	var img := Image.create(spr_size.x, spr_size.y, false, Image.FORMAT_RGBA8)
+	var sprite := {
+		"name": spr_name,
+		"size": spr_size,
+		"animations": {"default": [[0], false]},
+		"material_ids": {"const": [0, 1]},
+		"materials": {"const": [["000000ff", "ffffffff"]]},
+		"layers": {"default": [[img], 0]},
+		"preview": img.duplicate(),
+	}
+	return save_sprite(sprite)
+
+
 static func get_default_character() -> Dictionary:
 	var images_path := "res://main/default_character/"
 	# Sprite defaults
@@ -82,6 +96,7 @@ static func get_default_character() -> Dictionary:
 		"material_ids": {},
 		"materials": {},
 		"layers": {},
+		"preview": null,
 	}
 	# Animations
 	var animations := {}
@@ -142,12 +157,12 @@ static func get_default_character() -> Dictionary:
 		if cur_file.get_extension() == "png":
 			var path : String = "%s/%s" % [dir.get_current_dir(), cur_file]
 			dir.get_current_dir()
-			var img = ResourceLoader.load(path)
+			var tex = ResourceLoader.load(path)
 			var key_name: String = cur_file.get_basename().split("_")[0]
 			if not layers.has(key_name):
 				layers[key_name] = [[], z_indices[z_ind]]
 				z_ind += 1
-			layers[key_name][0].append(img.get_image())
+			layers[key_name][0].append(tex.get_image())
 		cur_file = dir.get_next()
 	dir.list_dir_end()
 	sprite["layers"] = layers
@@ -175,7 +190,7 @@ static func get_default_character() -> Dictionary:
 	# Preview images
 	var preview_images := [0, 0, 0, 0]
 	for key in layers.keys():
-		var img: Image = layers[key][0][1 if key == "hair" else 0]
+		var img: Image = layers[key][0][1 if key == "hair" else 0].duplicate()
 		img.crop(24, 24)
 		preview_images[layers[key][1]] = img
 	# blend preview images

@@ -2,31 +2,27 @@ extends GDScript
 
 
 class SpriteButton:
-    extends Button
+    extends CheckerButton
     
     signal edit_sprite(spr)
+    signal sprite_selected(spr_name, spr_size)
 
     var sprite: Dictionary
     var preview := TextureRect.new()
     var timer := Timer.new()
     var just_pressed := false
-
-
+    
+    
     func update_preview():
         preview.texture = ImageTexture.create_from_image(sprite["preview"])
-
-
+    
+    
     func _init(spr: Dictionary, spr_group: ButtonGroup):
+        super._init()
         custom_minimum_size = Vector2i(128, 128)
         toggle_mode = true
-        theme_type_variation = "SpriteButton"
         button_group = spr_group
         sprite = spr
-        # Checker
-        var checker = Checker.new(Vector2i(8, 8), Vector2i(1, 1))
-        checker.modulate.a = 0.5
-        checker.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-        add_child(checker)
         # Preview
         preview.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
         add_child(preview)
@@ -37,6 +33,7 @@ class SpriteButton:
         timer.timeout.connect(_on_timer_timeout)
         add_child(timer)
         pressed.connect(_on_sprite_pressed)
+        toggled.connect(_on_button_toggled)
     
     
     func _on_sprite_pressed():
@@ -51,3 +48,8 @@ class SpriteButton:
     
     func _on_timer_timeout():
         just_pressed = false
+    
+    
+    func _on_button_toggled(_pressed: bool):
+        if _pressed:
+            emit_signal("sprite_selected", sprite["name"], sprite["size"])

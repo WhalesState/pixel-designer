@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=57 format=3 uid="uid://dmgt1badak5wl"]
+[gd_resource type="Theme" load_steps=58 format=3 uid="uid://dmgt1badak5wl"]
 
 [ext_resource type="StyleBox" uid="uid://m8u88325xkh0" path="res://theme/default_theme/styles/button_disabled.tres" id="1_2s2b7"]
 [ext_resource type="StyleBox" uid="uid://brh0jgnv1xrcv" path="res://theme/default_theme/styles/button_normal.tres" id="1_iw4dq"]
@@ -16,9 +16,12 @@
 [ext_resource type="Texture2D" uid="uid://c2shaamqg6obu" path="res://theme/default_theme/icons/hsplit.png" id="8_j6dgk"]
 [ext_resource type="StyleBox" uid="uid://byr8obuka5bro" path="res://theme/default_theme/styles/checker_panel.tres" id="10_afnn1"]
 [ext_resource type="Texture2D" uid="uid://can2d8p54gugc" path="res://theme/default_theme/icons/updown_large.png" id="10_jhm85"]
+[ext_resource type="StyleBox" uid="uid://b1180kgniqsc7" path="res://theme/default_theme/styles/checker_button_normal.tres" id="10_u4ink"]
 [ext_resource type="StyleBox" uid="uid://vycc1nlekwjd" path="res://theme/default_theme/styles/col_button_normal.tres" id="10_umkqq"]
 [ext_resource type="Texture2D" uid="uid://cxyelbavhufq2" path="res://theme/default_theme/icons/left_large.png" id="11_exxov"]
+[ext_resource type="StyleBox" uid="uid://cwt5huk12260m" path="res://theme/default_theme/styles/checker_button_focus.tres" id="11_f4222"]
 [ext_resource type="StyleBox" uid="uid://b8oq8qnrk5xkq" path="res://theme/default_theme/styles/h_grabber.tres" id="12_3qpls"]
+[ext_resource type="StyleBox" uid="uid://ils8tdsg07kw" path="res://theme/default_theme/styles/checker_button_pressed.tres" id="12_2126g"]
 [ext_resource type="Texture2D" uid="uid://bcy1ckd1dnvpk" path="res://theme/default_theme/icons/vsplit.png" id="13_2p7a6"]
 [ext_resource type="StyleBox" uid="uid://dqlwny6awsfaj" path="res://theme/default_theme/styles/h_scroll.tres" id="13_jqgh1"]
 [ext_resource type="StyleBox" uid="uid://k82ci4q8anww" path="res://theme/default_theme/styles/h_grabber_highlight.tres" id="13_mmb0i"]
@@ -42,8 +45,6 @@
 [ext_resource type="StyleBox" uid="uid://du8ltrcsygvn2" path="res://theme/default_theme/styles/sprite_button_normal.tres" id="31_5aom2"]
 [ext_resource type="StyleBox" uid="uid://dfer3vhxdw3it" path="res://theme/default_theme/styles/tab_selected.tres" id="32_62s75"]
 [ext_resource type="StyleBox" uid="uid://cvuvpqoceq5ol" path="res://theme/default_theme/styles/tool_button_pressed.tres" id="32_i6fx4"]
-[ext_resource type="StyleBox" uid="uid://c5qa3xbm3xatx" path="res://theme/default_theme/styles/sprite_button_pressed.tres" id="32_n6o0l"]
-[ext_resource type="StyleBox" uid="uid://b2hdkngli5wet" path="res://theme/default_theme/styles/sprite_button_focus.tres" id="32_vd2ae"]
 [ext_resource type="StyleBox" uid="uid://d2jcbier1i7qk" path="res://theme/default_theme/styles/tab_unselected.tres" id="33_whdqs"]
 [ext_resource type="StyleBox" uid="uid://cyugl874dnxld" path="res://theme/default_theme/styles/tab_button_normal.tres" id="34_4dou2"]
 [ext_resource type="StyleBox" uid="uid://q1lpdvm1mfo3" path="res://theme/default_theme/styles/v_grabber_pressed.tres" id="34_u5tft"]
@@ -114,6 +115,12 @@ CheckButton/styles/hover = ExtResource("7_qkq06")
 CheckButton/styles/hover_pressed = ExtResource("7_qkq06")
 CheckButton/styles/normal = ExtResource("7_qkq06")
 CheckButton/styles/pressed = ExtResource("7_qkq06")
+CheckerButton/base_type = &"Button"
+CheckerButton/styles/disabled = ExtResource("10_u4ink")
+CheckerButton/styles/focus = ExtResource("11_f4222")
+CheckerButton/styles/hover = ExtResource("10_u4ink")
+CheckerButton/styles/normal = ExtResource("10_u4ink")
+CheckerButton/styles/pressed = ExtResource("12_2126g")
 CheckerPanel/base_type = &"PanelContainer"
 CheckerPanel/styles/panel = ExtResource("10_afnn1")
 ColButton/base_type = &"Button"
@@ -207,11 +214,11 @@ ProgressBar/styles/fill = ExtResource("29_5r3ta")
 SpinBox/icons/updown = ExtResource("10_jhm85")
 SpinBox/icons/updown_disabled = ExtResource("10_jhm85")
 SpriteButton/base_type = &"Button"
-SpriteButton/styles/disabled = ExtResource("31_5aom2")
-SpriteButton/styles/focus = ExtResource("32_vd2ae")
+SpriteButton/styles/disabled = ExtResource("10_u4ink")
+SpriteButton/styles/focus = ExtResource("11_f4222")
 SpriteButton/styles/hover = ExtResource("31_5aom2")
 SpriteButton/styles/normal = ExtResource("31_5aom2")
-SpriteButton/styles/pressed = ExtResource("32_n6o0l")
+SpriteButton/styles/pressed = ExtResource("12_2126g")
 TabButton/base_type = &"Button"
 TabButton/styles/disabled = ExtResource("34_4dou2")
 TabButton/styles/focus = ExtResource("35_xv6tm")
