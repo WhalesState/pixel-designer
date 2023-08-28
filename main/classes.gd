@@ -9,8 +9,6 @@ class SpriteButton:
 
     var sprite: Dictionary
     var preview := TextureRect.new()
-    var timer := Timer.new()
-    var just_pressed := false
     
     
     func update_preview():
@@ -27,27 +25,15 @@ class SpriteButton:
         preview.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
         add_child(preview)
         update_preview()
-        # Timer
-        timer.wait_time = 0.3
-        timer.one_shot = true
-        timer.timeout.connect(_on_timer_timeout)
-        add_child(timer)
-        pressed.connect(_on_sprite_pressed)
         toggled.connect(_on_button_toggled)
     
     
-    func _on_sprite_pressed():
-        if not just_pressed:
-            just_pressed = true
-            timer.start()
-        else:
-            just_pressed = false
-            timer.stop()
+    func _gui_input(ev: InputEvent):
+        if not (ev is InputEventMouseButton and ev.is_pressed()):
+            return
+        if ev.double_click:
             emit_signal("edit_sprite", sprite)
-    
-    
-    func _on_timer_timeout():
-        just_pressed = false
+            get_viewport().set_input_as_handled()
     
     
     func _on_button_toggled(_pressed: bool):

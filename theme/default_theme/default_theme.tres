@@ -72,6 +72,8 @@ anti_aliasing = false
 
 [sub_resource type="FontVariation" id="FontVariation_kgr5k"]
 base_font = ExtResource("49_vnxgf")
+spacing_top = 2
+spacing_bottom = 2
 
 [resource]
 default_font = SubResource("FontVariation_kgr5k")

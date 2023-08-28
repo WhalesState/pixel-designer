@@ -1,10 +1,10 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bqkwgd0y17trn"]
 
-[ext_resource type="Shader" path="res://addons/gui/texture_sprite/texture_sprite.gdshader" id="1_jk751"]
+[ext_resource type="Shader" path="res://constants/sprite.gdshader" id="1_vid4u"]
 
 [resource]
 resource_name = "Texture Sprite Material"
-shader = ExtResource("1_jk751")
+shader = ExtResource("1_vid4u")
 shader_parameter/rect_size = Vector2(569, 612)
 shader_parameter/frame_size = Vector2(24, 24)
 shader_parameter/h_frames = 1.0

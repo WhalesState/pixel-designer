@@ -7,25 +7,25 @@ extends Window
 
 
 func _ready():
-	wrap_controls = true
-	close_requested.connect(_on_close_requested)
-	if Engine.is_editor_hint() && get_tree().edited_scene_root:
-		visible = visible_in_editor
-	else:
-		visible = false
+    wrap_controls = true
+    close_requested.connect(_on_close_requested)
+    if Engine.is_editor_hint() && get_tree().edited_scene_root:
+        visible = visible_in_editor
+    else:
+        visible = false
 #	get_viewport().size_changed.connect(_on_vp_resized)
 
 
 func _on_close_requested():
-	hide()
+    hide()
 
 
 func _input(ev: InputEvent):
-	if not visible:
-		return
-	if not ev.is_action_pressed("ui_cancel"):
-		return
-	hide()
+    if not visible:
+        return
+    if ev.is_action_pressed("ui_cancel"):
+        hide()
+        get_viewport().set_input_as_handled()
 
 
 #func _on_vp_resized():
