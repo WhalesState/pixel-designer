@@ -1,10 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://ptjdhr8gdub6"]
+[gd_scene load_steps=9 format=3 uid="uid://ptjdhr8gdub6"]
 
 [ext_resource type="Script" path="res://pixel_editor/pixel_editor.gd" id="1_1hgfc"]
 [ext_resource type="Script" path="res://pixel_editor/camera.gd" id="4_1w5ex"]
 [ext_resource type="Script" path="res://pixel_editor/sprite.gd" id="4_fkitd"]
 [ext_resource type="Script" path="res://addons/gui/tool_button/tool_button.gd" id="4_l1xb5"]
 [ext_resource type="Texture2D" uid="uid://ds41sw3aqge7q" path="res://pixel_editor/icons/focus.png" id="4_moucj"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_jic6g"]
+viewport_path = NodePath("Control/PreviewContainer/PreviewViewport")
 
 [sub_resource type="InputEventKey" id="InputEventKey_biygr"]
 device = -1
@@ -24,6 +27,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_type_variation = &"OutlinePanel"
+theme_override_constants/separation = 0
 script = ExtResource("1_1hgfc")
 checker_size = Vector2i(8, 8)
 
@@ -32,16 +36,21 @@ layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"OutlinePanel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="PanelContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="PanelContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 stretch = true
 
-[node name="EditorViewport" type="SubViewport" parent="PanelContainer/VBoxContainer/SubViewportContainer"]
+[node name="EditorViewport" type="SubViewport" parent="PanelContainer/HBoxContainer/VBoxContainer/SubViewportContainer"]
 transparent_bg = true
 handle_input_locally = false
 snap_2d_transforms_to_pixel = true
@@ -50,27 +59,27 @@ canvas_item_default_texture_filter = 0
 size = Vector2i(1152, 612)
 render_target_update_mode = 4
 
-[node name="Node2D" type="Node2D" parent="PanelContainer/VBoxContainer/SubViewportContainer/EditorViewport"]
+[node name="Node2D" type="Node2D" parent="PanelContainer/HBoxContainer/VBoxContainer/SubViewportContainer/EditorViewport"]
 
-[node name="Sprite" type="Sprite2D" parent="PanelContainer/VBoxContainer/SubViewportContainer/EditorViewport/Node2D"]
-unique_name_in_owner = true
-centered = false
-script = ExtResource("4_fkitd")
-
-[node name="Camera" type="Camera2D" parent="PanelContainer/VBoxContainer/SubViewportContainer/EditorViewport/Node2D"]
+[node name="Camera" type="Camera2D" parent="PanelContainer/HBoxContainer/VBoxContainer/SubViewportContainer/EditorViewport/Node2D"]
 unique_name_in_owner = true
 zoom = Vector2(4, 4)
 editor_draw_limits = true
 script = ExtResource("4_1w5ex")
 
-[node name="HSeparator" type="HSeparator" parent="PanelContainer/VBoxContainer"]
+[node name="Sprite" type="Sprite2D" parent="PanelContainer/HBoxContainer/VBoxContainer/SubViewportContainer/EditorViewport/Node2D"]
+unique_name_in_owner = true
+texture = SubResource("ViewportTexture_jic6g")
+centered = false
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 mouse_filter = 0
 
-[node name="FocusCamera" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+[node name="FocusCamera" type="Button" parent="PanelContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 tooltip_text = "Focus Camera
@@ -83,4 +92,38 @@ script = ExtResource("4_l1xb5")
 normal_icon = ExtResource("4_moucj")
 pressed_icon = ExtResource("4_moucj")
 
-[connection signal="pressed" from="PanelContainer/VBoxContainer/HBoxContainer/FocusCamera" to="PanelContainer/VBoxContainer/SubViewportContainer/EditorViewport/Node2D/Camera" method="_on_focus_camera_pressed"]
+[node name="Control" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+metadata/_edit_lock_ = true
+
+[node name="PreviewContainer" type="SubViewportContainer" parent="Control"]
+unique_name_in_owner = true
+layout_mode = 1
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 24.0
+offset_bottom = 24.0
+size_flags_horizontal = 4
+metadata/_edit_lock_ = true
+
+[node name="PreviewViewport" type="SubViewport" parent="Control/PreviewContainer"]
+unique_name_in_owner = true
+process_mode = 3
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+gui_disable_input = true
+size = Vector2i(16, 16)
+render_target_update_mode = 4
+
+[node name="MainSprite" type="Sprite2D" parent="Control/PreviewContainer/PreviewViewport"]
+unique_name_in_owner = true
+centered = false
+hframes = 8
+vframes = 2
+script = ExtResource("4_fkitd")
+
+[connection signal="pressed" from="PanelContainer/HBoxContainer/VBoxContainer/HBoxContainer/FocusCamera" to="PanelContainer/HBoxContainer/VBoxContainer/SubViewportContainer/EditorViewport/Node2D/Camera" method="_on_focus_camera_pressed"]

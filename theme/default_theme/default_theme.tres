@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=58 format=3 uid="uid://dmgt1badak5wl"]
+[gd_resource type="Theme" load_steps=59 format=3 uid="uid://dmgt1badak5wl"]
 
 [ext_resource type="StyleBox" uid="uid://m8u88325xkh0" path="res://theme/default_theme/styles/button_disabled.tres" id="1_2s2b7"]
 [ext_resource type="StyleBox" uid="uid://brh0jgnv1xrcv" path="res://theme/default_theme/styles/button_normal.tres" id="1_iw4dq"]
@@ -55,6 +55,7 @@
 [ext_resource type="StyleBox" uid="uid://byht7c8acru3j" path="res://theme/default_theme/styles/tool_button_normal.tres" id="37_rfsru"]
 [ext_resource type="StyleBox" uid="uid://b0qx1oriruhkk" path="res://theme/default_theme/styles/tab_panel.tres" id="42_qqcms"]
 [ext_resource type="FontFile" uid="uid://dhx7bmlyv1sfh" path="res://theme/fonts/EightPixelsFont.ttf" id="49_vnxgf"]
+[ext_resource type="StyleBox" uid="uid://cbn5plrsqfn0f" path="res://theme/default_theme/styles/v_separator.tres" id="53_ed546"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1lpa4"]
 draw_center = false
@@ -258,6 +259,7 @@ VScrollBar/styles/grabber_highlight = ExtResource("13_mmb0i")
 VScrollBar/styles/grabber_pressed = ExtResource("34_u5tft")
 VScrollBar/styles/scroll = ExtResource("35_17let")
 VScrollBar/styles/scroll_focus = ExtResource("35_17let")
+VSeparator/styles/separator = ExtResource("53_ed546")
 VSplitContainer/constants/separation = 6
 VSplitContainer/icons/grabber = ExtResource("13_2p7a6")
 Window/constants/close_v_offset = 21

@@ -3,7 +3,8 @@ extends Camera2D
 
 var is_pan := false
 
-@onready var sprite: Sprite2D = get_parent().get_node("Sprite")
+@onready var sprite: Sprite2D = get_node("%MainSprite")
+@onready var vp_sprite: Sprite2D = get_node("%Sprite")
 
 
 func _input(ev: InputEvent):
@@ -32,8 +33,8 @@ func cam_zoom(value: int):
     var new_zoom := old_zoom + value
     new_zoom = clamp(new_zoom, 1, 64)
     var mpos = get_viewport().get_mouse_position().clamp(
-            sprite.get_canvas_transform().origin,
-            sprite.get_canvas_transform().origin + Vector2(sprite.checker.image_size) * zoom
+            vp_sprite.get_canvas_transform().origin,
+            vp_sprite.get_canvas_transform().origin + Vector2(sprite.checker.image_size) * zoom
     ).floor()
     var cur_pos = -get_viewport_rect().size / 2 + mpos
     zoom = Vector2(new_zoom, new_zoom)

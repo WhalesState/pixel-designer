@@ -1,6 +1,10 @@
 shader_type canvas_item;
 
-const float precision = 0.1;
+uniform vec2 rect_size = vec2(64.0);
+uniform vec2 frame_size = vec2(24.0);
+uniform float h_frames = 1.0;
+uniform float v_frames = 1.0;
+uniform float frame = 0.0;
 
 uniform vec4 id_0: source_color = vec4(0.0, 0.0, 0.0, 1.0); // black
 uniform vec4 id_1: source_color = vec4(1.0, 1.0, 1.0, 1.0); // white
@@ -80,7 +84,7 @@ vec4 swap_color(vec4 color) {
 		col_22, col_23, col_24, col_25, col_26, col_27, col_28, col_29, col_30, col_31
 	);
 	for (int i = 0; i < 32; i ++) {
-		if (distance(color, original_colors[i]) <= precision){
+		if (color == original_colors[i]) {
 			return replace_colors[i];
 		}
 	}
@@ -88,5 +92,9 @@ vec4 swap_color(vec4 color) {
 }
 
 void fragment() {
-	COLOR = swap_color(texture(TEXTURE, UV));
+	vec2 uv = UV;
+	uv /= rect_size/frame_size;
+	uv.x += float(int(frame) % int(h_frames))/h_frames;
+	uv.y += floor((frame + 1.0)/h_frames)/v_frames;
+	COLOR = swap_color(texture(TEXTURE, uv));
 }

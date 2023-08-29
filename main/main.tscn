@@ -22,57 +22,60 @@ tabs_visible = false
 script = ExtResource("1_7ngk0")
 metadata/_edit_lock_ = true
 
-[node name="MainBox" type="VBoxContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="MainBox"]
+[node name="MainBox" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="PanelContainer/MainBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainBox/VBox"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MainBox/VBox"]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="Create" type="Button" parent="MainBox/VBox/HBoxContainer"]
+[node name="Create" type="Button" parent="PanelContainer/MainBox/VBox/HBoxContainer"]
 layout_mode = 2
 text = "Create New"
 
-[node name="Import" type="Button" parent="MainBox/VBox/HBoxContainer"]
+[node name="Import" type="Button" parent="PanelContainer/MainBox/VBox/HBoxContainer"]
 layout_mode = 2
 text = "Import
 "
 
-[node name="Export" type="Button" parent="MainBox/VBox/HBoxContainer"]
+[node name="Export" type="Button" parent="PanelContainer/MainBox/VBox/HBoxContainer"]
 layout_mode = 2
 disabled = true
 text = "Export"
 
-[node name="Edit" type="Button" parent="MainBox/VBox/HBoxContainer"]
+[node name="Edit" type="Button" parent="PanelContainer/MainBox/VBox/HBoxContainer"]
 layout_mode = 2
 disabled = true
 text = "Edit"
 
-[node name="Delete" type="Button" parent="MainBox/VBox/HBoxContainer"]
+[node name="Delete" type="Button" parent="PanelContainer/MainBox/VBox/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 disabled = true
 text = "Delete"
 
-[node name="Panel" type="PanelContainer" parent="MainBox/VBox"]
+[node name="Panel" type="PanelContainer" parent="PanelContainer/MainBox/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"OutlinePanel"
 
-[node name="Scroll" type="ScrollContainer" parent="MainBox/VBox/Panel"]
+[node name="Scroll" type="ScrollContainer" parent="PanelContainer/MainBox/VBox/Panel"]
 custom_minimum_size = Vector2(0, 128)
 layout_mode = 2
 size_flags_vertical = 3
 follow_focus = true
 horizontal_scroll_mode = 0
 
-[node name="Margin" type="MarginContainer" parent="MainBox/VBox/Panel/Scroll"]
+[node name="Margin" type="MarginContainer" parent="PanelContainer/MainBox/VBox/Panel/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -81,29 +84,29 @@ theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="SpritesFlow" type="HFlowContainer" parent="MainBox/VBox/Panel/Scroll/Margin"]
+[node name="SpritesFlow" type="HFlowContainer" parent="PanelContainer/MainBox/VBox/Panel/Scroll/Margin"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
 alignment = 1
 
-[node name="InfoPanel" type="PanelContainer" parent="MainBox"]
+[node name="InfoPanel" type="PanelContainer" parent="PanelContainer/MainBox"]
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 
-[node name="InfoBox" type="HBoxContainer" parent="MainBox/InfoPanel"]
+[node name="InfoBox" type="HBoxContainer" parent="PanelContainer/MainBox/InfoPanel"]
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="SpriteName" type="Label" parent="MainBox/InfoPanel/InfoBox"]
+[node name="SpriteName" type="Label" parent="PanelContainer/MainBox/InfoPanel/InfoBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Name: Default Character , Size: (24, 24)"
 clip_text = true
 
-[node name="VersionButton" type="LinkButton" parent="MainBox/InfoPanel/InfoBox"]
+[node name="VersionButton" type="LinkButton" parent="PanelContainer/MainBox/InfoPanel/InfoBox"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8

@@ -8,7 +8,8 @@ extends VBoxContainer
             sprite.checker.checker_size = checker_size
 
 @onready var camera: Camera2D = get_node("%Camera")
-@onready var sprite: Sprite2D = get_node("%Sprite")
+@onready var sprite: Sprite2D = get_node("%MainSprite")
+@onready var vp_sprite: Sprite2D = get_node("%Sprite")
 
 
 func _init():

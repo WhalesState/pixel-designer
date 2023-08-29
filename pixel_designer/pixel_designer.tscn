@@ -1,9 +1,25 @@
-[gd_scene load_steps=5 format=3 uid="uid://dp5go8yw6rfmn"]
+[gd_scene load_steps=12 format=3 uid="uid://dp5go8yw6rfmn"]
 
 [ext_resource type="Theme" uid="uid://dmgt1badak5wl" path="res://theme/default_theme/default_theme.tres" id="1_0ofsk"]
 [ext_resource type="Script" path="res://pixel_designer/pixel_designer.gd" id="1_7fjn5"]
 [ext_resource type="Script" path="res://pixel_designer/layer_tab.gd" id="3_c4ae6"]
-[ext_resource type="PackedScene" uid="uid://ptjdhr8gdub6" path="res://pixel_editor/pixel_editor.tscn" id="4_jg6in"]
+[ext_resource type="Script" path="res://pixel_editor/pixel_editor.gd" id="4_b3p70"]
+[ext_resource type="Script" path="res://pixel_editor/camera.gd" id="5_ywvmy"]
+[ext_resource type="Texture2D" uid="uid://ds41sw3aqge7q" path="res://pixel_editor/icons/focus.png" id="6_8p1gg"]
+[ext_resource type="Script" path="res://addons/gui/tool_button/tool_button.gd" id="7_8j85j"]
+[ext_resource type="Script" path="res://pixel_editor/sprite.gd" id="8_3mbg4"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_n7s5i"]
+viewport_path = NodePath("HSplitContainer/PixelEditor/Preview/PreviewContainer/PreviewViewport")
+
+[sub_resource type="InputEventKey" id="InputEventKey_biygr"]
+device = -1
+pressed = true
+physical_keycode = 70
+unicode = 102
+
+[sub_resource type="Shortcut" id="Shortcut_dtnr5"]
+events = [SubResource("InputEventKey_biygr")]
 
 [node name="PixelDesigner" type="VBoxContainer"]
 anchors_preset = 15
@@ -106,6 +122,7 @@ size_flags_vertical = 3
 [node name="LayerPanel" type="PanelContainer" parent="HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.4
 
 [node name="LayerTab" type="VBoxContainer" parent="HSplitContainer/LayerPanel"]
 unique_name_in_owner = true
@@ -113,12 +130,112 @@ layout_mode = 2
 theme_override_constants/separation = 0
 script = ExtResource("3_c4ae6")
 
-[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="PixelEditor" parent="HSplitContainer/PanelContainer" instance=ExtResource("4_jg6in")]
+[node name="PixelEditor" type="VBoxContainer" parent="HSplitContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_type_variation = &"OutlinePanel"
+theme_override_constants/separation = 0
+script = ExtResource("4_b3p70")
 checker_size = Vector2i(8, 8)
+
+[node name="Panel" type="PanelContainer" parent="HSplitContainer/PixelEditor"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"OutlinePanel"
+
+[node name="HBox" type="HBoxContainer" parent="HSplitContainer/PixelEditor/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="VBox" type="VBoxContainer" parent="HSplitContainer/PixelEditor/Panel/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="EditorContainer" type="SubViewportContainer" parent="HSplitContainer/PixelEditor/Panel/HBox/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+stretch = true
+
+[node name="EditorViewport" type="SubViewport" parent="HSplitContainer/PixelEditor/Panel/HBox/VBox/EditorContainer"]
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(812, 564)
+render_target_update_mode = 4
+
+[node name="Editor" type="Node2D" parent="HSplitContainer/PixelEditor/Panel/HBox/VBox/EditorContainer/EditorViewport"]
+
+[node name="Camera" type="Camera2D" parent="HSplitContainer/PixelEditor/Panel/HBox/VBox/EditorContainer/EditorViewport/Editor"]
+unique_name_in_owner = true
+zoom = Vector2(4, 4)
+editor_draw_limits = true
+script = ExtResource("5_ywvmy")
+
+[node name="Sprite" type="Sprite2D" parent="HSplitContainer/PixelEditor/Panel/HBox/VBox/EditorContainer/EditorViewport/Editor"]
+unique_name_in_owner = true
+texture = SubResource("ViewportTexture_n7s5i")
+centered = false
+
+[node name="HSeparator" type="HSeparator" parent="HSplitContainer/PixelEditor/Panel/HBox/VBox"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer/PixelEditor/Panel/HBox/VBox"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer/PixelEditor/Panel/HBox/VBox/PanelContainer"]
+layout_mode = 2
+mouse_filter = 0
+
+[node name="FocusCamera" type="Button" parent="HSplitContainer/PixelEditor/Panel/HBox/VBox/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+tooltip_text = "Focus Camera
+Shortcut: F"
+theme_type_variation = &"ToolButton"
+shortcut = SubResource("Shortcut_dtnr5")
+shortcut_in_tooltip = false
+icon = ExtResource("6_8p1gg")
+script = ExtResource("7_8j85j")
+normal_icon = ExtResource("6_8p1gg")
+pressed_icon = ExtResource("6_8p1gg")
+
+[node name="Preview" type="Control" parent="HSplitContainer/PixelEditor"]
+layout_mode = 2
+size_flags_horizontal = 8
+metadata/_edit_lock_ = true
+
+[node name="PreviewContainer" type="SubViewportContainer" parent="HSplitContainer/PixelEditor/Preview"]
+unique_name_in_owner = true
+layout_mode = 1
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 24.0
+offset_bottom = 24.0
+size_flags_horizontal = 4
+metadata/_edit_lock_ = true
+
+[node name="PreviewViewport" type="SubViewport" parent="HSplitContainer/PixelEditor/Preview/PreviewContainer"]
+unique_name_in_owner = true
+process_mode = 3
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+gui_disable_input = true
+size = Vector2i(16, 16)
+render_target_update_mode = 4
+
+[node name="MainSprite" type="Sprite2D" parent="HSplitContainer/PixelEditor/Preview/PreviewContainer/PreviewViewport"]
+unique_name_in_owner = true
+centered = false
+hframes = 8
+vframes = 2
+script = ExtResource("8_3mbg4")
+
+[connection signal="pressed" from="HSplitContainer/PixelEditor/Panel/HBox/VBox/PanelContainer/HBoxContainer/FocusCamera" to="HSplitContainer/PixelEditor/Panel/HBox/VBox/EditorContainer/EditorViewport/Editor/Camera" method="_on_focus_camera_pressed" flags=18]

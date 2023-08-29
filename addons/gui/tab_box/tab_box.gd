@@ -6,6 +6,7 @@ extends VBoxContainer
 
 ## emits when [member tab] changes.
 signal tab_changed(tab_ind: int)
+signal replace_tabs(from: int, to: int)
 
 ## Current container tab index.
 @export var tab := -1:
@@ -118,11 +119,12 @@ func _on_switch_tab(dir: int):
     tab_bar.get_child(tab).grab_focus()
 
 
-func _on_replace_tabs(a: int, b: int):
-    var button_a = tab_bar.get_child(a)
-    var container_a = tab_container.get_child(a)
-    tab_bar.move_child(button_a, b)
-    tab_container.move_child(container_a, b)
+func _on_replace_tabs(from: int, to: int):
+    var button_from = tab_bar.get_child(from)
+    var container_from = tab_container.get_child(from)
+    tab_bar.move_child(button_from, to)
+    tab_container.move_child(container_from, to)
+    emit_signal("replace_tabs", from, to)
 
 
 ## TabButton refers to [member TabBox.tab_bar] child buttons
@@ -130,7 +132,7 @@ class TabButton:
     extends Button
     
     signal tab_pressed(ind: int)
-    signal replace_tabs(a: int, b: int)
+    signal replace_tabs(from: int, to: int)
     
     
     func _init(_name: String, group: ButtonGroup):

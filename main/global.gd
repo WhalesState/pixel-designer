@@ -1,4 +1,4 @@
-extends GDScript
+extends Object
 
 const VERSION := "1.1.alpha"
 
@@ -45,7 +45,7 @@ static func create_new_sprite(spr_name: String, spr_size: Vector2i) -> int:
         "animations": {"default": [[0], false]},
         "material_ids": {"const": [0, 1]},
         "materials": {"const": [["000000ff", "ffffffff"]]},
-        "layers": {"default": [[img], 0]},
+        "layers": [["default", [img]]],
         "preview": img.duplicate(),
     }
     return save_sprite(sprite)
@@ -60,7 +60,7 @@ static func get_default_character() -> Dictionary:
         "animations": {},
         "material_ids": {},
         "materials": {},
-        "layers": {},
+        "layers": [],
         "preview": null,
     }
     # Animations
@@ -117,19 +117,22 @@ static func get_default_character() -> Dictionary:
     var cur_file = dir.get_next()
     var z_indices := [3, 0, 2, 1]
     var z_ind := 0
-    var layers := {}
+    var dic_layers := {}
+    var layers := [[], [], [], []]
     while cur_file:
         if cur_file.get_extension() == "png":
             var path : String = "%s/%s" % [dir.get_current_dir(), cur_file]
             dir.get_current_dir()
             var tex = ResourceLoader.load(path)
             var key_name: String = cur_file.get_basename().split("_")[0]
-            if not layers.has(key_name):
-                layers[key_name] = [[], z_indices[z_ind]]
+            if not dic_layers.has(key_name):
+                dic_layers[key_name] = [[], z_indices[z_ind]]
                 z_ind += 1
-            layers[key_name][0].append(tex.get_image())
+            dic_layers[key_name][0].append(tex.get_image())
         cur_file = dir.get_next()
     dir.list_dir_end()
+    for key in dic_layers.keys():
+        layers[dic_layers[key][1]] = [key, dic_layers[key][0]]
     sprite["layers"] = layers
     # Preview
     const colors = [
@@ -154,10 +157,10 @@ static func get_default_character() -> Dictionary:
     ]
     # Preview images
     var preview_images := [0, 0, 0, 0]
-    for key in layers.keys():
-        var img: Image = layers[key][0][1 if key == "hair" else 0].duplicate()
+    for i in layers.size():
+        var img: Image = layers[i][1][1 if i == 2 else 0].duplicate()
         img.crop(24, 24)
-        preview_images[layers[key][1]] = img
+        preview_images[i] = img
     # blend preview images
     var preview: Image = preview_images.pop_front()
     for img in preview_images:
