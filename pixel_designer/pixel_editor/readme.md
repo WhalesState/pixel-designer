@@ -29,7 +29,7 @@
    - [ ] Contours select.
 ---
 3. **Testing and Refinement**
-    - [ ] Test the pixel editor to ensure all features work as expected.
+	- [ ] Test the pixel editor to ensure all features work as expected.
 ---
 4. **Documentation and Release**
-    - [ ] Create documentation that explains how to use the pixel editor, including instructions for each feature.
+	- [ ] Create documentation that explains how to use the pixel editor, including instructions for each feature.

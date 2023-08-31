@@ -6,7 +6,8 @@ extends TextureRect
 @export var frame_size := Vector2(16, 16):
     set(value):
         frame_size = value.clamp(Vector2i(1, 1), Vector2i(1024, 1024))
-        _update()
+        if texture:
+            _update()
         if material:
             material.set_shader_parameter("frame_size", frame_size)
 
@@ -47,12 +48,12 @@ func _notification(what: int):
 
 func _set(property: StringName, value: Variant):
     if property == "texture":
-        call_deferred("_update")
+        texture = value
+        if texture:
+            _update()
 
 
 func _update():
-    if not texture:
-        return
     var img_size = texture.get_image().get_size()
     h_frames = floor(img_size.x / frame_size.x)
     v_frames = floor(img_size.y / frame_size.y)

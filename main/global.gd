@@ -66,10 +66,10 @@ static func get_default_character() -> Dictionary:
     # Animations
     var animations := {}
     animations["default"] = [[0], false]
-    animations["idle"] = [[0, 1, 2], true]
+    animations["idle"] = [[0, 2, 1, 2], true]
     animations["run"] = [[3, 4, 5, 6, 7], true]
     animations["jump"] = [[8, 9, 10, 11], true]
-    animations["die"] = [[12, 13], false]
+    animations["die"] = [[2, 12, 13], false]
     sprite["animations"] = animations
     # Material ids
     const material_ids = {

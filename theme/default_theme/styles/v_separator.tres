@@ -2,7 +2,7 @@
 
 [resource]
 color = Color(1, 1, 1, 0.2)
-grow_begin = 2.0
-grow_end = 2.0
-thickness = 2
+grow_begin = 0.0
+grow_end = 0.0
+thickness = 4
 vertical = true

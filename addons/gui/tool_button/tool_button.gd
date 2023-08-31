@@ -16,35 +16,13 @@ extends Button
             icon = pressed_icon
 
 
-func _set(property: StringName, value: Variant):
-    if property == "toggle_mode":
-        if value == true:
-            if button_down.is_connected(_on_toggled):
-                button_down.disconnect(_on_toggled)
-            if button_up.is_connected(_on_toggled):
-                button_up.disconnect(_on_toggled)
-            if not toggled.is_connected(_on_toggled):
-                toggled.connect(_on_toggled)
-        else:
-            if not button_down.is_connected(_on_toggled):
-                button_down.connect(_on_toggled.bind(true))
-            if not button_up.is_connected(_on_toggled):
-                button_up.connect(_on_toggled.bind(false))
-            if toggled.is_connected(_on_toggled):
-                toggled.disconnect(_on_toggled)
-
-
 func _init():
     theme_type_variation = "ToolButton"
-    if toggle_mode:
-        toggled.connect(_on_toggled)
-    else:
-        button_down.connect(_on_toggled.bind(true))
-        button_up.connect(_on_toggled.bind(false))
+    button_down.connect(_on_toggled.bind(true))
+    button_up.connect(_on_toggled.bind(false))
 
 
 func _on_toggled(is_pressed: bool):
-    if icon:
-        self_modulate = Color("42c2ff") if is_pressed else Color.WHITE
     if normal_icon and pressed_icon:
-        icon = pressed_icon if is_pressed else normal_icon
+        var is_really_pressed = button_pressed if toggle_mode else is_pressed
+        icon = pressed_icon if is_really_pressed else normal_icon

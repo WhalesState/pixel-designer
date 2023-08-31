@@ -44,7 +44,7 @@
 [ext_resource type="StyleBox" uid="uid://xdqaveielqg3" path="res://theme/default_theme/styles/outline_panel.tres" id="30_j6mjh"]
 [ext_resource type="StyleBox" uid="uid://du8ltrcsygvn2" path="res://theme/default_theme/styles/sprite_button_normal.tres" id="31_5aom2"]
 [ext_resource type="StyleBox" uid="uid://dfer3vhxdw3it" path="res://theme/default_theme/styles/tab_selected.tres" id="32_62s75"]
-[ext_resource type="StyleBox" uid="uid://cvuvpqoceq5ol" path="res://theme/default_theme/styles/tool_button_pressed.tres" id="32_i6fx4"]
+[ext_resource type="StyleBox" uid="uid://dtfj65qpshcll" path="res://theme/default_theme/styles/outline_fill_panel.tres" id="33_t27qp"]
 [ext_resource type="StyleBox" uid="uid://d2jcbier1i7qk" path="res://theme/default_theme/styles/tab_unselected.tres" id="33_whdqs"]
 [ext_resource type="StyleBox" uid="uid://cyugl874dnxld" path="res://theme/default_theme/styles/tab_button_normal.tres" id="34_4dou2"]
 [ext_resource type="StyleBox" uid="uid://q1lpdvm1mfo3" path="res://theme/default_theme/styles/v_grabber_pressed.tres" id="34_u5tft"]
@@ -182,6 +182,8 @@ OptionButton/styles/normal = ExtResource("7_qkq06")
 OptionButton/styles/normal_mirrored = ExtResource("7_qkq06")
 OptionButton/styles/pressed = ExtResource("7_qkq06")
 OptionButton/styles/pressed_mirrored = ExtResource("7_qkq06")
+OutlineFillPanel/base_type = &"PanelContainer"
+OutlineFillPanel/styles/panel = ExtResource("33_t27qp")
 OutlinePanel/base_type = &"PanelContainer"
 OutlinePanel/styles/panel = ExtResource("30_j6mjh")
 Panel/styles/panel = ExtResource("23_5t12h")
@@ -248,11 +250,12 @@ TextEdit/styles/focus = ExtResource("2_keimd")
 TextEdit/styles/normal = ExtResource("20_4ytgw")
 TextEdit/styles/read_only = ExtResource("20_4ytgw")
 ToolButton/base_type = &"Button"
+ToolButton/colors/icon_pressed_color = Color(0.258824, 0.760784, 1, 1)
 ToolButton/styles/disabled = ExtResource("37_rfsru")
 ToolButton/styles/focus = ExtResource("2_keimd")
 ToolButton/styles/hover = ExtResource("37_rfsru")
 ToolButton/styles/normal = ExtResource("37_rfsru")
-ToolButton/styles/pressed = ExtResource("32_i6fx4")
+ToolButton/styles/pressed = ExtResource("37_rfsru")
 TooltipPanel/styles/panel = ExtResource("27_ineox")
 VScrollBar/styles/grabber = ExtResource("12_3qpls")
 VScrollBar/styles/grabber_highlight = ExtResource("13_mmb0i")

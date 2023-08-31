@@ -8,8 +8,10 @@ var sprite := {}:
         sprite = value
         update_sprite()
 
-@onready var layers_tab: TabBox = get_node("%LayerTab")
 @onready var pixel_editor = get_node("%PixelEditor")
+@onready var layers_tab: TabBox = get_node("%LayerTab")
+@onready var anim_options: OptionButton = get_node("%AnimOptions")
+@onready var anim_editor: PanelContainer = get_node("%AnimEditor")
 
 
 func load_sprite(spr: Dictionary):
@@ -21,15 +23,29 @@ func load_sprite(spr: Dictionary):
 func _ready():
     layers_tab.tab_changed.connect(_on_layer_tab_changed)
     layers_tab.replace_tabs.connect(_on_layer_tab_replaced)
-
+    anim_options.item_selected.connect(_on_anim_options_item_selected)
 
 func _on_layer_tab_changed(ind: int):
     if sprite:
         print(ind)
 
 
+func _on_anim_options_item_selected(ind: int):
+    var cur_anim = anim_options.get_item_text(ind)
+    get_node("%AnimLoop").button_pressed = sprite["animations"][cur_anim][1]
+    anim_editor.cur_anim = sprite["animations"][anim_options.get_item_text(ind)]
+    anim_editor.frame = 0
+
 func update_sprite():
     update_layers()
+    update_animations()
+
+
+func update_animations():
+    anim_options.clear()
+    for anim in sprite["animations"].keys():
+        anim_options.add_item(anim)
+    anim_options.emit_signal("item_selected", 0)
 
 
 func update_layers():

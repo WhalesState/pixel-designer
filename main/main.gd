@@ -9,11 +9,15 @@ func _init():
     if GLOBAL.is_first_run():
         var err = GLOBAL.save_sprite(GLOBAL.get_default_character())
         print_debug("Save Default Character sprite: %s" % (err == OK))
+    # Force update the defualt character on start
+    # TODO: Remove this.
+    var test_err = GLOBAL.save_sprite(GLOBAL.get_default_character())
+    print_debug("Save Default Character sprite: %s" % (test_err == OK))
 
 
 func _ready():
     # Root
-    get_tree().get_root().min_size = Vector2i(1024, 768)
+    get_tree().get_root().min_size = Vector2i(640, 480)
     get_tree().get_root().close_requested.connect(_on_close_requested)
     # Tool
     $"%VersionButton".text = "Pixel Designer v%s" % GLOBAL.VERSION
