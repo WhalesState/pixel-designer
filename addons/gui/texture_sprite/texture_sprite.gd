@@ -33,7 +33,7 @@ var frame_count := 0
 
 
 func _init(spr_size := Vector2i(24, 24)):
-    material = Constants.LAYER_BUTTON_MATERIAL
+    material = Constants.CELL_MATERIAL
     expand_mode = EXPAND_IGNORE_SIZE
     stretch_mode = STRETCH_TILE
     frame_size = spr_size

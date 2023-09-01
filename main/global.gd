@@ -26,6 +26,9 @@ static func save_sprite(sprite: Dictionary, path := "") -> int:
     if not DirAccess.dir_exists_absolute(path):
         print_debug("ERROR: Invalid Sprite Path!")
         return ERR_FILE_BAD_PATH
+    if not sprite:
+        print_debug("ERROR: Invalid Sprite Data!")
+        return ERR_INVALID_DATA
     var spr_name: String = sprite["name"]
     spr_name = spr_name.replace(" ", "_")
     if not spr_name.is_valid_filename():
@@ -34,6 +37,15 @@ static func save_sprite(sprite: Dictionary, path := "") -> int:
     var file := FileAccess.open("%s/%s.pds" % [path, spr_name], FileAccess.WRITE)
     file.store_var(sprite, true)
     file.close()
+    # var cfg := ConfigFile.new()
+    # cfg.set_value("sprite", "name", sprite["name"])
+    # cfg.set_value("sprite", "author", "Pixel Designer")
+    # cfg.set_value("sprite", "version", "1.0")
+    # cfg.set_value("sprite", "size", sprite["size"])
+    # cfg.set_value("sprite", "animations", sprite["animations"])
+    # cfg.set_value("sprite", "materials", sprite["materials"])
+    # cfg.set_value("sprite", "material_ids", sprite["material_ids"])
+    # cfg.save("%s/sprite.cfg" % get_sprites_path())
     return OK
 
 
@@ -42,7 +54,7 @@ static func create_new_sprite(spr_name: String, spr_size: Vector2i) -> int:
     var sprite := {
         "name": spr_name,
         "size": spr_size,
-        "animations": {"default": [[0], false]},
+        "animations": {"Default": [[0], false]},
         "material_ids": {"const": [0, 1]},
         "materials": {"const": [["000000ff", "ffffffff"]]},
         "layers": [["default", [img]]],
@@ -52,65 +64,25 @@ static func create_new_sprite(spr_name: String, spr_size: Vector2i) -> int:
 
 
 static func get_default_character() -> Dictionary:
-    var images_path := "res://main/default_character/"
+    var images_path := "res://main/default_character"
     # Sprite defaults
+    var cfg = ConfigFile.new()
+    var err = cfg.load("%s/sprite.cfg" % images_path)
+    print()
+    if err != OK:
+        print_debug("Can't load default character config file!")
+        return {}
     var sprite := {
-        "name": "Default Character",
-        "size": Vector2i(24, 24),
-        "animations": {},
-        "material_ids": {},
-        "materials": {},
+        "name": cfg.get_value("sprite", "name"),
+        "author": cfg.get_value("sprite", "author"),
+        "version": cfg.get_value("sprite", "version"),
+        "size": cfg.get_value("sprite", "size"),
+        "animations": cfg.get_value("sprite", "animations"),
+        "material_ids": cfg.get_value("sprite", "material_ids"),
+        "materials": cfg.get_value("sprite", "materials"),
         "layers": [],
         "preview": null,
     }
-    # Animations
-    var animations := {}
-    animations["default"] = [[0], false]
-    animations["idle"] = [[0, 2, 1, 2], true]
-    animations["run"] = [[3, 4, 5, 6, 7], true]
-    animations["jump"] = [[8, 9, 10, 11], true]
-    animations["die"] = [[2, 12, 13], false]
-    sprite["animations"] = animations
-    # Material ids
-    const material_ids = {
-        "const": [0, 1],
-        "skin": [2, 3],
-        "eyes": [4],
-        "cloth": [5, 6, 7],
-        "hair": [8, 9, 10],
-        "item": [11, 12, 13],
-        "metal": [14, 15],
-        "mask": [16, 17]
-    }
-    sprite["material_ids"] = material_ids
-    # Materials
-    const materials = {
-        "const": [["000000ff", "ffffffff"]],
-        "skin": [
-            ["9c6259ff", "d78c81ff"],
-            ["61372fff", "8a433bff"],
-            ["3d211dff", "54332fff"]
-        ],
-        "eyes": [["191919ff"], ["203220ff"], ["003f9dff"]],
-        "cloth": [
-            ["3a3a3aff", "585858ff", "909090ff"],
-            ["44252fff", "4f3243ff", "a06078ff"],
-            ["8f4029ff", "c35143ff", "d79053ff"]
-        ],
-        "hair": [
-            ["232323ff", "342f2fff", "443e3eff"],
-            ["2a2524ff", "504b4cff", "6a6465ff"],
-            ["712f0eff", "a34617ff", "c6721eff"]
-        ],
-        "item": [
-            ["232323ff", "353535ff", "6a6a6aff"],
-            ["491324ff", "5e2840ff", "94617eff"],
-            ["4c130bff", "692121ff", "8a2f2fff"]
-        ],
-        "metal": [["5f5f5fff", "949494ff"]],
-        "mask": [["007b68ff", "ba0016ff"]]
-    }
-    sprite["materials"] = materials
     # Layers
     var dir := DirAccess.open(images_path)
     dir.list_dir_begin()

@@ -1,7 +1,7 @@
 class_name Constants
 extends Object
 
-const LAYER_BUTTON_MATERIAL: Material = preload("./layer_button_material.tres")
+const CELL_MATERIAL: Material = preload("./cell_button_material.tres")
 const SPRITE_MATERIAL: Material = preload("./sprite_material.tres")
 
 const SHADER_COLORS: PackedColorArray = [

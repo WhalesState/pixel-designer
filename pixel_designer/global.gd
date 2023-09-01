@@ -1,10 +1,11 @@
 extends Object
 
 
-class LayerButton:
+class CellButton:
     extends CheckerButton
     
-    signal layer_pressed(texture: ImageTexture)
+    signal cell_pressed(texture: ImageTexture)
+    signal cell_moved(from: int, to: int)
     
     var sprite: TextureSprite
     
@@ -22,7 +23,25 @@ class LayerButton:
     
     func _on_button_toggled(_pressed: bool):
         if pressed:
-            emit_signal("layer_pressed", sprite.texture)
+            emit_signal("cell_pressed", sprite.texture)
+    
+    
+    func _get_drag_data(_pos: Vector2):
+        var prev = TextureSprite.new(sprite.frame_size)
+        prev.texture = sprite.texture
+        prev.size = sprite.frame_size * 2
+        set_drag_preview(prev)
+        return self
+    
+    
+    func _can_drop_data(_pos, data):
+        if data.button_group == button_group and data != self:
+            return true
+        return false
+    
+    
+    func _drop_data(_pos, data):
+        emit_signal("cell_moved", data.get_index(), get_index())
 
 
 class Sprite:
@@ -31,3 +50,4 @@ class Sprite:
     
     func _init():
         centered = false
+        material = Constants.SPRITE_MATERIAL

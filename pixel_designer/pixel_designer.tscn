@@ -112,14 +112,6 @@ localize_numeral_system = false
 focus_mode = 2
 text = "Help"
 
-[node name="LanguageMenu" type="OptionButton" parent="MenuPanel/MenuBox"]
-layout_mode = 2
-size_flags_horizontal = 10
-item_count = 1
-selected = 0
-popup/item_0/text = "US"
-popup/item_0/id = 0
-
 [node name="HSeparator" type="HSeparator" parent="."]
 layout_mode = 2
 
@@ -195,7 +187,6 @@ stretch = true
 
 [node name="EditorViewport" type="SubViewport" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/HBox/VBox/EditorContainer"]
 transparent_bg = true
-handle_input_locally = false
 snap_2d_transforms_to_pixel = true
 snap_2d_vertices_to_pixel = true
 canvas_item_default_texture_filter = 0
@@ -254,7 +245,7 @@ layout_mode = 2
 
 [node name="AnimOptions" type="OptionButton" parent="HSplitContainer/VSplitContainer/AnimEditor/VBox/HBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
 clip_text = true
 

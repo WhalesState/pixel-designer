@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bqkwgd0y17trn"]
 
-[ext_resource type="Shader" path="res://constants/layer_button.gdshader" id="1_qhaym"]
+[ext_resource type="Shader" path="res://constants/cell_button.gdshader" id="1_qhaym"]
 
 [resource]
 resource_name = "LayerButtonMaterial"

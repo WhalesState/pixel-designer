@@ -6,7 +6,7 @@ extends VBoxContainer
 
 ## emits when [member tab] changes.
 signal tab_changed(tab_ind: int)
-signal replace_tabs(from: int, to: int)
+signal tab_moved(from: int, to: int)
 
 ## Current container tab index.
 @export var tab := -1:
@@ -66,7 +66,7 @@ func _init():
 func add_tab(tab_name: String, align_center := true) -> int:
     var button := TabButton.new(tab_name, tab_group)
     tab_bar.add_child(button)
-    button.replace_tabs.connect(_on_replace_tabs)
+    button.tab_moved.connect(_on_tab_moved)
     button.tab_pressed.connect(_on_tab_button_toggled)
     var scroll := ScrollContainer.new()
     scroll.anchors_preset = PRESET_FULL_RECT
@@ -119,12 +119,12 @@ func _on_switch_tab(dir: int):
     tab_bar.get_child(tab).grab_focus()
 
 
-func _on_replace_tabs(from: int, to: int):
+func _on_tab_moved(from: int, to: int):
     var button_from = tab_bar.get_child(from)
     var container_from = tab_container.get_child(from)
     tab_bar.move_child(button_from, to)
     tab_container.move_child(container_from, to)
-    emit_signal("replace_tabs", from, to)
+    emit_signal("tab_moved", from, to)
 
 
 ## TabButton refers to [member TabBox.tab_bar] child buttons
@@ -132,7 +132,7 @@ class TabButton:
     extends Button
     
     signal tab_pressed(ind: int)
-    signal replace_tabs(from: int, to: int)
+    signal tab_moved(from: int, to: int)
     
     
     func _init(_name: String, group: ButtonGroup):
@@ -163,4 +163,4 @@ class TabButton:
     
     
     func _drop_data(_pos, data):
-        emit_signal("replace_tabs", data.get_index(), get_index())
+        emit_signal("tab_moved", data.get_index(), get_index())
