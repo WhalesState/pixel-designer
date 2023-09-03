@@ -22,7 +22,7 @@ class CellButton:
     
     
     func _on_button_toggled(_pressed: bool):
-        if pressed:
+        if _pressed:
             emit_signal("cell_pressed", sprite.texture)
     
     

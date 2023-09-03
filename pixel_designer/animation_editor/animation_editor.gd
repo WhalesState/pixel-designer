@@ -1,7 +1,9 @@
 @tool
 extends PanelContainer
 
-var cur_anim := [[], false]
+signal frame_changed(frame: int)
+
+var cur_anim := []
 var anim_timer := Timer.new()
 
 var anim_interval := 0.1:
@@ -12,11 +14,10 @@ var anim_interval := 0.1:
 var frame := 0:
     set(value):
         frame = wrapi(value, 0, cur_anim[0].size())
-        if (value != 0 and frame == 0) and not loop_button.button_pressed:
+        if (value != 0 and frame == 0) and not anim_timer.is_stopped() and not loop_button.button_pressed:
             _on_stop_animation_pressed()
         if cur_anim:
-            for child in pixel_editor.sprite.get_children():
-                child.frame = cur_anim[0][frame]
+            emit_signal("frame_changed", cur_anim[0][frame])
 
 @onready var pixel_editor = get_node("%PixelEditor")
 @onready var cur_animation = []
