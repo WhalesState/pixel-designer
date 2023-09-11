@@ -1,31 +1,32 @@
-[gd_scene load_steps=30 format=3 uid="uid://dp5go8yw6rfmn"]
+[gd_scene load_steps=31 format=3 uid="uid://dp5go8yw6rfmn"]
 
 [ext_resource type="Theme" uid="uid://dmgt1badak5wl" path="res://theme/default_theme/default_theme.tres" id="1_0ofsk"]
 [ext_resource type="Script" path="res://pixel_designer/pixel_designer.gd" id="1_7fjn5"]
 [ext_resource type="Script" path="res://pixel_designer/layer_tab.gd" id="3_c4ae6"]
+[ext_resource type="Script" path="res://pixel_designer/material_tab.gd" id="4_ib0cc"]
 [ext_resource type="Script" path="res://pixel_designer/pixel_editor/pixel_editor.gd" id="4_q40a7"]
 [ext_resource type="Texture2D" uid="uid://ds41sw3aqge7q" path="res://pixel_designer/pixel_editor/icons/focus.png" id="5_nq6bk"]
 [ext_resource type="Script" path="res://addons/gui/tool_button/tool_button.gd" id="7_8j85j"]
 [ext_resource type="Script" path="res://pixel_designer/pixel_editor/camera.gd" id="7_8ytiv"]
 [ext_resource type="ButtonGroup" uid="uid://dgqfspvbn8iso" path="res://pixel_designer/pixel_editor/groups/tool_group.tres" id="7_dhxie"]
 [ext_resource type="Texture2D" uid="uid://bgovh7of6lbyj" path="res://pixel_designer/pixel_editor/icons/grid.png" id="7_v0n5h"]
-[ext_resource type="Texture2D" uid="uid://cobb5e0mbgg36" path="res://pixel_designer/icons/loop.png" id="8_gvyhm"]
 [ext_resource type="Script" path="res://pixel_designer/animation_editor/animation_editor.gd" id="8_n557l"]
 [ext_resource type="Texture2D" uid="uid://788gby7208yc" path="res://pixel_designer/pixel_editor/icons/checker.png" id="8_ooeoq"]
-[ext_resource type="Texture2D" uid="uid://dpgun368iywwh" path="res://pixel_designer/icons/options.png" id="8_v2a75"]
 [ext_resource type="Texture2D" uid="uid://doagsndjauuha" path="res://pixel_designer/pixel_editor/icons/line_tool.png" id="8_yf76x"]
 [ext_resource type="Texture2D" uid="uid://dg0b07g2bojcs" path="res://pixel_designer/pixel_editor/icons/pencil_tool.png" id="8_yr31v"]
-[ext_resource type="Texture2D" uid="uid://d3xnwyghe0vyq" path="res://pixel_designer/icons/prev.png" id="9_0hyuv"]
-[ext_resource type="Texture2D" uid="uid://dase6jwtv3bav" path="res://pixel_designer/icons/play.png" id="9_tbj25"]
-[ext_resource type="Texture2D" uid="uid://c08ycpfn8rakq" path="res://pixel_designer/icons/pause.png" id="10_rl4u2"]
-[ext_resource type="Texture2D" uid="uid://cr46ne0gtakkc" path="res://pixel_designer/icons/stop.png" id="11_2hxbq"]
 [ext_resource type="Texture2D" uid="uid://qqe7ftanukss" path="res://pixel_designer/pixel_editor/icons/ellipse_tool.png" id="11_iyqe4"]
 [ext_resource type="Texture2D" uid="uid://ejj0ger0tr4r" path="res://pixel_designer/pixel_editor/icons/fill_tool.png" id="11_pgy1f"]
-[ext_resource type="Texture2D" uid="uid://dvh84sswlb6ci" path="res://pixel_designer/icons/next.png" id="13_oa1s4"]
 [ext_resource type="Texture2D" uid="uid://c2rnysynq2gro" path="res://pixel_designer/pixel_editor/icons/rect_tool.png" id="13_oh7e2"]
 [ext_resource type="Texture2D" uid="uid://b4qrph6qxt5x0" path="res://pixel_designer/pixel_editor/icons/selection_tool.png" id="15_5gvqa"]
 [ext_resource type="Texture2D" uid="uid://b5madi7b4303j" path="res://pixel_designer/pixel_editor/icons/move_tool.png" id="15_n3bnc"]
 [ext_resource type="Script" path="res://pixel_designer/pixel_editor/sprite.gd" id="15_n83hv"]
+[ext_resource type="Texture2D" uid="uid://dpgun368iywwh" path="res://pixel_designer/animation_editor/icons/options.png" id="20_xgetj"]
+[ext_resource type="Texture2D" uid="uid://d3xnwyghe0vyq" path="res://pixel_designer/animation_editor/icons/prev.png" id="21_pgr07"]
+[ext_resource type="Texture2D" uid="uid://dase6jwtv3bav" path="res://pixel_designer/animation_editor/icons/play.png" id="22_r07n6"]
+[ext_resource type="Texture2D" uid="uid://c08ycpfn8rakq" path="res://pixel_designer/animation_editor/icons/pause.png" id="23_shkgw"]
+[ext_resource type="Texture2D" uid="uid://cr46ne0gtakkc" path="res://pixel_designer/animation_editor/icons/stop.png" id="24_p72so"]
+[ext_resource type="Texture2D" uid="uid://dvh84sswlb6ci" path="res://pixel_designer/animation_editor/icons/next.png" id="25_830cb"]
+[ext_resource type="Texture2D" uid="uid://cobb5e0mbgg36" path="res://pixel_designer/animation_editor/icons/loop.png" id="26_gv1ah"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_biygr"]
 device = -1
@@ -129,16 +130,31 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="LayerPanel" type="PanelContainer" parent="HSplitContainer"]
+[node name="VSplitContainer2" type="VSplitContainer" parent="HSplitContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.4
 
-[node name="LayerTab" type="VBoxContainer" parent="HSplitContainer/LayerPanel"]
+[node name="LayerPanel" type="PanelContainer" parent="HSplitContainer/VSplitContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LayerTab" type="VBoxContainer" parent="HSplitContainer/VSplitContainer2/LayerPanel"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 0
 script = ExtResource("3_c4ae6")
+
+[node name="LayerPanel2" type="PanelContainer" parent="HSplitContainer/VSplitContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="MaterialTab" type="VBoxContainer" parent="HSplitContainer/VSplitContainer2/LayerPanel2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 0
+script = ExtResource("4_ib0cc")
 
 [node name="VSplitContainer" type="VSplitContainer" parent="HSplitContainer"]
 layout_mode = 2
@@ -313,7 +329,7 @@ handle_input_locally = false
 snap_2d_transforms_to_pixel = true
 snap_2d_vertices_to_pixel = true
 canvas_item_default_texture_filter = 0
-size = Vector2i(2, 2)
+size = Vector2i(776, 363)
 render_target_update_mode = 4
 
 [node name="Editor" type="Node2D" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/HBox/VBox/HBox/EditorPanel/EditorContainer/EditorViewport"]
@@ -355,7 +371,7 @@ layout_mode = 2
 [node name="AnimMenu" type="MenuButton" parent="HSplitContainer/VSplitContainer/AnimEditor/VBox/HBoxContainer"]
 layout_mode = 2
 focus_mode = 2
-icon = ExtResource("8_v2a75")
+icon = ExtResource("20_xgetj")
 item_count = 3
 popup/item_0/text = "New"
 popup/item_0/id = 0
@@ -383,36 +399,36 @@ theme_override_constants/separation = 4
 [node name="PrevButton" type="Button" parent="HSplitContainer/VSplitContainer/AnimEditor/VBox/HBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"ToolButton"
-icon = ExtResource("9_0hyuv")
+icon = ExtResource("21_pgr07")
 script = ExtResource("7_8j85j")
-normal_icon = ExtResource("9_0hyuv")
-pressed_icon = ExtResource("9_0hyuv")
+normal_icon = ExtResource("21_pgr07")
+pressed_icon = ExtResource("21_pgr07")
 
 [node name="PlayButton" type="Button" parent="HSplitContainer/VSplitContainer/AnimEditor/VBox/HBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"ToolButton"
 toggle_mode = true
-icon = ExtResource("9_tbj25")
+icon = ExtResource("22_r07n6")
 script = ExtResource("7_8j85j")
-normal_icon = ExtResource("9_tbj25")
-pressed_icon = ExtResource("10_rl4u2")
+normal_icon = ExtResource("22_r07n6")
+pressed_icon = ExtResource("23_shkgw")
 
 [node name="StopButton" type="Button" parent="HSplitContainer/VSplitContainer/AnimEditor/VBox/HBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"ToolButton"
-icon = ExtResource("11_2hxbq")
+icon = ExtResource("24_p72so")
 script = ExtResource("7_8j85j")
-normal_icon = ExtResource("11_2hxbq")
-pressed_icon = ExtResource("11_2hxbq")
+normal_icon = ExtResource("24_p72so")
+pressed_icon = ExtResource("24_p72so")
 
 [node name="NextButton" type="Button" parent="HSplitContainer/VSplitContainer/AnimEditor/VBox/HBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"ToolButton"
-icon = ExtResource("13_oa1s4")
+icon = ExtResource("25_830cb")
 script = ExtResource("7_8j85j")
-normal_icon = ExtResource("13_oa1s4")
-pressed_icon = ExtResource("13_oa1s4")
+normal_icon = ExtResource("25_830cb")
+pressed_icon = ExtResource("25_830cb")
 
 [node name="VSeparator4" type="VSeparator" parent="HSplitContainer/VSplitContainer/AnimEditor/VBox/HBoxContainer"]
 layout_mode = 2
@@ -441,10 +457,10 @@ layout_mode = 2
 tooltip_text = "Toggle Animation Loop"
 theme_type_variation = &"ToolButton"
 toggle_mode = true
-icon = ExtResource("8_gvyhm")
+icon = ExtResource("26_gv1ah")
 script = ExtResource("7_8j85j")
-normal_icon = ExtResource("8_gvyhm")
-pressed_icon = ExtResource("8_gvyhm")
+normal_icon = ExtResource("26_gv1ah")
+pressed_icon = ExtResource("26_gv1ah")
 
 [node name="VSeparator7" type="VSeparator" parent="HSplitContainer/VSplitContainer/AnimEditor/VBox/HBoxContainer"]
 layout_mode = 2
@@ -462,7 +478,6 @@ layout_mode = 2
 [node name="Preview" type="Control" parent="."]
 layout_mode = 2
 size_flags_horizontal = 8
-metadata/_edit_lock_ = true
 
 [node name="PreviewContainer" type="SubViewportContainer" parent="Preview"]
 unique_name_in_owner = true
@@ -472,7 +487,6 @@ offset_top = 8.0
 offset_right = 24.0
 offset_bottom = 24.0
 size_flags_horizontal = 4
-metadata/_edit_lock_ = true
 
 [node name="PreviewViewport" type="SubViewport" parent="Preview/PreviewContainer"]
 unique_name_in_owner = true

@@ -136,8 +136,7 @@ class TabButton:
     
     
     func _init(_name: String, group: ButtonGroup):
-        name = _name.capitalize()
-        text = name
+        text = _name
         theme_type_variation = "TabButton"
         toggle_mode = true
         button_group = group

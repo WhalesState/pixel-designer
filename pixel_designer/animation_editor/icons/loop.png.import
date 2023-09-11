@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c08ycpfn8rakq"
-path="res://.godot/imported/pause.png-9f3fd0b71084f661342a5e9f9a9d466a.ctex"
+uid="uid://cobb5e0mbgg36"
+path="res://.godot/imported/loop.png-d66dc449c057a401c09fe7f282256135.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://pixel_designer/icons/pause.png"
-dest_files=["res://.godot/imported/pause.png-9f3fd0b71084f661342a5e9f9a9d466a.ctex"]
+source_file="res://pixel_designer/animation_editor/icons/loop.png"
+dest_files=["res://.godot/imported/loop.png-d66dc449c057a401c09fe7f282256135.ctex"]
 
 [params]
 

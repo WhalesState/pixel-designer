@@ -1,0 +1,28 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b3grbf5xg64fx"]
+
+[ext_resource type="Shader" path="res://constants/material_button.gdshader" id="1_b32au"]
+
+[resource]
+resource_local_to_scene = true
+resource_name = "Material Button Material"
+shader = ExtResource("1_b32au")
+shader_parameter/id_0 = Color(0, 0, 0, 1)
+shader_parameter/id_1 = Color(0.2, 0.2, 0.2, 1)
+shader_parameter/id_2 = Color(0, 0, 1, 1)
+shader_parameter/id_3 = Color(1, 0, 0, 1)
+shader_parameter/id_4 = Color(0, 1, 0, 1)
+shader_parameter/id_5 = Color(1, 0, 1, 1)
+shader_parameter/id_6 = Color(1, 1, 0, 1)
+shader_parameter/id_7 = Color(0, 1, 1, 1)
+shader_parameter/id_8 = Color(1, 1, 1, 1)
+shader_parameter/id_9 = Color(0.4, 0.4, 0.4, 1)
+shader_parameter/col_0 = Color(0, 0, 0, 1)
+shader_parameter/col_1 = Color(0.2, 0.2, 0.2, 1)
+shader_parameter/col_2 = Color(0, 0, 1, 1)
+shader_parameter/col_3 = Color(1, 0, 0, 1)
+shader_parameter/col_4 = Color(0, 1, 0, 1)
+shader_parameter/col_5 = Color(1, 0, 1, 1)
+shader_parameter/col_6 = Color(1, 1, 0, 1)
+shader_parameter/col_7 = Color(0, 1, 1, 1)
+shader_parameter/col_8 = Color(1, 1, 1, 1)
+shader_parameter/col_9 = Color(0.4, 0.4, 0.4, 1)

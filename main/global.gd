@@ -78,7 +78,6 @@ static func get_default_character() -> Dictionary:
         "version": cfg.get_value("sprite", "version"),
         "size": cfg.get_value("sprite", "size"),
         "animations": cfg.get_value("sprite", "animations"),
-        "material_ids": cfg.get_value("sprite", "material_ids"),
         "materials": cfg.get_value("sprite", "materials"),
         "layers": [],
         "preview": null,
@@ -96,7 +95,7 @@ static func get_default_character() -> Dictionary:
             var path : String = "%s/%s" % [dir.get_current_dir(), cur_file]
             dir.get_current_dir()
             var tex = ResourceLoader.load(path)
-            var key_name: String = cur_file.get_basename().split("_")[0]
+            var key_name: String = cur_file.get_basename().split("_")[0].capitalize()
             if not dic_layers.has(key_name):
                 dic_layers[key_name] = [[], z_indices[z_ind]]
                 z_ind += 1
@@ -109,23 +108,24 @@ static func get_default_character() -> Dictionary:
     # Preview
     const colors = [
         Color("000000ff"), # 0
-        Color("ffffffff"), # 1
-        Color("9c6259ff"), # 2
-        Color("d78c81ff"), # 3
-        Color("191919ff"), # 4
-        Color("3a3a3aff"), # 5
-        Color("585858ff"), # 6
+        Color("9c6259ff"), # 1
+        Color("d78c81ff"), # 2
+        Color("191919ff"), # 3
+        Color("000000ff"), # 4
+        Color("585858ff"), # 5
+        Color("3a3a3aff"), # 6
         Color("909090ff"), # 7
-        Color("232323ff"), # 8
-        Color("342f2fff"), # 9
-        Color("443e3eff"), # 10
+        Color("000000ff"), # 8
+        Color("443e3eff"), # 9
+        Color("342f2fff"), # 10
         Color("232323ff"), # 11
-        Color("353535ff"), # 12
-        Color("6a6a6aff"), # 13
-        Color("5f5f5fff"), # 14
-        Color("949494ff"), # 15
-        Color("007b68ff"), # 16
-        Color("ba0016ff"), # 17
+        Color("232323ff"), # 12
+        Color("353535ff"), # 13
+        Color("6a6a6aff"), # 14
+        Color("5f5f5fff"), # 15
+        Color("949494ff"), # 16
+        Color("007b68ff"), # 17
+        Color("ba0016ff"), # 18
     ]
     # Preview images
     var preview_images := [0, 0, 0, 0]
