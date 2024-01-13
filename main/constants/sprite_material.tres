@@ -1,15 +1,10 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bqkwgd0y17trn"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://c3an32etudwf8"]
 
-[ext_resource type="Shader" path="res://constants/cell_button.gdshader" id="1_qhaym"]
+[ext_resource type="Shader" path="res://main/constants/sprite.gdshader" id="1_vid4u"]
 
 [resource]
-resource_name = "LayerButtonMaterial"
-shader = ExtResource("1_qhaym")
-shader_parameter/rect_size = Vector2(569, 612)
-shader_parameter/frame_size = Vector2(24, 24)
-shader_parameter/h_frames = 1.0
-shader_parameter/v_frames = 1.0
-shader_parameter/frame = 0.0
+resource_name = "Sprite Material"
+shader = ExtResource("1_vid4u")
 shader_parameter/id_0 = Color(0, 0, 0, 1)
 shader_parameter/id_1 = Color(1, 0, 0, 1)
 shader_parameter/id_2 = Color(0, 1, 0, 1)

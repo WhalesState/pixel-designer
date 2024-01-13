@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qqe7ftanukss"
-path="res://.godot/imported/ellipse_tool.png-8eba4d754a0720e031e3988601a57e19.ctex"
+uid="uid://dase6jwtv3bav"
+path="res://.godot/imported/play.png-58b590866caa3ff5b83de83f1c75edab.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://pixel_designer/pixel_editor/icons/ellipse_tool.png"
-dest_files=["res://.godot/imported/ellipse_tool.png-8eba4d754a0720e031e3988601a57e19.ctex"]
+source_file="res://pixel_designer/icons/play.png"
+dest_files=["res://.godot/imported/play.png-58b590866caa3ff5b83de83f1c75edab.ctex"]
 
 [params]
 

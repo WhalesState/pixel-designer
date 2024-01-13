@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://doagsndjauuha"
-path="res://.godot/imported/line_tool.png-beb6625346fc8a5ba7b8361be3d160a3.ctex"
+uid="uid://b5madi7b4303j"
+path="res://.godot/imported/move_tool.png-c004c7e643bd4e4c3880869fb78808b9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://pixel_designer/pixel_editor/icons/line_tool.png"
-dest_files=["res://.godot/imported/line_tool.png-beb6625346fc8a5ba7b8361be3d160a3.ctex"]
+source_file="res://pixel_editor/icons/move_tool.png"
+dest_files=["res://.godot/imported/move_tool.png-c004c7e643bd4e4c3880869fb78808b9.ctex"]
 
 [params]
 

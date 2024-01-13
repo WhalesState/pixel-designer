@@ -1,8 +1,6 @@
 @tool
 extends VBoxContainer
 
-const GLOBAL = preload("./global.gd")
-
 var sprite := {}:
     set(value):
         sprite = value
@@ -11,6 +9,7 @@ var sprite := {}:
 @onready var pixel_editor: VBoxContainer = get_node("%PixelEditor")
 @onready var layers_tab: TabBox = get_node("%LayerTab")
 @onready var materials_tab: TabBox = get_node("%MaterialTab")
+@onready var colors_tab: TabBox = get_node("%ColorTab")
 @onready var anim_options: OptionButton = get_node("%AnimOptions")
 @onready var anim_editor: PanelContainer = get_node("%AnimEditor")
 
@@ -26,17 +25,11 @@ func _ready():
     pixel_editor.image_edited.connect(_on_image_edited)
     layers_tab.tab_moved.connect(_on_layer_tab_moved)
     materials_tab.tab_moved.connect(_on_material_tab_moved)
+    colors_tab.color_button_pressed.connect(_on_color_button_pressed)
     # var img := Image.create(32, 1, false, Image.FORMAT_RGBA8)
-    # for i in Constants.SHADER_COLORS.size():
-    #     img.set_pixel(i, 0, Constants.SHADER_COLORS[i])
+    # for i in Global.SHADER_COLORS.size():
+    #     img.set_pixel(i, 0, Global.SHADER_COLORS[i])
     # img.save_png("res://test.png")
-
-
-func _on_anim_options_item_selected(ind: int):
-    var cur_anim = anim_options.get_item_text(ind)
-    get_node("%AnimLoop").button_pressed = sprite["animations"][cur_anim][1]
-    anim_editor.cur_anim = sprite["animations"][anim_options.get_item_text(ind)]
-    anim_editor.frame = 0
 
 
 func update_sprite():
@@ -54,17 +47,17 @@ func update_layers():
     layers_tab.clear()
     layers_tab.sprites = {}
     for layer in sprite["layers"]:
-        var spr := GLOBAL.Sprite.new()
+        var spr := Classes.Sprite.new()
         var ind = layers_tab.add_layer(layer[0], spr)
         var container = layers_tab.get_container(ind)
         var button_group := ButtonGroup.new()
         for img in layer[1]:
-            var cell_button := GLOBAL.CellButton.new(sprite["size"], img)
+            var cell_button := Classes.CellButton.new(sprite["size"], img)
             cell_button.button_group = button_group
             cell_button.cell_pressed.connect(_on_cell_button_pressed.bind(layer[0]))
             cell_button.cell_moved.connect(_on_cell_moved)
             container.add_child(cell_button)
-        var cur_button: GLOBAL.CellButton = container.get_child(0)
+        var cur_button: Classes.CellButton = container.get_child(0)
         cur_button.set_pressed_no_signal(true)
         # Sprite
         spr.show_behind_parent = true
@@ -86,14 +79,15 @@ func update_materials():
         var container = materials_tab.get_container(ind)
         var material_group := ButtonGroup.new()
         for arr in mat[2][0]:
-            var mat_button := GLOBAL.MaterialButton.new(arr)
+            var mat_button := Classes.MaterialButton.new(arr)
             mat_button.button_group = material_group
             mat_button.material_pressed.connect(_on_material_button_pressed)
             mat_button.material_moved.connect(_on_material_moved)
             container.add_child(mat_button)
-        var cur_button: GLOBAL.MaterialButton = container.get_child(0)
+        var cur_button: Classes.MaterialButton = container.get_child(0)
         cur_button.button_pressed = true
     materials_tab.tab_changed.connect(_on_material_tab_changed)
+    materials_tab.tab = 0
 
 
 func update_animations():
@@ -117,7 +111,7 @@ func _on_material_tab_moved(from: int, to: int):
 
 func _on_cell_moved(from: int, to: int):
     var container: HFlowContainer = layers_tab.get_container()
-    var layer: GLOBAL.CellButton = container.get_child(from)
+    var layer: Classes.CellButton = container.get_child(from)
     container.move_child(layer, to)
     var cur_layer: Image = sprite["layers"][layers_tab.tab][1].pop_at(from)
     sprite["layers"][layers_tab.tab][1].insert(to, cur_layer)
@@ -125,7 +119,7 @@ func _on_cell_moved(from: int, to: int):
 
 func _on_material_moved(from: int, to: int):
     var container: HFlowContainer = materials_tab.get_container()
-    var material_button: GLOBAL.MaterialButton = container.get_child(from)
+    var material_button: Classes.MaterialButton = container.get_child(from)
     container.move_child(material_button, to)
     var cur_mat: Array = sprite["materials"][materials_tab.tab][2][materials_tab.cur_palette].pop_at(from)
     sprite["materials"][materials_tab.tab][2][materials_tab.cur_palette].insert(to, cur_mat)
@@ -153,9 +147,31 @@ func _on_cell_button_pressed(texture: ImageTexture, layer_name: String):
 func _on_material_button_pressed(material_index: int, material_colors: Array):
     for i in material_colors.size():
         for j in material_colors[i].size():
-            Constants.SPRITE_MATERIAL.set_shader_parameter("col_%s" % sprite["materials"][material_index][1][i][j], Color(material_colors[i][j]))
-            Constants.CELL_MATERIAL.set_shader_parameter("col_%s" % sprite["materials"][material_index][1][i][j], Color(material_colors[i][j]))
+            Global.SPRITE_MATERIAL.set_shader_parameter("col_%s" % sprite["materials"][material_index][1][i][j], Color(material_colors[i][j]))
+            Global.CELL_MATERIAL.set_shader_parameter("col_%s" % sprite["materials"][material_index][1][i][j], Color(material_colors[i][j]))
+        for j in range (colors_tab.get_container(i).get_child_count()):
+            var col_button: MiniColorButton = colors_tab.get_container(i).get_child(j)
+            col_button.size_flags_horizontal = SIZE_EXPAND_FILL
+            if material_colors[i].size() - 1 >= j:
+                col_button.disabled = false
+                col_button.color = material_colors[i][j]
+            else:
+                col_button.disabled = true
+                # col_button.size_flags_horizontal = SIZE_FILL
+            # print(col_button)
+    prints("material_colors :", material_colors, "material_index :", material_index)
+
+
+func _on_color_button_pressed(col: Color):
+    print(col)
 
 
 func _on_image_edited(img: Image):
     layers_tab.get_container().get_child(layers_tab.cur_cell).sprite.texture = ImageTexture.create_from_image(img)
+
+
+func _on_anim_options_item_selected(ind: int):
+    var cur_anim = anim_options.get_item_text(ind)
+    get_node("%AnimLoop").button_pressed = sprite["animations"][cur_anim][1]
+    anim_editor.cur_anim = sprite["animations"][anim_options.get_item_text(ind)]
+    anim_editor.frame = 0

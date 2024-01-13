@@ -1,17 +1,17 @@
 @tool
 extends TabContainer
 
-const GLOBAL = preload("./global.gd")
-const CLASS = preload("./classes.gd")
+# const Global = preload("./global.gd")
+#const CLASS = preload("./classes.gd")
 
 
 func _init():
-    if GLOBAL.is_first_run():
-        var err = GLOBAL.save_sprite(GLOBAL.get_default_character())
+    if Global.is_first_run():
+        var err = Global.save_sprite(Global.get_default_character())
         print_debug("Save Default Character sprite: %s" % (err == OK))
     # Force update the defualt character on start
     # TODO: Remove this.
-    var test_err = GLOBAL.save_sprite(GLOBAL.get_default_character())
+    var test_err = Global.save_sprite(Global.get_default_character())
     print_debug("Save Default Character sprite: %s" % (test_err == OK))
 
 
@@ -20,7 +20,7 @@ func _ready():
     get_tree().get_root().min_size = Vector2i(640, 480)
     get_tree().get_root().close_requested.connect(_on_close_requested)
     # Tool
-    $"%VersionButton".text = "Pixel Designer v%s" % GLOBAL.VERSION
+    $"%VersionButton".text = "Pixel Designer v%s" % Global.VERSION
     reload_sprites()
 
 
@@ -29,9 +29,9 @@ func reload_sprites():
     for spr in sprites_flow.get_children():
         sprites_flow.remove_child(spr)
         spr.queue_free()
-    var sprites = GLOBAL.get_saved_sprites()
+    var sprites = Global.get_saved_sprites()
     for spr in sprites.values():
-        var new_spr = CLASS.SpriteButton.new(spr, GLOBAL.SPRITES_GROUP)
+        var new_spr = Classes.SpriteButton.new(spr, Global.SPRITES_GROUP)
         new_spr.tooltip_text = "%s %s" % [spr["name"], spr["size"]]
         new_spr.edit_sprite.connect(_on_edit_sprite)
         new_spr.sprite_selected.connect(_on_sprite_selected)

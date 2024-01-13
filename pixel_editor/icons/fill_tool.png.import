@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c08ycpfn8rakq"
-path="res://.godot/imported/pause.png-4c625091ca23d4004831396d5705d317.ctex"
+uid="uid://ejj0ger0tr4r"
+path="res://.godot/imported/fill_tool.png-e4e4d63e4c1eb3f6dfbcbd1922b7d268.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://pixel_designer/animation_editor/icons/pause.png"
-dest_files=["res://.godot/imported/pause.png-4c625091ca23d4004831396d5705d317.ctex"]
+source_file="res://pixel_editor/icons/fill_tool.png"
+dest_files=["res://.godot/imported/fill_tool.png-e4e4d63e4c1eb3f6dfbcbd1922b7d268.ctex"]
 
 [params]
 

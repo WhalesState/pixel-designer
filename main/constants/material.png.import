@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ds41sw3aqge7q"
-path="res://.godot/imported/focus.png-1c3b91cdfe00bb937be5a728e9c19e93.ctex"
+uid="uid://51wem8d20r2f"
+path="res://.godot/imported/material.png-40edb06c8894f2fd73b0532d8281efdd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://pixel_designer/pixel_editor/icons/focus.png"
-dest_files=["res://.godot/imported/focus.png-1c3b91cdfe00bb937be5a728e9c19e93.ctex"]
+source_file="res://main/constants/material.png"
+dest_files=["res://.godot/imported/material.png-40edb06c8894f2fd73b0532d8281efdd.ctex"]
 
 [params]
 

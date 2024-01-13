@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ejj0ger0tr4r"
-path="res://.godot/imported/fill_tool.png-8be6aa9d02846f5b4dc020fcf0c5bdf4.ctex"
+uid="uid://c2rnysynq2gro"
+path="res://.godot/imported/rect_tool.png-456a6d05b6714608ef07bb0d3432777d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://pixel_designer/pixel_editor/icons/fill_tool.png"
-dest_files=["res://.godot/imported/fill_tool.png-8be6aa9d02846f5b4dc020fcf0c5bdf4.ctex"]
+source_file="res://pixel_editor/icons/rect_tool.png"
+dest_files=["res://.godot/imported/rect_tool.png-456a6d05b6714608ef07bb0d3432777d.ctex"]
 
 [params]
 

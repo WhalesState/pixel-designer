@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b5madi7b4303j"
-path="res://.godot/imported/move_tool.png-41fa958528823a47ba2969d1e5c17e04.ctex"
+uid="uid://788gby7208yc"
+path="res://.godot/imported/checker.png-922f5952b1a7f7c3678070e35580a8f6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://pixel_designer/pixel_editor/icons/move_tool.png"
-dest_files=["res://.godot/imported/move_tool.png-41fa958528823a47ba2969d1e5c17e04.ctex"]
+source_file="res://pixel_editor/icons/checker.png"
+dest_files=["res://.godot/imported/checker.png-922f5952b1a7f7c3678070e35580a8f6.ctex"]
 
 [params]
 

@@ -63,7 +63,7 @@ func _init():
     add_child(tab_container)
 
 
-func add_tab(tab_name: String, align_center := true) -> int:
+func add_tab(tab_name: String, vertical_scroll := true, show_scroll := true, align_center := true, flow_container := true) -> int:
     var button := TabButton.new(tab_name, tab_group)
     tab_bar.add_child(button)
     button.tab_moved.connect(_on_tab_moved)
@@ -71,7 +71,14 @@ func add_tab(tab_name: String, align_center := true) -> int:
     var scroll := ScrollContainer.new()
     scroll.anchors_preset = PRESET_FULL_RECT
     scroll.follow_focus = true
-    scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+    if vertical_scroll:
+        scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+        if not show_scroll:
+            scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+    else:
+        scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+        if not show_scroll:
+            scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
     scroll.size_flags_horizontal = SIZE_EXPAND_FILL
     scroll.size_flags_vertical = SIZE_EXPAND_FILL
     tab_container.add_child(scroll)
@@ -81,10 +88,15 @@ func add_tab(tab_name: String, align_center := true) -> int:
     margin.size_flags_horizontal = SIZE_EXPAND_FILL
     margin.size_flags_vertical = SIZE_EXPAND_FILL
     scroll.add_child(margin)
-    var container := HFlowContainer.new()
-    container.alignment = FlowContainer.ALIGNMENT_CENTER if align_center else FlowContainer.ALIGNMENT_BEGIN
-    container.add_theme_constant_override("h_separation", 8)
-    container.add_theme_constant_override("v_separation", 8)
+    var container
+    if flow_container:
+        container = HFlowContainer.new()
+        container.alignment = FlowContainer.ALIGNMENT_CENTER if align_center else FlowContainer.ALIGNMENT_BEGIN
+        container.add_theme_constant_override("h_separation", 8)
+        container.add_theme_constant_override("v_separation", 8)
+    else:
+        container = HBoxContainer.new()
+        # container.add_theme_constant_override("separation", 8)
     margin.add_child(container)
     if tab_bar.get_child_count() == 1:
         tab = 0
@@ -107,6 +119,12 @@ func clear() -> void:
         tab_bar.remove_child(child)
         child.queue_free()
     tab = -1
+
+## Return the Flow/HBox container.
+func get_container(ind := -1):
+    if ind == -1:
+        ind = tab
+    return tab_container.get_child(ind).get_child(0).get_child(0)
 
 
 func _on_tab_button_toggled(ind: int) -> void:

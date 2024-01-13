@@ -13,7 +13,6 @@ func _ready():
         visible = visible_in_editor
     else:
         visible = false
-#	get_viewport().size_changed.connect(_on_vp_resized)
 
 
 func _on_close_requested():
@@ -26,11 +25,3 @@ func _input(ev: InputEvent):
     if ev.is_action_pressed("ui_cancel"):
         hide()
         get_viewport().set_input_as_handled()
-
-
-#func _on_vp_resized():
-#	var root
-#	if not Engine.is_editor_hint():
-#		root = get_tree().get_root()
-#	if root:
-#		position = (root.get_viewport().size - size) / 2

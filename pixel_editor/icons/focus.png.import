@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dg0b07g2bojcs"
-path="res://.godot/imported/pencil_tool.png-54ccc07076e51a2e95d0c6c65dc3854e.ctex"
+uid="uid://ds41sw3aqge7q"
+path="res://.godot/imported/focus.png-49a95da8df4e6dd1a9e93a4045fb579a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://pixel_designer/pixel_editor/icons/pencil_tool.png"
-dest_files=["res://.godot/imported/pencil_tool.png-54ccc07076e51a2e95d0c6c65dc3854e.ctex"]
+source_file="res://pixel_editor/icons/focus.png"
+dest_files=["res://.godot/imported/focus.png-49a95da8df4e6dd1a9e93a4045fb579a.ctex"]
 
 [params]
 

@@ -3,8 +3,10 @@
 class_name MiniColorPicker
 extends MarginContainer
 
+## Emits when color changes.
 signal color_changed(col: Color)
 
+## picker color.
 @export var color := Color.WHITE:
     set(value):
         color = value
@@ -14,80 +16,63 @@ signal color_changed(col: Color)
             hex_edit.text = value.to_html(true)
             emit_signal("color_changed", value)
 
+## Picker wheel.
 var wheel
+## Color rect button.
 var main_color_rect
+## Hex line edit.
 var hex_edit
+## Sliders popup window.
 var sliders_window
 
 
 func _init(col := Color.WHITE):
-    for m in ["left", "right", "top", "bottom"]:
+    for m in ["left", "right", "bottom"]:
         add_theme_constant_override("margin_%s" % m, 4)
-    custom_minimum_size = Vector2i(192, 168)
+    custom_minimum_size = Vector2i(128, 128)
+    # Main VBox.
     var vbox := VBoxContainer.new()
+    vbox.add_theme_constant_override("separation", 4)
     add_child(vbox)
+    # Color wheel.
     color = col
     wheel = ColorWheel.new(col)
     vbox.add_child(wheel)
+    # Color HBox.
     var color_box = HBoxContainer.new()
-    add_theme_constant_override("separation", 2)
     vbox.add_child(color_box)
+    # Hex edit.
+    hex_edit = HexEdit.new(col)
+    hex_edit.text_submitted.connect(_on_hex_text_submitted)
+    color_box.add_child(hex_edit, true)
+    # Color panel.
     var panel_checker = PanelChecker.new()
+    panel_checker.custom_minimum_size = Vector2i(32, 0)
     color_box.add_child(panel_checker, true)
     main_color_rect = BColor.new(col)
     main_color_rect.pressed.connect(_on_main_color_rect_pressed)
     panel_checker.add_child(main_color_rect, true)
+    # Wheel switch button.
     var switch_wheel_button := ToolButton.new()
     switch_wheel_button.icon = load("res://addons/gui/mini_color_picker/change.png")
     switch_wheel_button.flat = true
     switch_wheel_button.tooltip_text = "Change wheel shape"
-    switch_wheel_button.pressed.connect(
-            Callable(wheel, "_on_switch_wheel_pressed")
-    )
+    switch_wheel_button.pressed.connect(wheel._on_switch_wheel_pressed)
     color_box.add_child(switch_wheel_button, true)
     wheel.color_changed.connect(_on_color_changed)
-    var hex_box := HBoxContainer.new()
-    hex_box.add_theme_constant_override("separation", 0)
-    vbox.add_child(hex_box)
-    hex_edit = HexEdit.new(col)
-    hex_edit.text_submitted.connect(_on_hex_text_submitted)
-    hex_box.add_child(hex_edit, true)
-    var minus_button = ToolButton.new()
-    minus_button.icon = load("res://addons/gui/mini_color_picker/subtract.png")
-    minus_button.tooltip_text = "Decrease wheel height"
-    minus_button.pressed.connect(
-            Callable(wheel, "_on_resize_wheel_pressed").bind(-1)
-    )
-    hex_box.add_child(minus_button, true)
-    var plus_button = ToolButton.new()
-    plus_button.icon = load("res://addons/gui/mini_color_picker/add.png")
-    plus_button.tooltip_text = "Increase wheel height"
-    plus_button.pressed.connect(
-            Callable(wheel, "_on_resize_wheel_pressed").bind(1)
-    )
-    hex_box.add_child(plus_button, true)
+    # Sliders Popup.
     sliders_window = SlidersWindow.new()
     sliders_window.about_to_popup.connect(_on_sliders_about_to_popup)
     vbox.add_child(sliders_window)
     sliders_window.sliders.color_changed.connect(_on_sliders_color_changed)
 
 
-func _ready():
-    if Engine.is_editor_hint():
-        if owner:
-            owner.get_viewport().size_changed.connect(
-                    Callable(sliders_window, "_on_vp_resized")
-            )
-    else:
-        get_tree().get_root().get_viewport().size_changed.connect(
-                Callable(sliders_window, "_on_vp_resized")
-        )
-
-
+## Color Changed.
 func _on_color_changed(col: Color):
     color = col
 
 
+## Hex line edit text submitted.
 func _on_hex_text_submitted(new_text: String):
     if not new_text.is_valid_html_color():
         hex_edit.text = wheel.color.to_html(true)
@@ -98,26 +83,31 @@ func _on_hex_text_submitted(new_text: String):
     main_color_rect.update_color(col)
 
 
+## Color rect pressed.
 func _on_main_color_rect_pressed():
-    sliders_window.popup_centered()
+    if sliders_window.last_pos.x > 0 and sliders_window.last_pos.y > 0:
+        sliders_window.popup(Rect2i(sliders_window.last_pos, Vector2i(320, 0)))
+    else:
+        sliders_window.popup_centered_clamped(Vector2i(320, 0))
 
 
+## Sliders popup about to popup.
 func _on_sliders_about_to_popup():
     sliders_window.sliders.color = wheel.color
     sliders_window.panel_stylebox.bg_color = wheel.color
     sliders_window.switch_button.grab_focus()
 
 
+## Sliders color changed.
 func _on_sliders_color_changed(col: Color):
     sliders_window.panel_stylebox.bg_color = col
     wheel.color = col
     wheel.emit_signal("color_changed", col)
 
 
+## Color wheel class.
 class ColorWheel:
     extends ColorPicker
-    
-    var wheel_size = 0
     
     func _init(col: Color):
         color = col
@@ -132,17 +122,12 @@ class ColorWheel:
         add_theme_constant_override("sv_width", 68)
         add_theme_constant_override("sv_height", 72)
         add_theme_constant_override("h_width", 24)
+        size_flags_vertical = SIZE_EXPAND_FILL
+        get_child(0, true).size_flags_vertical = SIZE_EXPAND_FILL
+        get_child(0, true).get_child(0).size_flags_vertical = SIZE_EXPAND_FILL
+        get_child(0, true).get_child(0).get_child(0).size_flags_vertical = SIZE_EXPAND_FILL
     
-    
-    func _on_resize_wheel_pressed(i: int):
-        var arr := [72, 128, 192]
-        var new_size = clampi(wheel_size + i, 0, 2)
-        if new_size == wheel_size:
-            return
-        wheel_size = new_size
-        add_theme_constant_override("sv_height", arr[wheel_size])
-    
-    
+    ## Switch color wheel shape.
     func _on_switch_wheel_pressed():
         var cur_wheel = int(picker_shape)
         cur_wheel = wrapi(cur_wheel + 1, 0, 4)
@@ -157,44 +142,40 @@ class ColorWheel:
                 picker_shape = SHAPE_OKHSL_CIRCLE
 
 
+## Panel checker class.
 class PanelChecker:
     extends PanelContainer
-
+    
+    ## Checker shader.
     var checker_shader = preload("res://addons/gui/shaders/checker.gdshader")
-
-    var draw_outlines := true:
-        set(v):
-            draw_outlines = v
-            queue_redraw()
 
 
     func _ready():
         material = ShaderMaterial.new()
         material.shader = checker_shader
+        material.set_shader_parameter("size", Vector2i(8, 8))
         resized.connect(_on_resized)
         update_size()
         size_flags_horizontal = SIZE_EXPAND_FILL
         var style = StyleBoxFlat.new()
         add_theme_stylebox_override("panel", style)
     
-    
+    ## on node resized.
     func _on_resized():
         update_size()
     
-    
+    ## Update checker texture size.
     func update_size():
         material.set_shader_parameter("texture_size", size)
-    
-    
-    func _draw():
-        if draw_outlines:
-            draw_rect(Rect2i(0, 0, floor(size.x), floor(size.y)), Color.WHITE, false, -1)
 
 
+## Color button class.
 class BColor:
     extends ToolButton
-
+    
+    ## Normal stylebox.
     var normal_style = StyleBoxFlat.new()
+    ## Focus stylebox.
     var focus_style = StyleBoxFlat.new()
 
 
@@ -209,11 +190,12 @@ class BColor:
         focus_style.anti_aliasing = false
         add_theme_stylebox_override("focus", focus_style)
     
-    
+    ## Update button's color.
     func update_color(col: Color):
         normal_style.bg_color = col
 
 
+## Hex line edit.
 class HexEdit:
     extends LineEdit
     
@@ -230,12 +212,18 @@ class HexEdit:
         size_flags_horizontal = SIZE_EXPAND_FILL
 
 
+## Sliders popup window.
 class SlidersWindow:
     extends Window
     
-    var sliders
-    var panel_stylebox
-    var switch_button
+    ## Color sliders.
+    var sliders: ColorSliders
+    ## Panel stylebox.
+    var panel_stylebox: StyleBoxFlat
+    ## Sliders switch button.
+    var switch_button: ToolButton
+    ## Popup window last position.
+    var last_pos := -Vector2i.ONE
     
     
     func _init():
@@ -268,7 +256,7 @@ class SlidersWindow:
         panel_checker.add_child(color_panel, true)
         switch_button = ToolButton.new()
         switch_button.icon = load("res://addons/gui/mini_color_picker/change.png")
-        switch_button.pressed.connect(Callable(sliders, "_on_switch_pressed"))
+        switch_button.pressed.connect(sliders._on_switch_pressed)
         sliders_hbox.add_child(switch_button, true)
     
     
@@ -276,19 +264,18 @@ class SlidersWindow:
         if not visible:
             return
         if ev.is_action_pressed("ui_cancel"):
+            last_pos = position
             hide()
             get_viewport().set_input_as_handled()
     
     
+    ## On popup close request.
     func _on_close_requested():
+        last_pos = position
         hide()
-    
-    
-    func _on_vp_resized():
-        if not Engine.is_editor_hint():
-            position = (get_viewport().size - size) / 2
 
 
+## Color picker sliders.
 class ColorSliders:
     extends ColorPicker
     
@@ -307,7 +294,8 @@ class ColorSliders:
         add_theme_constant_override("label_width", 20)
     
     
+    ## On switch slider button pressed.
     func _on_switch_pressed():
-        var mode := [MODE_HSV, MODE_RGB, MODE_OKHSL, MODE_RAW]
-        var cur = wrapi(mode.find(color_mode) + 1, 0, 4)
+        var mode := [MODE_HSV, MODE_RGB, MODE_OKHSL]
+        var cur = wrapi(mode.find(color_mode) + 1, 0, mode.size())
         color_mode = mode[cur]

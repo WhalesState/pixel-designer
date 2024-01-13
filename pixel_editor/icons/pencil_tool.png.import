@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dase6jwtv3bav"
-path="res://.godot/imported/play.png-3aea2f7f0e7c1abb27f2b972140df0a7.ctex"
+uid="uid://dg0b07g2bojcs"
+path="res://.godot/imported/pencil_tool.png-ce96e8417c0fd90eb550022472f525e0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://pixel_designer/animation_editor/icons/play.png"
-dest_files=["res://.godot/imported/play.png-3aea2f7f0e7c1abb27f2b972140df0a7.ctex"]
+source_file="res://pixel_editor/icons/pencil_tool.png"
+dest_files=["res://.godot/imported/pencil_tool.png-ce96e8417c0fd90eb550022472f525e0.ctex"]
 
 [params]
 

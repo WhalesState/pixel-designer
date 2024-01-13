@@ -11,14 +11,14 @@ config_version=5
 [application]
 
 config/name="pixel-designer"
-run/main_scene="res://main/main.tscn"
+run/main_scene="res://main.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 boot_splash/bg_color=Color(0.121569, 0.113725, 0.145098, 1)
 config/icon="res://icon.svg"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gui/plugin.cfg")
+enabled=PackedStringArray("res://addons/gui/plugin.cfg", "res://addons/p_tools/plugin.cfg")
 
 [gui]
 

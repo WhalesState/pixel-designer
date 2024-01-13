@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://51wem8d20r2f"
-path="res://.godot/imported/material.png-978effa91f7f560a729172dc4cbbc4f7.ctex"
+uid="uid://cm787y2pefa55"
+path="res://.godot/imported/eraser_tool.png-776037873880963749a9d1abc3f189d5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://constants/material.png"
-dest_files=["res://.godot/imported/material.png-978effa91f7f560a729172dc4cbbc4f7.ctex"]
+source_file="res://pixel_editor/icons/eraser_tool.png"
+dest_files=["res://.godot/imported/eraser_tool.png-776037873880963749a9d1abc3f189d5.ctex"]
 
 [params]
 

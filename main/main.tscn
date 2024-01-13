@@ -1,14 +1,21 @@
-[gd_scene load_steps=5 format=3 uid="uid://dpnyxb6bodv5l"]
+[gd_scene load_steps=6 format=3 uid="uid://dpnyxb6bodv5l"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_7ngk0"]
 [ext_resource type="Theme" uid="uid://dmgt1badak5wl" path="res://theme/default_theme/default_theme.tres" id="1_pvdys"]
 [ext_resource type="PackedScene" uid="uid://dp5go8yw6rfmn" path="res://pixel_designer/pixel_designer.tscn" id="4_2ij11"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xxtn1"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kmg3w"]
 content_margin_left = 4.0
 content_margin_top = 4.0
 content_margin_right = 4.0
 content_margin_bottom = 4.0
+bg_color = Color(0.105882, 0.105882, 0.109804, 1)
 
 [node name="Main" type="TabContainer"]
 anchors_preset = 15
@@ -24,6 +31,7 @@ metadata/_edit_lock_ = true
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kmg3w")
 
 [node name="MainBox" type="VBoxContainer" parent="PanelContainer"]
 layout_mode = 2

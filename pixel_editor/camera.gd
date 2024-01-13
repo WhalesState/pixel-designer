@@ -29,6 +29,8 @@ func _input(ev: InputEvent):
 
 
 func cam_zoom(value: int):
+    if (zoom.x >= 10 and value > 0) or (zoom.x > 10 and value < 0):
+        value *= 10
     var old_zoom := zoom.x
     var new_zoom := old_zoom + value
     new_zoom = clamp(new_zoom, 1, 64)

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cr46ne0gtakkc"
-path="res://.godot/imported/stop.png-4b6c125d684ce76f2e83348e7fa84e9d.ctex"
+uid="uid://bgovh7of6lbyj"
+path="res://.godot/imported/grid.png-ab64e5710b13f78253d024ac028821a4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://pixel_designer/animation_editor/icons/stop.png"
-dest_files=["res://.godot/imported/stop.png-4b6c125d684ce76f2e83348e7fa84e9d.ctex"]
+source_file="res://pixel_editor/icons/grid.png"
+dest_files=["res://.godot/imported/grid.png-ab64e5710b13f78253d024ac028821a4.ctex"]
 
 [params]
 

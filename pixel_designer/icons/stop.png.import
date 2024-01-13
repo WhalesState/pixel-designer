@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvh84sswlb6ci"
-path="res://.godot/imported/next.png-e801cde13b544a242301f069503b6282.ctex"
+uid="uid://cr46ne0gtakkc"
+path="res://.godot/imported/stop.png-ee4b952e712981226ec2f54c9553753b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://pixel_designer/animation_editor/icons/next.png"
-dest_files=["res://.godot/imported/next.png-e801cde13b544a242301f069503b6282.ctex"]
+source_file="res://pixel_designer/icons/stop.png"
+dest_files=["res://.godot/imported/stop.png-ee4b952e712981226ec2f54c9553753b.ctex"]
 
 [params]
 
