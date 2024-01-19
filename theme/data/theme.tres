@@ -1,0 +1,10 @@
+[gd_resource type="Theme" load_steps=4 format=3 uid="uid://dhfcrer0jftay"]
+
+[ext_resource type="Texture2D" uid="uid://dycgjsan8d4c1" path="res://theme/data/icons/checker.png" id="1_ho8vt"]
+[ext_resource type="Texture2D" uid="uid://5jd67ltue2fk" path="res://theme/data/icons/hidden.svg" id="1_oaahv"]
+[ext_resource type="Texture2D" uid="uid://dpsetqh1l11go" path="res://theme/data/icons/visible.svg" id="2_u56yu"]
+
+[resource]
+Icons/icons/checker = ExtResource("1_ho8vt")
+Icons/icons/hidden = ExtResource("1_oaahv")
+Icons/icons/visible = ExtResource("2_u56yu")

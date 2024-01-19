@@ -1,12 +1,15 @@
 @tool
 @icon("./icon.png")
-## A custom TabContainer that allows focusing tabs with keyboard!
+## A custom TabContainer that allows selecting tabs with keyboard!
 class_name TabBox
 extends VBoxContainer
 
 ## emits when [member tab] changes.
 signal tab_changed(tab_ind: int)
+## emits when [member tab] moved.
 signal tab_moved(from: int, to: int)
+## emits when tab is pressed.
+signal tab_pressed(button_index: int)
 
 ## Current container tab index.
 @export var tab := -1:
@@ -30,7 +33,7 @@ var tab_group := ButtonGroup.new()
 
 func _init():
     add_theme_constant_override("separation", 0)
-    tab_bar.add_theme_constant_override("separation", 2)
+    tab_bar.add_theme_constant_override("separation", 0)
     
     var hbox := HBoxContainer.new()
     hbox.add_theme_constant_override("separation", 0)
@@ -67,7 +70,7 @@ func add_tab(tab_name: String, vertical_scroll := true, show_scroll := true, ali
     var button := TabButton.new(tab_name, tab_group)
     tab_bar.add_child(button)
     button.tab_moved.connect(_on_tab_moved)
-    button.tab_pressed.connect(_on_tab_button_toggled)
+    button.tab_toggled.connect(_on_tab_button_toggled)
     var scroll := ScrollContainer.new()
     scroll.anchors_preset = PRESET_FULL_RECT
     scroll.follow_focus = true
@@ -120,6 +123,7 @@ func clear() -> void:
         child.queue_free()
     tab = -1
 
+
 ## Return the Flow/HBox container.
 func get_container(ind := -1):
     if ind == -1:
@@ -133,6 +137,8 @@ func _on_tab_button_toggled(ind: int) -> void:
 
 
 func _on_switch_tab(dir: int):
+    if tab_bar.get_child_count() == 0:
+        return
     tab += dir
     tab_bar.get_child(tab).grab_focus()
 
@@ -149,7 +155,7 @@ func _on_tab_moved(from: int, to: int):
 class TabButton:
     extends Button
     
-    signal tab_pressed(ind: int)
+    signal tab_toggled(ind: int)
     signal tab_moved(from: int, to: int)
     
     
@@ -163,7 +169,7 @@ class TabButton:
     
     func _on_toggled(is_pressed: bool) -> void:
         if is_pressed:
-            emit_signal("tab_pressed", get_index())
+            emit_signal("tab_toggled", get_index())
     
     
     func _get_drag_data(_pos: Vector2):

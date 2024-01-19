@@ -5,14 +5,13 @@ extends TabContainer
 #const CLASS = preload("./classes.gd")
 
 
-func _init():
-    if Global.is_first_run():
-        var err = Global.save_sprite(Global.get_default_character())
-        print_debug("Save Default Character sprite: %s" % (err == OK))
-    # Force update the defualt character on start
-    # TODO: Remove this.
-    var test_err = Global.save_sprite(Global.get_default_character())
-    print_debug("Save Default Character sprite: %s" % (test_err == OK))
+# func _init():
+#     if Global.is_first_run():
+#         var err = Global.save_sprite(Global.get_default_character())
+#         print_debug("Save Default Character sprite: %s" % (err == OK))
+#     # Force update the defualt character on start
+#     var test_err = Global.save_sprite(Global.get_default_character())
+#     print_debug("Save Default Character sprite: %s" % (test_err == OK))
 
 
 func _ready():

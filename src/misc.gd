@@ -1,0 +1,72 @@
+@tool
+class_name MISC
+
+const DS_FULLSCREEN = DisplayServer.WINDOW_MODE_FULLSCREEN
+const DS_WINDOWED = DisplayServer.WINDOW_MODE_WINDOWED
+const DS_ALWAYS_ON_TOP = DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP
+
+const THEME: Theme = preload("res://theme/data/theme.tres")
+
+
+static func _prepare() -> void:
+	var dir = DirAccess.open(OS.get_user_data_dir())
+	if dir:
+		if not dir.dir_exists("projects"):
+			if not OK == dir.make_dir_recursive("projects"):
+				print("ERROR: Can't create projects directory")
+		if not dir.file_exists("editor_settings.cfg"):
+			var cfg := ConfigFile.new()
+			cfg.set_value("editor", "theme", "Default Dark")
+			cfg.set_value("editor", "font", "ConfigRounded")
+			cfg.set_value("editor", "font_size", 16)
+			if not OK == cfg.save(OS.get_user_data_dir() + "/editor_settings.cfg"):
+				print("ERROR: Can't save editor settings")
+	else:
+		print("ERROR: Can't access user directory")
+
+
+static func open_user_data_dir() -> void:
+	OS.shell_open(OS.get_user_data_dir())
+
+
+static func toggle_fullscreen() -> void:
+	var is_fullscreen = true if DisplayServer.window_get_mode() == DS_FULLSCREEN else false
+	var mode = DS_WINDOWED if is_fullscreen else DS_FULLSCREEN
+	DisplayServer.window_set_mode(mode)
+
+
+static func toggle_always_on_top() -> void:
+	var is_always_on_top = DisplayServer.window_get_flag(DS_ALWAYS_ON_TOP)
+	DisplayServer.window_set_flag(DS_ALWAYS_ON_TOP, not is_always_on_top)
+
+
+static func get_projects_dir() -> DirAccess:
+	var project_dir = DirAccess.open(OS.get_user_data_dir())
+	if not project_dir.dir_exists("projects"):
+		print("Warning: Project dir doesn't exists, creating...")
+		if not OK == project_dir.make_dir_recursive("projects"):
+			print("ERROR: Can't create projects directory")
+			return
+	if not OK == project_dir.change_dir("projects"):
+		print("ERROR: Can't access projects directory")
+	return project_dir
+
+
+static func get_editor_settings() -> ConfigFile:
+	var cfg := ConfigFile.new()
+	if not FileAccess.file_exists("user://editor_settings.cfg"):
+		cfg.set_value("editor", "theme", "Default Dark")
+		cfg.set_value("editor", "font", "ConfigRounded")
+		cfg.set_value("editor", "font_size", 16)
+		if not OK == cfg.save("user://editor_settings.cfg"):
+			print("ERROR: Can't save editor settings")
+	else:
+		if not OK == cfg.load("user://editor_settings.cfg"):
+			print("ERROR: Can't load editor settings")
+	return cfg
+
+
+static func get_icon(icon_name: String) -> Texture2D:
+	if THEME.has_icon(icon_name, "Icons"):
+		return THEME.get_icon(icon_name, "Icons")
+	return Texture2D.new()

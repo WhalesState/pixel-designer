@@ -10,11 +10,21 @@ config_version=5
 
 [application]
 
-config/name="pixel-designer"
+config/name="PixelDesigner"
 run/main_scene="res://main.tscn"
+config/use_custom_user_dir=true
 config/features=PackedStringArray("4.2", "GL Compatibility")
 boot_splash/bg_color=Color(0.121569, 0.113725, 0.145098, 1)
 config/icon="res://icon.svg"
+
+[autoload]
+
+G="*res://src/global.gd"
+
+[display]
+
+window/size/viewport_width=1024
+window/size/viewport_height=768
 
 [editor_plugins]
 
@@ -28,5 +38,3 @@ fonts/dynamic_fonts/use_oversampling=false
 
 textures/default_filters/use_nearest_mipmap_filter=true
 textures/default_filters/anisotropic_filtering_level=0
-2d/snap/snap_2d_transforms_to_pixel=true
-2d/snap/snap_2d_vertices_to_pixel=true

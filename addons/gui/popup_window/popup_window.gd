@@ -6,13 +6,16 @@ extends Window
 @export var visible_in_editor := false
 
 
-func _ready():
+func _init():
     wrap_controls = true
+    exclusive = true
+    initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS
     close_requested.connect(_on_close_requested)
-    if Engine.is_editor_hint() && get_tree().edited_scene_root:
+    if Engine.is_editor_hint():
         visible = visible_in_editor
     else:
         visible = false
+    transparent_bg = not Engine.is_editor_hint()
 
 
 func _on_close_requested():

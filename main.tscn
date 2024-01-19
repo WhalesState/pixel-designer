@@ -1,9 +1,196 @@
-[gd_scene format=3 uid="uid://dqv51anjjqx8t"]
+[gd_scene load_steps=14 format=3 uid="uid://dqv51anjjqx8t"]
 
-[node name="Main" type="Control"]
-layout_mode = 3
+[ext_resource type="Theme" uid="uid://bu55kdwxq2xad" path="res://theme/default_dark.tres" id="1_a7gcb"]
+[ext_resource type="Script" path="res://src/main.gd" id="1_dw5sk"]
+[ext_resource type="Script" path="res://src/top_menu.gd" id="2_2ing4"]
+[ext_resource type="Script" path="res://src/camera.gd" id="3_aca2k"]
+[ext_resource type="Script" path="res://layers_tab.gd" id="4_mpwog"]
+[ext_resource type="Texture2D" uid="uid://cvcyjp5a1a80p" path="res://theme/data/icons/add.svg" id="4_yw4fg"]
+[ext_resource type="Script" path="res://src/sprite_box.gd" id="5_7dwpe"]
+[ext_resource type="Script" path="res://src/popups.gd" id="6_hu0so"]
+[ext_resource type="Script" path="res://src/popups/project_name_window.gd" id="7_ue5fg"]
+[ext_resource type="Texture2D" uid="uid://cgaooac1icvie" path="res://theme/data/icons/center_view.svg" id="9_xp642"]
+[ext_resource type="Texture2D" uid="uid://dycgjsan8d4c1" path="res://theme/data/icons/checker.png" id="11_pyya8"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_xmlwc"]
+device = -1
+keycode = 70
+unicode = 102
+
+[sub_resource type="Shortcut" id="Shortcut_1mixe"]
+events = [SubResource("InputEventKey_xmlwc")]
+
+[node name="Main" type="VBoxContainer"]
+texture_filter = 2
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_a7gcb")
+theme_override_constants/separation = 0
+script = ExtResource("1_dw5sk")
+metadata/_edit_lock_ = true
+
+[node name="TopMenu" type="HBoxContainer" parent="."]
+layout_mode = 2
+focus_mode = 2
+theme_override_constants/separation = 8
+script = ExtResource("2_2ing4")
+
+[node name="MainMargin" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="MainHSplit" type="HSplitContainer" parent="MainMargin"]
+layout_mode = 2
+split_offset = 256
+
+[node name="LeftSplit" type="VSplitContainer" parent="MainMargin/MainHSplit"]
+layout_mode = 2
+split_offset = 256
+
+[node name="SpritePanel" type="PanelContainer" parent="MainMargin/MainHSplit/LeftSplit"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Sprites"
+horizontal_alignment = 1
+
+[node name="AddSprite" type="Button" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+icon = ExtResource("4_yw4fg")
+flat = true
+
+[node name="SpriteScroll" type="ScrollContainer" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+follow_focus = true
+horizontal_scroll_mode = 3
+
+[node name="SpriteMargin" type="MarginContainer" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/SpriteScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="SpriteBox" type="VBoxContainer" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/SpriteScroll/SpriteMargin"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+script = ExtResource("5_7dwpe")
+
+[node name="LayersTab" type="VBoxContainer" parent="MainMargin/MainHSplit/LeftSplit"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 0
+script = ExtResource("4_mpwog")
+
+[node name="RightSplit" type="HSplitContainer" parent="MainMargin/MainHSplit"]
+layout_mode = 2
+split_offset = -256
+
+[node name="MiddleSplit" type="VSplitContainer" parent="MainMargin/MainHSplit/RightSplit"]
+layout_mode = 2
+size_flags_horizontal = 3
+split_offset = -256
+
+[node name="Margin" type="MarginContainer" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ViewportContainer" type="SubViewportContainer" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin"]
+texture_filter = 1
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 0
+mouse_force_pass_scroll_events = false
+stretch = true
+
+[node name="Viewport" type="SubViewport" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(484, 467)
+render_target_update_mode = 4
+
+[node name="Node" type="Node2D" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport"]
+
+[node name="Camera" type="Camera2D" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node"]
+position = Vector2(8, 8)
+zoom = Vector2(10, 10)
+script = ExtResource("3_aca2k")
+
+[node name="Sprites" type="Node2D" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node"]
+unique_name_in_owner = true
+
+[node name="Control" type="Control" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin"]
+layout_mode = 2
+metadata/_edit_lock_ = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+
+[node name="CenterViewButton" type="Button" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/HBoxContainer"]
+layout_mode = 2
+shortcut = SubResource("Shortcut_1mixe")
+icon = ExtResource("9_xp642")
+
+[node name="BottomPanel" type="PanelContainer" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit"]
+layout_mode = 2
+
+[node name="Inspector" type="PanelContainer" parent="MainMargin/MainHSplit/RightSplit"]
+layout_mode = 2
+
+[node name="Popups" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("6_hu0so")
+metadata/_edit_lock_ = true
+
+[node name="ProjectNameWindow" type="Window" parent="Popups"]
+title = "Project Name Window"
+initial_position = 5
+size = Vector2i(320, 169)
+visible = false
+wrap_controls = true
+transient = true
+exclusive = true
+min_size = Vector2i(320, 160)
+max_size = Vector2i(640, 480)
+script = ExtResource("7_ue5fg")
+
+[node name="Checker" type="Sprite2D" parent="."]
+texture_filter = 1
+texture_repeat = 2
+position = Vector2(0, 788)
+texture = ExtResource("11_pyya8")
+centered = false
+region_enabled = true
+region_rect = Rect2(0, 0, 4, 4)
+
+[connection signal="pressed" from="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/HBoxContainer/AddSprite" to="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/SpriteScroll/SpriteMargin/SpriteBox" method="_on_add_sprite_pressed"]
+[connection signal="gui_input" from="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/Control" to="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node/Camera" method="_on_viewport_gui_input"]
+[connection signal="pressed" from="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/HBoxContainer/CenterViewButton" to="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node/Camera" method="_on_center_view_button_pressed"]

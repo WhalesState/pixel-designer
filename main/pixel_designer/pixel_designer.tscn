@@ -1,0 +1,588 @@
+[gd_scene load_steps=35 format=3 uid="uid://dp5go8yw6rfmn"]
+
+[ext_resource type="Theme" uid="uid://dmgt1badak5wl" path="res://main/theme/default_theme/default_theme.tres" id="1_373al"]
+[ext_resource type="Script" path="res://main/pixel_designer/pixel_designer.gd" id="2_sxlbs"]
+[ext_resource type="Script" path="res://main/pixel_designer/layer_tab.gd" id="3_a2tfm"]
+[ext_resource type="Script" path="res://main/pixel_designer/material_tab.gd" id="4_pe4v2"]
+[ext_resource type="Script" path="res://main/pixel_designer/color_tab.gd" id="5_dfv20"]
+[ext_resource type="Script" path="res://main/pixel_editor/pixel_editor.gd" id="6_d0uhh"]
+[ext_resource type="Texture2D" uid="uid://ds41sw3aqge7q" path="res://main/pixel_editor/icons/focus.png" id="7_qp2sn"]
+[ext_resource type="Script" path="res://addons/gui/tool_button/tool_button.gd" id="8_yfnx4"]
+[ext_resource type="Texture2D" uid="uid://bgovh7of6lbyj" path="res://main/pixel_editor/icons/grid.png" id="9_jn6gt"]
+[ext_resource type="Texture2D" uid="uid://788gby7208yc" path="res://main/pixel_editor/icons/checker.png" id="10_331iy"]
+[ext_resource type="ButtonGroup" uid="uid://dgqfspvbn8iso" path="res://main/pixel_editor/groups/tool_group.tres" id="11_lhmym"]
+[ext_resource type="Texture2D" uid="uid://dg0b07g2bojcs" path="res://main/pixel_editor/icons/pencil_tool.png" id="12_ku6h8"]
+[ext_resource type="Texture2D" uid="uid://ejj0ger0tr4r" path="res://main/pixel_editor/icons/fill_tool.png" id="13_fieeu"]
+[ext_resource type="Texture2D" uid="uid://doagsndjauuha" path="res://main/pixel_editor/icons/line_tool.png" id="14_t7sbp"]
+[ext_resource type="Texture2D" uid="uid://c2rnysynq2gro" path="res://main/pixel_editor/icons/rect_tool.png" id="15_by2fx"]
+[ext_resource type="Texture2D" uid="uid://qqe7ftanukss" path="res://main/pixel_editor/icons/ellipse_tool.png" id="16_ypcfj"]
+[ext_resource type="Texture2D" uid="uid://b5madi7b4303j" path="res://main/pixel_editor/icons/move_tool.png" id="17_587rn"]
+[ext_resource type="Texture2D" uid="uid://b4qrph6qxt5x0" path="res://main/pixel_editor/icons/selection_tool.png" id="18_ft5dx"]
+[ext_resource type="Script" path="res://main/pixel_editor/camera.gd" id="19_2ruqr"]
+[ext_resource type="Texture2D" uid="uid://d3xnwyghe0vyq" path="res://main/pixel_designer/icons/prev.png" id="20_yddq0"]
+[ext_resource type="Texture2D" uid="uid://dase6jwtv3bav" path="res://main/pixel_designer/icons/play.png" id="21_1emha"]
+[ext_resource type="Texture2D" uid="uid://c08ycpfn8rakq" path="res://main/pixel_designer/icons/pause.png" id="22_hhtbg"]
+[ext_resource type="Texture2D" uid="uid://cr46ne0gtakkc" path="res://main/pixel_designer/icons/stop.png" id="23_j2rcc"]
+[ext_resource type="Texture2D" uid="uid://dvh84sswlb6ci" path="res://main/pixel_designer/icons/next.png" id="24_88jou"]
+[ext_resource type="Script" path="res://main/pixel_designer/animation_editor.gd" id="25_6ar6d"]
+[ext_resource type="Texture2D" uid="uid://dpgun368iywwh" path="res://main/pixel_designer/icons/options.png" id="26_okqcq"]
+[ext_resource type="Texture2D" uid="uid://cobb5e0mbgg36" path="res://main/pixel_designer/icons/loop.png" id="27_4aufs"]
+[ext_resource type="Script" path="res://addons/gui/mini_color_picker/mini_color_picker.gd" id="28_c4b24"]
+[ext_resource type="Script" path="res://main/pixel_editor/sprite.gd" id="29_tkfl0"]
+
+[sub_resource type="InputEventKey" id="InputEventKey_biygr"]
+device = -1
+pressed = true
+physical_keycode = 70
+unicode = 102
+
+[sub_resource type="Shortcut" id="Shortcut_dtnr5"]
+events = [SubResource("InputEventKey_biygr")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_1x1cq"]
+device = -1
+keycode = 66
+unicode = 98
+
+[sub_resource type="Shortcut" id="Shortcut_2qeg5"]
+events = [SubResource("InputEventKey_1x1cq")]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_5326e"]
+viewport_path = NodePath("Preview/PreviewContainer/PreviewViewport")
+
+[node name="PixelDesigner" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_373al")
+theme_override_constants/separation = 0
+script = ExtResource("2_sxlbs")
+metadata/_edit_lock_ = true
+
+[node name="MenuPanel" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="MenuBox" type="HBoxContainer" parent="MenuPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SpriteMenu" type="MenuButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+localize_numeral_system = false
+focus_mode = 2
+text = "Sprite"
+switch_on_hover = true
+item_count = 11
+popup/item_0/text = "New"
+popup/item_0/id = 0
+popup/item_1/text = "Change"
+popup/item_1/id = 1
+popup/item_2/text = ""
+popup/item_2/id = 100
+popup/item_2/disabled = true
+popup/item_2/separator = true
+popup/item_3/text = "Save"
+popup/item_3/id = 2
+popup/item_4/text = "Save As.."
+popup/item_4/id = 3
+popup/item_5/text = ""
+popup/item_5/id = 101
+popup/item_5/disabled = true
+popup/item_5/separator = true
+popup/item_6/text = "Import"
+popup/item_6/id = 4
+popup/item_7/text = "Export"
+popup/item_7/id = 5
+popup/item_8/text = ""
+popup/item_8/id = 102
+popup/item_8/disabled = true
+popup/item_8/separator = true
+popup/item_9/text = "Settings"
+popup/item_9/id = 6
+popup/item_10/text = "Exit"
+popup/item_10/id = 7
+
+[node name="LayerMenu" type="MenuButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+localize_numeral_system = false
+focus_mode = 2
+text = "Layer"
+switch_on_hover = true
+
+[node name="AnimationMenu" type="MenuButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+localize_numeral_system = false
+focus_mode = 2
+text = "Animation"
+switch_on_hover = true
+
+[node name="MaterialMenu" type="MenuButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+localize_numeral_system = false
+focus_mode = 2
+text = "Material"
+switch_on_hover = true
+
+[node name="PaletteMenu" type="MenuButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+localize_numeral_system = false
+focus_mode = 2
+text = "Palette"
+switch_on_hover = true
+
+[node name="HelpMenu" type="MenuButton" parent="MenuPanel/MenuBox"]
+layout_mode = 2
+localize_numeral_system = false
+focus_mode = 2
+text = "Help"
+switch_on_hover = true
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/autohide = 0
+
+[node name="VSplitContainer2" type="VSplitContainer" parent="HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.4
+theme_override_constants/autohide = 0
+
+[node name="LayerPanel" type="PanelContainer" parent="HSplitContainer/VSplitContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LayerTab" type="VBoxContainer" parent="HSplitContainer/VSplitContainer2/LayerPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 0
+script = ExtResource("3_a2tfm")
+
+[node name="MaterialPanel" type="PanelContainer" parent="HSplitContainer/VSplitContainer2"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/VSplitContainer2/MaterialPanel"]
+layout_mode = 2
+
+[node name="MaterialTab" type="VBoxContainer" parent="HSplitContainer/VSplitContainer2/MaterialPanel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+script = ExtResource("4_pe4v2")
+
+[node name="ColorTab" type="VBoxContainer" parent="HSplitContainer/VSplitContainer2/MaterialPanel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 0
+script = ExtResource("5_dfv20")
+tab = 0
+
+[node name="VSplitContainer" type="VSplitContainer" parent="HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/autohide = 0
+
+[node name="PixelEditor" type="HSplitContainer" parent="HSplitContainer/VSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"OutlinePanel"
+theme_override_constants/separation = 0
+split_offset = -232
+script = ExtResource("6_d0uhh")
+checker_size = Vector2i(8, 8)
+
+[node name="Panel" type="PanelContainer" parent="HSplitContainer/VSplitContainer/PixelEditor"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = &"OutlinePanel"
+
+[node name="VBox" type="VBoxContainer" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="Panel" type="PanelContainer" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel"]
+layout_mode = 2
+mouse_filter = 0
+
+[node name="FocusCamera" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "Focus Camera
+Shortcut: F"
+theme_type_variation = &"ToolButton"
+shortcut = SubResource("Shortcut_dtnr5")
+shortcut_in_tooltip = false
+icon = ExtResource("7_qp2sn")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("7_qp2sn")
+pressed_icon = ExtResource("7_qp2sn")
+
+[node name="GridToggle" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel/HBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"ToolButton"
+toggle_mode = true
+icon = ExtResource("9_jn6gt")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("9_jn6gt")
+pressed_icon = ExtResource("9_jn6gt")
+
+[node name="CheckerToggle" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel/HBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"ToolButton"
+toggle_mode = true
+icon = ExtResource("10_331iy")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("10_331iy")
+pressed_icon = ExtResource("10_331iy")
+
+[node name="HSeparator" type="HSeparator" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox"]
+layout_mode = 2
+
+[node name="HBox" type="HBoxContainer" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="ToolsPanel" type="PanelContainer" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox"]
+layout_mode = 2
+
+[node name="ToolsBox" type="VBoxContainer" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/ToolsPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 0
+
+[node name="PencilTool" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/ToolsPanel/ToolsBox"]
+layout_mode = 2
+tooltip_text = "Pencil
+Shortcut: B"
+theme_type_variation = &"ToolButton"
+toggle_mode = true
+button_pressed = true
+button_group = ExtResource("11_lhmym")
+shortcut = SubResource("Shortcut_2qeg5")
+shortcut_in_tooltip = false
+icon = ExtResource("12_ku6h8")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("12_ku6h8")
+pressed_icon = ExtResource("12_ku6h8")
+
+[node name="FillTool" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/ToolsPanel/ToolsBox"]
+layout_mode = 2
+theme_type_variation = &"ToolButton"
+toggle_mode = true
+button_group = ExtResource("11_lhmym")
+icon = ExtResource("13_fieeu")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("13_fieeu")
+pressed_icon = ExtResource("13_fieeu")
+
+[node name="LineTool" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/ToolsPanel/ToolsBox"]
+layout_mode = 2
+theme_type_variation = &"ToolButton"
+toggle_mode = true
+button_group = ExtResource("11_lhmym")
+icon = ExtResource("14_t7sbp")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("14_t7sbp")
+pressed_icon = ExtResource("14_t7sbp")
+
+[node name="RectTool" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/ToolsPanel/ToolsBox"]
+layout_mode = 2
+theme_type_variation = &"ToolButton"
+toggle_mode = true
+button_group = ExtResource("11_lhmym")
+icon = ExtResource("15_by2fx")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("15_by2fx")
+pressed_icon = ExtResource("15_by2fx")
+
+[node name="EllipseTool" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/ToolsPanel/ToolsBox"]
+layout_mode = 2
+theme_type_variation = &"ToolButton"
+toggle_mode = true
+button_group = ExtResource("11_lhmym")
+icon = ExtResource("16_ypcfj")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("16_ypcfj")
+pressed_icon = ExtResource("16_ypcfj")
+
+[node name="MoveTool" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/ToolsPanel/ToolsBox"]
+layout_mode = 2
+theme_type_variation = &"ToolButton"
+toggle_mode = true
+button_group = ExtResource("11_lhmym")
+icon = ExtResource("17_587rn")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("17_587rn")
+pressed_icon = ExtResource("17_587rn")
+
+[node name="SelectionTool" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/ToolsPanel/ToolsBox"]
+layout_mode = 2
+theme_type_variation = &"ToolButton"
+toggle_mode = true
+button_group = ExtResource("11_lhmym")
+icon = ExtResource("18_ft5dx")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("18_ft5dx")
+pressed_icon = ExtResource("18_ft5dx")
+
+[node name="VSeparator2" type="VSeparator" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox"]
+layout_mode = 2
+
+[node name="EditorPanel" type="PanelContainer" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"OutlinePanel"
+
+[node name="EditorContainer" type="SubViewportContainer" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/EditorPanel"]
+layout_mode = 2
+focus_mode = 2
+stretch = true
+
+[node name="EditorViewport" type="SubViewport" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/EditorPanel/EditorContainer"]
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(2, 2)
+render_target_update_mode = 4
+
+[node name="Editor" type="Node2D" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/EditorPanel/EditorContainer/EditorViewport"]
+unique_name_in_owner = true
+
+[node name="Camera" type="Camera2D" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/EditorPanel/EditorContainer/EditorViewport/Editor"]
+unique_name_in_owner = true
+zoom = Vector2(4, 4)
+editor_draw_limits = true
+script = ExtResource("19_2ruqr")
+
+[node name="Sprite" type="Sprite2D" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/EditorPanel/EditorContainer/EditorViewport/Editor"]
+unique_name_in_owner = true
+texture = SubResource("ViewportTexture_5326e")
+centered = false
+
+[node name="VSeparator" type="VSeparator" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox"]
+layout_mode = 2
+
+[node name="Panel2" type="PanelContainer" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox"]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel2"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 4
+
+[node name="PrevButton" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel2/HBoxContainer2"]
+layout_mode = 2
+theme_type_variation = &"ToolButton"
+icon = ExtResource("20_yddq0")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("20_yddq0")
+pressed_icon = ExtResource("20_yddq0")
+
+[node name="PlayButton" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel2/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"ToolButton"
+toggle_mode = true
+icon = ExtResource("21_1emha")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("21_1emha")
+pressed_icon = ExtResource("22_hhtbg")
+
+[node name="StopButton" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel2/HBoxContainer2"]
+layout_mode = 2
+theme_type_variation = &"ToolButton"
+icon = ExtResource("23_j2rcc")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("23_j2rcc")
+pressed_icon = ExtResource("23_j2rcc")
+
+[node name="NextButton" type="Button" parent="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel2/HBoxContainer2"]
+layout_mode = 2
+theme_type_variation = &"ToolButton"
+icon = ExtResource("24_88jou")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("24_88jou")
+pressed_icon = ExtResource("24_88jou")
+
+[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer/VSplitContainer/PixelEditor"]
+layout_mode = 2
+theme_type_variation = &"OutlineFillPanel"
+
+[node name="HSplitContainer" type="HSplitContainer" parent="HSplitContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.5
+theme_override_constants/autohide = 0
+
+[node name="AnimEditor" type="PanelContainer" parent="HSplitContainer/VSplitContainer/HSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"OutlineFillPanel"
+script = ExtResource("25_6ar6d")
+
+[node name="VBox" type="VBoxContainer" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HSeparator" type="HSeparator" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="VSeparator" type="VSeparator" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox/HBoxContainer"]
+layout_mode = 2
+
+[node name="AnimMenu" type="MenuButton" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox/HBoxContainer"]
+layout_mode = 2
+focus_mode = 2
+icon = ExtResource("26_okqcq")
+item_count = 3
+popup/item_0/text = "New"
+popup/item_0/id = 0
+popup/item_1/text = "Duplicate"
+popup/item_1/id = 1
+popup/item_2/text = "Delete"
+popup/item_2/id = 2
+
+[node name="VSeparator2" type="VSeparator" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox/HBoxContainer"]
+layout_mode = 2
+
+[node name="AnimOptions" type="OptionButton" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+clip_text = true
+
+[node name="VSeparator3" type="VSeparator" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox/HBoxContainer"]
+layout_mode = 2
+
+[node name="VSeparator4" type="VSeparator" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox/HBoxContainer"]
+layout_mode = 2
+
+[node name="VSeparator5" type="VSeparator" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="AnimSpeed" type="SpinBox" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+tooltip_text = "Animation Speed"
+min_value = 1.0
+max_value = 1000.0
+value = 100.0
+allow_greater = true
+suffix = "ms"
+
+[node name="VSeparator6" type="VSeparator" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox/HBoxContainer"]
+layout_mode = 2
+
+[node name="AnimLoop" type="Button" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Toggle Animation Loop"
+theme_type_variation = &"ToolButton"
+toggle_mode = true
+icon = ExtResource("27_4aufs")
+script = ExtResource("8_yfnx4")
+normal_icon = ExtResource("27_4aufs")
+pressed_icon = ExtResource("27_4aufs")
+
+[node name="VSeparator7" type="VSeparator" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox/HBoxContainer"]
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TextureButton" type="TextureButton" parent="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox/PanelContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="HSplitContainer/VSplitContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.4
+theme_type_variation = &"OutlineFillPanel"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/VSplitContainer/HSplitContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="ColorPicker" type="MarginContainer" parent="HSplitContainer/VSplitContainer/HSplitContainer/PanelContainer/VBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+script = ExtResource("28_c4b24")
+color = Color(0.258824, 0.760784, 1, 1)
+
+[node name="Preview" type="Control" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="PreviewContainer" type="SubViewportContainer" parent="Preview"]
+unique_name_in_owner = true
+layout_mode = 1
+offset_right = 16.0
+offset_bottom = 16.0
+size_flags_horizontal = 4
+
+[node name="PreviewViewport" type="SubViewport" parent="Preview/PreviewContainer"]
+unique_name_in_owner = true
+process_mode = 3
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+gui_disable_input = true
+size = Vector2i(16, 16)
+render_target_update_mode = 4
+
+[node name="MainSprite" type="Sprite2D" parent="Preview/PreviewContainer/PreviewViewport"]
+unique_name_in_owner = true
+centered = false
+script = ExtResource("29_tkfl0")
+
+[connection signal="pressed" from="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel/HBoxContainer/FocusCamera" to="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/EditorPanel/EditorContainer/EditorViewport/Editor/Camera" method="_on_focus_camera_pressed"]
+[connection signal="focus_entered" from="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/EditorPanel/EditorContainer" to="HSplitContainer/VSplitContainer/PixelEditor" method="_on_focus_entered"]
+[connection signal="focus_exited" from="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/EditorPanel/EditorContainer" to="HSplitContainer/VSplitContainer/PixelEditor" method="_on_focus_entered"]
+[connection signal="gui_input" from="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/EditorPanel/EditorContainer" to="HSplitContainer/VSplitContainer/PixelEditor" method="_on_editor_gui_input"]
+[connection signal="mouse_entered" from="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/EditorPanel/EditorContainer" to="HSplitContainer/VSplitContainer/PixelEditor" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/HBox/EditorPanel/EditorContainer" to="HSplitContainer/VSplitContainer/PixelEditor" method="_on_mouse_entered"]
+[connection signal="pressed" from="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel2/HBoxContainer2/PrevButton" to="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor" method="seek_frame" binds= [-1]]
+[connection signal="toggled" from="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel2/HBoxContainer2/PlayButton" to="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor" method="_on_play_animation_toggled"]
+[connection signal="pressed" from="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel2/HBoxContainer2/StopButton" to="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor" method="_on_stop_animation_pressed"]
+[connection signal="pressed" from="HSplitContainer/VSplitContainer/PixelEditor/Panel/VBox/Panel2/HBoxContainer2/NextButton" to="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor" method="seek_frame" binds= [1]]
+[connection signal="frame_changed" from="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor" to="HSplitContainer/VSplitContainer/PixelEditor" method="_on_anim_editor_frame_changed"]
+[connection signal="value_changed" from="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor/VBox/HBoxContainer/AnimSpeed" to="HSplitContainer/VSplitContainer/HSplitContainer/AnimEditor" method="_on_anim_speed_value_changed"]
