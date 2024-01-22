@@ -10,22 +10,34 @@ func _ready():
 	sprite_menu.id_pressed.connect(_on_sprite_menu_id_pressed)
 
 
-func _on_add_sprite_pressed():
-	create_sprite("Hello", Vector2(24, 24))
-
-
-func create_sprite(spr_name := "Sprite", spr_size := Vector2(16, 16)):
+func create_new_sprite(spr_name := "Sprite", spr_size := Vector2(16, 16)) -> Sprite:
 	var sprite := Sprite.new(spr_size)
 	get_node("%Sprites").add_child(sprite)
 	sprite.name = spr_name
+	return sprite
+
+
+func create_sprite_layer(sprite: Sprite, layer_name := "Layer") -> Layer:
 	var layer = Layer.new()
 	sprite.get_child(0).add_child(layer)
-	layer.name = "Layer"
+	layer.name = layer_name
+	# Test
+	layer.texture = preload("res://test.png")
+	return layer
+
+
+func create_sprite_button(sprite: Sprite):
 	var spr_button := SpriteButton.new(sprite, sprite_group)
 	spr_button.selected.connect(_on_sprite_button_selected)
 	spr_button.right_pressed.connect(_on_sprite_button_right_pressed)
 	add_child(spr_button)
 	spr_button.button_pressed = true
+
+
+func _on_create_sprite_pressed():
+	var sprite = create_new_sprite()
+	create_sprite_layer(sprite)
+	create_sprite_button(sprite)
 
 
 func _on_sprite_button_right_pressed(mpos: Vector2, spr_button: SpriteButton):
@@ -36,8 +48,16 @@ func _on_sprite_button_right_pressed(mpos: Vector2, spr_button: SpriteButton):
 
 func _on_sprite_menu_id_pressed(id: int):
 	match id:
+		sprite_menu.ADD_LAYER:
+			var spr_button = sprite_menu.button
+			var layer = create_sprite_layer(spr_button.get_meta("node"))
+			if spr_button == sprite_group.get_pressed_button():
+				var layers_tab: TabBox = get_node("%LayersTab")
+				var layer_ind := layers_tab.add_tab(layer.name, true, true, false, true)
+				layers_tab.tab_bar.get_child(layer_ind).set_meta("node", layer)
 		sprite_menu.REMOVE_SPRITE:
 			remove_sprite(sprite_menu.button)
+			sprite_menu.button = null
 
 
 func remove_sprite(spr_button: SpriteButton):
@@ -49,23 +69,18 @@ func remove_sprite(spr_button: SpriteButton):
 	if sprite_group.get_pressed_button() == spr_button:
 		if get_child_count() > 0:
 			get_child(0).button_pressed = true
-
-
-func create_sprite_layer(spr_node: SubViewportContainer, layer_name := "Layer"):
-	var layer = Layer.new()
-	spr_node.get_child(0).add_child(layer)
-	layer.name = layer_name
-	# Test
-	layer.texture = preload("res://test.png")
+		else:
+			get_node("%LayersTab").clear()
+			get_node("%Inspector").clear()
 
 
 func _on_sprite_button_selected(vp_node: SubViewport):
 	var layers_tab: TabBox = get_node("%LayersTab")
 	layers_tab.clear()
-	# var cur_button := sprite_group.get_pressed_button()
 	for child in vp_node.get_children():
 		var layer_ind := layers_tab.add_tab(child.name, true, true, false, true)
 		layers_tab.tab_bar.get_child(layer_ind).set_meta("node", child)
+	get_node("%Overlays").selected = vp_node.get_parent()
 
 
 class SpriteButton:
@@ -82,7 +97,9 @@ class SpriteButton:
 		clip_text = true
 		alignment = HORIZONTAL_ALIGNMENT_LEFT
 		set_meta("node", sprite_node)
+		sprite_node.set_meta("button", self)
 		var visibility_button := TextureButton.new()
+		visibility_button.focus_mode = FOCUS_NONE
 		visibility_button.texture_normal = MISC.get_icon("hidden")
 		visibility_button.texture_pressed = MISC.get_icon("visible")
 		visibility_button.toggle_mode = true
@@ -112,12 +129,12 @@ class SpriteButton:
 	
 	
 	func _on_line_edit_submitted(new_text: String, line_edit: LineEdit, rename := true):
-		remove_child(line_edit)
 		line_edit.queue_free()
 		grab_focus()
 		if rename:
 			get_meta("node").name = new_text
 			text = get_meta("node").name
+			get_parent().get_node("%Inspector").get_child(0).text = text
 	
 	
 	func _on_visibility_button_toggled(toggled_on: bool):
@@ -125,8 +142,20 @@ class SpriteButton:
 	
 	
 	func _on_sprite_button_toggled(toggled_on: bool):
+		
 		if toggled_on:
-			emit_signal("selected", get_meta("node").get_child(0))
+			var inspector = get_parent().get_node("%Inspector")
+			if inspector.get_child_count() > 0:
+				if inspector.get_child(0).text == text:
+					return
+			var spr = get_meta("node")
+			emit_signal("selected", spr.get_child(0))
+			inspector.clear()
+			inspector.add_label(spr.name)
+			inspector.add_vec2_property("Position", spr, "position", Vector2.ZERO)
+			inspector.add_vec2_property("Size", spr, "size", null, [1, 1024, 1, false, false])
+			inspector.add_bool_property("Checker", spr, "checker_visible", true)
+			inspector.add_vec2_property("Checker Size", spr, "checker_size", null, [1, 1024, 1, false, false])
 	
 	
 	func _get_drag_data(_pos: Vector2):
@@ -143,7 +172,7 @@ class SpriteButton:
 	
 	
 	func _drop_data(_pos: Vector2, data: Variant):
-		get_parent().viewport.move_child(data.get_meta("node"), get_index())
+		get_parent().get_node("%Sprites").move_child(data.get_meta("node"), get_index())
 		get_parent().move_child(data, get_index())
 
 
@@ -160,6 +189,17 @@ class Layer:
 class Sprite:
 	extends SubViewportContainer
 	
+	var checker := Sprite2D.new()
+	var checker_visible := true:
+		set(value):
+			checker_visible = value
+			checker.visible = checker_visible
+	
+	var checker_size := Vector2.ONE:
+		set(value):
+			checker_size = value
+			checker.scale = value
+			checker.region_rect.size = (size / checker.scale).ceil()
 	
 	func _init(spr_size := Vector2(16, 16)):
 		size = spr_size
@@ -171,20 +211,18 @@ class Sprite:
 		material = CanvasItemMaterial.new()
 		material.blend_mode = CanvasItemMaterial.BLEND_MODE_PREMULT_ALPHA
 		# Checker
-		var checker := Sprite2D.new()
 		checker.centered = false
 		checker.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
 		checker.region_enabled = true
-		checker.region_rect.size = spr_size
-		checker.name = "Checker"
+		checker.region_rect.size = size
+		checker_size = Vector2(4, 4)
 		checker.texture = MISC.get_icon("checker")
-		vp.add_child(checker, true, INTERNAL_MODE_FRONT)
-		set_meta("checker", checker)
+		vp.add_child(checker, false, INTERNAL_MODE_FRONT)
+		resized.connect(_on_resized)
 	
 	
-	
-	func _draw():
-		draw_rect(Rect2(Vector2.ZERO, size), Color(1.0, 1.0, 1.0, 0.5), false)
+	func _on_resized():
+		checker.region_rect.size = (size / checker.scale).ceil()
 
 
 class SpriteMenu:
@@ -193,10 +231,12 @@ class SpriteMenu:
 	var button: SpriteButton
 	
 	enum {
+		ADD_LAYER,
 		REMOVE_SPRITE,
 	}
 
 	const ITEMS := {
+		"Add Layer": ADD_LAYER,
 		"Remove Sprite": REMOVE_SPRITE,
 	}
 	

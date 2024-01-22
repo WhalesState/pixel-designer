@@ -3,14 +3,6 @@ extends Camera2D
 
 var is_pan := false
 
-#@onready var viewport: SubViewport = get_node("%Viewport")
-# @onready var vp_sprite: Sprite2D = get_parent().get_node("ViewportSprite")
-
-
-func _ready():
-	# _on_center_view_button_pressed()
-	pass
-
 
 func cam_zoom(value: int):
 	if (zoom.x >= 10 and value > 0) or (zoom.x > 10 and value < 0):
@@ -26,9 +18,10 @@ func cam_zoom(value: int):
 	var cur_pos = -get_viewport_rect().size / 2 + mpos
 	zoom = Vector2(new_zoom, new_zoom)
 	position -= cur_pos / new_zoom - cur_pos / old_zoom
+	get_node("%Overlays").queue_redraw()
 
 
-func _on_center_view_button_pressed():
+func focus_selected_sprite():
 	var cur_spr_button = get_node("%SpriteBox").sprite_group.get_pressed_button()
 	if cur_spr_button:
 		var cur_spr = cur_spr_button.get_meta("node")

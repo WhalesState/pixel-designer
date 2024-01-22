@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=24 format=3 uid="uid://bu55kdwxq2xad"]
+[gd_resource type="Theme" load_steps=25 format=3 uid="uid://bu55kdwxq2xad"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wkwnx"]
 draw_center = false
@@ -7,10 +7,6 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.662745, 0.360784, 0.980392, 1)
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eq1v6"]
 content_margin_left = 4.0
@@ -36,10 +32,13 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t3pyk"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_keeis"]
 content_margin_left = 4.0
@@ -165,6 +164,7 @@ Button/styles/focus = SubResource("StyleBoxFlat_wkwnx")
 Button/styles/hover = SubResource("StyleBoxFlat_eq1v6")
 Button/styles/normal = SubResource("StyleBoxFlat_y0rwg")
 Button/styles/pressed = SubResource("StyleBoxFlat_uy2cm")
+LineEdit/styles/focus = SubResource("StyleBoxFlat_t3pyk")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_keeis")
 MenuButton/styles/disabled = SubResource("StyleBoxEmpty_i37g0")
 MenuButton/styles/focus = SubResource("StyleBoxFlat_q8vga")

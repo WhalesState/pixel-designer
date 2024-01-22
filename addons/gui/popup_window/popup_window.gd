@@ -15,7 +15,6 @@ func _init():
         visible = visible_in_editor
     else:
         visible = false
-    transparent_bg = not Engine.is_editor_hint()
 
 
 func _on_close_requested():

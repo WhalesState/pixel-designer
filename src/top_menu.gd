@@ -1,51 +1,39 @@
-@tool
+@tool 
 extends HBoxContainer
 
 enum {
-	PROJECT_MENU,
-	EDITOR_MENU,
-}
-
-enum PROJECT {
-	NEW,
-	OPEN,
-	SAVE,
-	SAVE_AS,
-	SETTINGS,
-	EXIT,
-}
-
-enum EDITOR {
-	DATA_FOLDER,
-	FULLSCREEN,
-	ALWAYS_ON_TOP,
-	SETTINGS,
+	PROJECT_NEW,
+	PROJECT_OPEN,
+	PROJECT_SAVE,
+	PROJECT_SAVE_AS,
+	PROJECT_SETTINGS,
+	PROJECT_EXIT,
+	EDITOR_DATA_FOLDER,
+	EDITOR_FULLSCREEN,
+	EDITOR_ALWAYS_ON_TOP,
+	EDITOR_SETTINGS,
 }
 
 const MENUS := {
-	"Project": PROJECT_MENU,
-	"Editor": EDITOR_MENU,
-}
-
-const ITEMS := {
-	PROJECT_MENU: {
-		"New Project": PROJECT.NEW,
-		"Open Project": PROJECT.OPEN,
-		"Save Project": PROJECT.SAVE,
-		"Save Project As": PROJECT.SAVE_AS,
-		"Project Settings": PROJECT.SETTINGS,
-		"Exit": PROJECT.EXIT,
+	"Project": {
+		"New Project": PROJECT_NEW,
+		"Open Project": PROJECT_OPEN,
+		"Save Project": PROJECT_SAVE,
+		"Save Project As": PROJECT_SAVE_AS,
+		"Project Settings": PROJECT_SETTINGS,
+		"Exit": PROJECT_EXIT,
 	},
-	EDITOR_MENU: {
-		"Open Data Folder": EDITOR.DATA_FOLDER,
-		"Toggle Fullscreen": EDITOR.FULLSCREEN,
-		"Toggle Always On Top": EDITOR.ALWAYS_ON_TOP,
-		"Editor Settings": EDITOR.SETTINGS,
+	"Editor": {
+		"Open Data Folder": EDITOR_DATA_FOLDER,
+		"Toggle Fullscreen": EDITOR_FULLSCREEN,
+		"Toggle Always On Top": EDITOR_ALWAYS_ON_TOP,
+		"Editor Settings": EDITOR_SETTINGS,
 	},
 }
 
 
 func _ready() -> void:
+	name = "TopMenu"
 	for child in get_children():
 		remove_child(child)
 		child.queue_free()
@@ -56,38 +44,34 @@ func _ready() -> void:
 		menu_button.text = menu
 		menu_button.flat = false
 		menu_button.focus_mode = FOCUS_ALL
-		menu_button.get_popup().id_pressed.connect(_on_menu_id_pressed.bind(MENUS[menu]))
+		menu_button.get_popup().id_pressed.connect(_on_menu_id_pressed)
 		add_child(menu_button)
 		var menu_popup = menu_button.get_popup()
-		for item in ITEMS[MENUS[menu]].keys():
-			menu_popup.add_item(item, ITEMS[MENUS[menu]][item])
+		for item in MENUS[menu].keys():
+			menu_popup.add_item(item, MENUS[menu][item])
 
 
-func _on_menu_id_pressed(item_id: int, menu_id: int) -> void:
-	match menu_id:
-		PROJECT_MENU:
-			match item_id:
-				PROJECT.NEW, PROJECT.SAVE_AS:
-					get_node("%Popups").project_name_window.popup()
-				PROJECT.OPEN:
-					pass
-				PROJECT.SAVE:
-					get_parent().save_project()
-				PROJECT.SETTINGS:
-					pass
-				PROJECT.EXIT:
-					if Engine.is_editor_hint():
-						return
-					get_tree().quit()
-		EDITOR_MENU:
-			match item_id:
-				EDITOR.DATA_FOLDER:
-					MISC.open_user_data_dir()
-				EDITOR.FULLSCREEN:
-					MISC.toggle_fullscreen()
-				EDITOR.ALWAYS_ON_TOP:
-					if Engine.is_editor_hint():
-						return
-					MISC.toggle_always_on_top()
-				EDITOR.SETTINGS:
-					pass
+func _on_menu_id_pressed(item_id: int) -> void:
+	match item_id:
+		PROJECT_NEW, PROJECT_SAVE_AS:
+			Popups.project_name_window.popup()
+		PROJECT_OPEN:
+			pass
+		PROJECT_SAVE:
+			get_parent().save_project()
+		PROJECT_SETTINGS:
+			pass
+		PROJECT_EXIT:
+			if Engine.is_editor_hint():
+				return
+			get_tree().quit()
+		EDITOR_DATA_FOLDER:
+			MISC.open_user_data_dir()
+		EDITOR_FULLSCREEN:
+			MISC.toggle_fullscreen()
+		EDITOR_ALWAYS_ON_TOP:
+			if Engine.is_editor_hint():
+				return
+			MISC.toggle_always_on_top()
+		EDITOR_SETTINGS:
+			pass

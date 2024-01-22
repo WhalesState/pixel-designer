@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   height="16"
-   viewBox="0 0 16 16"
-   width="16"
+   height="24"
+   viewBox="0 0 24 24"
+   width="24"
    version="1.1"
    id="svg3211"
    sodipodi:docname="hidden.svg"
@@ -23,17 +23,19 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#d1d1d1"
      showgrid="true"
-     inkscape:zoom="38.935067"
-     inkscape:cx="10.247831"
-     inkscape:cy="10.594562"
+     inkscape:zoom="9.7337668"
+     inkscape:cx="24.194128"
+     inkscape:cy="10.530353"
      inkscape:current-layer="svg3211">
     <inkscape:grid
        type="xygrid"
-       id="grid3710" />
+       id="grid3710"
+       originx="0"
+       originy="0" />
   </sodipodi:namedview>
   <path
      id="path1943-8"
-     style="fill:#a95cfa;fill-opacity:1"
-     d="m 1,8 c 0,3.999992 3.000008,7 7,7 3.999992,0 7,-3.000008 7,-7 h -3 c 0,2.999994 -2,4 -4,4 C 6,12 4,10.999994 4,8 Z"
+     style="fill:#a95cfa;fill-opacity:1;stroke-width:1.28571"
+     d="m 3.0000005,12 c 0,5.142847 3.8571531,9 9.0000005,9 C 17.142847,21 21,17.142847 21,12 h -4 c 0,3.857135 -2.428572,5 -5,5 -2.5714291,0 -5,-1.142865 -5,-5 z"
      sodipodi:nodetypes="csccscc" />
 </svg>

@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 G="*res://src/global.gd"
+Popups="*res://src/popups.gd"
 
 [display]
 

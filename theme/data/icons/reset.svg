@@ -5,7 +5,7 @@
    width="16"
    version="1.1"
    id="svg4"
-   sodipodi:docname="linked.svg"
+   sodipodi:docname="reload.svg"
    inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,12 +23,12 @@
      inkscape:pagecheckerboard="1"
      inkscape:deskcolor="#d1d1d1"
      showgrid="false"
-     inkscape:zoom="55.0625"
-     inkscape:cx="7.4824064"
-     inkscape:cy="10.92395"
+     inkscape:zoom="27.53125"
+     inkscape:cx="7.6640182"
+     inkscape:cy="12.295119"
      inkscape:current-layer="svg4" />
   <path
-     d="M9.545 3.627a1 1 0 0 1 2.84 2.818L9.98 8.85a4 4 0 1 0-2.83-2.83zm-5.238 6.664a1 1 0 0 0 1.414 1.414l6-6a1 1 0 0 0-1.414-1.414zm2.148 2.082a2 2 0 0 1-2.84-2.818L6.02 7.15a4 4 0 1 0 2.83 2.828z"
+     d="M5 8a4 4 0 1 1 4 4v2a6 6 0 1 0-6-6H1l3 4 3-4z"
      fill="#e0e0e0"
      id="path2"
      style="fill:#a95cfa;fill-opacity:1" />

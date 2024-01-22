@@ -1,16 +1,14 @@
-[gd_scene load_steps=14 format=3 uid="uid://dqv51anjjqx8t"]
+[gd_scene load_steps=12 format=3 uid="uid://dqv51anjjqx8t"]
 
 [ext_resource type="Theme" uid="uid://bu55kdwxq2xad" path="res://theme/default_dark.tres" id="1_a7gcb"]
 [ext_resource type="Script" path="res://src/main.gd" id="1_dw5sk"]
-[ext_resource type="Script" path="res://src/top_menu.gd" id="2_2ing4"]
 [ext_resource type="Script" path="res://src/camera.gd" id="3_aca2k"]
-[ext_resource type="Script" path="res://layers_tab.gd" id="4_mpwog"]
 [ext_resource type="Texture2D" uid="uid://cvcyjp5a1a80p" path="res://theme/data/icons/add.svg" id="4_yw4fg"]
-[ext_resource type="Script" path="res://src/sprite_box.gd" id="5_7dwpe"]
-[ext_resource type="Script" path="res://src/popups.gd" id="6_hu0so"]
-[ext_resource type="Script" path="res://src/popups/project_name_window.gd" id="7_ue5fg"]
+[ext_resource type="Script" path="res://src/sprite_box.gd" id="5_t0iwl"]
+[ext_resource type="Script" path="res://src/layers_tab.gd" id="6_q2nhl"]
+[ext_resource type="Script" path="res://src/overlays.gd" id="8_7dpry"]
+[ext_resource type="Script" path="res://src/inspector.gd" id="9_pmqlo"]
 [ext_resource type="Texture2D" uid="uid://cgaooac1icvie" path="res://theme/data/icons/center_view.svg" id="9_xp642"]
-[ext_resource type="Texture2D" uid="uid://dycgjsan8d4c1" path="res://theme/data/icons/checker.png" id="11_pyya8"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_xmlwc"]
 device = -1
@@ -31,12 +29,6 @@ theme = ExtResource("1_a7gcb")
 theme_override_constants/separation = 0
 script = ExtResource("1_dw5sk")
 metadata/_edit_lock_ = true
-
-[node name="TopMenu" type="HBoxContainer" parent="."]
-layout_mode = 2
-focus_mode = 2
-theme_override_constants/separation = 8
-script = ExtResource("2_2ing4")
 
 [node name="MainMargin" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -68,8 +60,10 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Sprites"
 horizontal_alignment = 1
+clip_text = true
+text_overrun_behavior = 1
 
-[node name="AddSprite" type="Button" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/HBoxContainer"]
+[node name="CreateSprite" type="Button" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 icon = ExtResource("4_yw4fg")
 flat = true
@@ -95,13 +89,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 8
-script = ExtResource("5_7dwpe")
+script = ExtResource("5_t0iwl")
 
 [node name="LayersTab" type="VBoxContainer" parent="MainMargin/MainHSplit/LeftSplit"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 0
-script = ExtResource("4_mpwog")
+script = ExtResource("6_q2nhl")
 
 [node name="RightSplit" type="HSplitContainer" parent="MainMargin/MainHSplit"]
 layout_mode = 2
@@ -135,12 +129,17 @@ render_target_update_mode = 4
 [node name="Node" type="Node2D" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport"]
 
 [node name="Camera" type="Camera2D" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node"]
-position = Vector2(8, 8)
+unique_name_in_owner = true
 zoom = Vector2(10, 10)
 script = ExtResource("3_aca2k")
 
 [node name="Sprites" type="Node2D" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node"]
 unique_name_in_owner = true
+
+[node name="Overlays" type="Node2D" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node"]
+unique_name_in_owner = true
+texture_filter = 2
+script = ExtResource("8_7dpry")
 
 [node name="Control" type="Control" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin"]
 layout_mode = 2
@@ -159,38 +158,21 @@ icon = ExtResource("9_xp642")
 [node name="BottomPanel" type="PanelContainer" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit"]
 layout_mode = 2
 
-[node name="Inspector" type="PanelContainer" parent="MainMargin/MainHSplit/RightSplit"]
+[node name="InspectorPanel" type="PanelContainer" parent="MainMargin/MainHSplit/RightSplit"]
 layout_mode = 2
 
-[node name="Popups" type="Control" parent="."]
+[node name="ScrollContainer" type="ScrollContainer" parent="MainMargin/MainHSplit/RightSplit/InspectorPanel"]
+layout_mode = 2
+follow_focus = true
+
+[node name="Inspector" type="VBoxContainer" parent="MainMargin/MainHSplit/RightSplit/InspectorPanel/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-script = ExtResource("6_hu0so")
-metadata/_edit_lock_ = true
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+script = ExtResource("9_pmqlo")
 
-[node name="ProjectNameWindow" type="Window" parent="Popups"]
-title = "Project Name Window"
-initial_position = 5
-size = Vector2i(320, 169)
-visible = false
-wrap_controls = true
-transient = true
-exclusive = true
-min_size = Vector2i(320, 160)
-max_size = Vector2i(640, 480)
-script = ExtResource("7_ue5fg")
-
-[node name="Checker" type="Sprite2D" parent="."]
-texture_filter = 1
-texture_repeat = 2
-position = Vector2(0, 788)
-texture = ExtResource("11_pyya8")
-centered = false
-region_enabled = true
-region_rect = Rect2(0, 0, 4, 4)
-
-[connection signal="pressed" from="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/HBoxContainer/AddSprite" to="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/SpriteScroll/SpriteMargin/SpriteBox" method="_on_add_sprite_pressed"]
+[connection signal="pressed" from="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/HBoxContainer/CreateSprite" to="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/SpriteScroll/SpriteMargin/SpriteBox" method="_on_create_sprite_pressed"]
 [connection signal="gui_input" from="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/Control" to="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node/Camera" method="_on_viewport_gui_input"]
-[connection signal="pressed" from="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/HBoxContainer/CenterViewButton" to="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node/Camera" method="_on_center_view_button_pressed"]
+[connection signal="pressed" from="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/HBoxContainer/CenterViewButton" to="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node/Camera" method="focus_selected_sprite"]
