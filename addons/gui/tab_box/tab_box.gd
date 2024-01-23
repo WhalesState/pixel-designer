@@ -44,6 +44,10 @@ func _init():
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_horizontal = SIZE_EXPAND_FILL
+	var scroll_stylebox := StyleBoxEmpty.new()
+	for m in ["left", "right", "top", "bottom"]:
+		scroll_stylebox.set("content_margin_%s" %m, 0)
+	scroll.add_theme_stylebox_override("panel", scroll_stylebox)
 	hbox.add_child(scroll)
 	scroll.add_child(tab_bar)
 	
@@ -85,12 +89,6 @@ func add_tab(tab_name: String, vertical_scroll := true, show_scroll := true, ali
 	scroll.size_flags_horizontal = SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = SIZE_EXPAND_FILL
 	tab_container.add_child(scroll)
-	var margin := MarginContainer.new()
-	for m in ["left", "right", "top", "bottom"]:
-		margin.add_theme_constant_override("margin_%s" % m, 4)
-	margin.size_flags_horizontal = SIZE_EXPAND_FILL
-	margin.size_flags_vertical = SIZE_EXPAND_FILL
-	scroll.add_child(margin)
 	var container
 	if flow_container:
 		container = HFlowContainer.new()
@@ -100,7 +98,9 @@ func add_tab(tab_name: String, vertical_scroll := true, show_scroll := true, ali
 	else:
 		container = HBoxContainer.new()
 		# container.add_theme_constant_override("separation", 8)
-	margin.add_child(container)
+	container.size_flags_horizontal = SIZE_EXPAND_FILL
+	container.size_flags_vertical = SIZE_EXPAND_FILL
+	scroll.add_child(container)
 	if tab_bar.get_child_count() == 1:
 		tab = 0
 	return button.get_index()

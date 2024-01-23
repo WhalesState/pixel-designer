@@ -72,6 +72,7 @@ func remove_sprite(spr_button: SpriteButton):
 		else:
 			get_node("%LayersTab").clear()
 			get_node("%Inspector").clear()
+			get_node("%Overlays").selected = null
 
 
 func _on_sprite_button_selected(vp_node: SubViewport):
