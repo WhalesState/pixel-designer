@@ -3,6 +3,8 @@
 class_name PopupWindow
 extends Window
 
+signal about_to_hide
+
 @export var visible_in_editor := false
 
 
@@ -18,6 +20,7 @@ func _init():
 
 
 func _on_close_requested():
+    emit_signal("about_to_hide")
     hide()
 
 

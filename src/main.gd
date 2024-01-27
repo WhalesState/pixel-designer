@@ -6,9 +6,23 @@ var project_dir: DirAccess
 
 var top_menu = preload("res://src/top_menu.gd").new()
 
+
 func _init():
 	add_child(top_menu, true, INTERNAL_MODE_FRONT)
 	MISC._prepare()
+
+
+func _ready():
+	var cfg = MISC.get_editor_settings()
+	if cfg.has_section_key("editor", "recent_project"):
+		project_dir = DirAccess.open(cfg.get_value("editor", "recent_project"))
+		if project_dir and project_dir.file_exists(project_dir.get_current_dir() + "/project.cfg"):
+			project_file = ConfigFile.new()
+			if project_file.load(project_dir.get_current_dir() + "/project.cfg") != OK:
+				print("ERROR: Can't load project file at: " + project_dir.get_current_dir())
+				project_dir = null
+			else:
+				reload_project()
 
 
 func _input(ev: InputEvent):
@@ -35,9 +49,39 @@ func _input(ev: InputEvent):
 
 func save_project():
 	if project_file:
+		project_file.save(project_dir.get_current_dir() + "/project.cfg.backup")
+		if project_file.has_section("sprites"):
+			project_file.erase_section("sprites")
+		for sprite in get_node("%Sprites").get_children():
+			project_file.set_value("sprites", sprite.name, sprite.get_data())
+		project_file.set_value("camera", "position", get_node("%Camera").position)
+		project_file.set_value("camera", "zoom", get_node("%Camera").zoom)
 		if not OK == project_file.save(project_dir.get_current_dir() + "/project.cfg"):
 			print("Warning: Can't save project file")
 			MISC._prepare()
 			Popups.project_name_window.popup()
 	else:
 		Popups.project_name_window.popup()
+
+
+func reload_project():
+	get_node("%Overlays").selected = null
+	get_node("%Inspector").clear()
+	var sprites_node = get_node("%Sprites")
+	for spr in sprites_node.get_children():
+		sprites_node.remove_child(spr)
+		spr.queue_free()
+	var sprite_box = get_node("%SpriteBox")
+	for spr_button in sprite_box.get_children():
+		sprite_box.remove_child(spr_button)
+		spr_button.queue_free()
+	if project_file.has_section("sprites"):
+		for key in project_file.get_section_keys("sprites"):
+			var sprite_data = project_file.get_value("sprites", key)
+			var sprite = sprite_box.create_new_sprite(key)
+			if sprite.load_data(sprite_data) != OK:
+				print("ERROR: Can't load sprite: " + key)
+			sprite_box.create_sprite_button(sprite)
+	var camera = get_node("%Camera")
+	camera.position = project_file.get_value("camera", "position", Vector2.ZERO)
+	camera.zoom = project_file.get_value("camera", "zoom", Vector2(10, 10))

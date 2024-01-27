@@ -2,10 +2,12 @@
 extends Control
 
 @onready var project_name_window := ProjectNameWindow.new()
+@onready var editor_settings_window := EditorSettingsWindow.new()
 
 
 func _ready():
     add_child(project_name_window)
+    add_child(editor_settings_window)
 
 
 class ProjectNameWindow:
@@ -74,9 +76,34 @@ class ProjectNameWindow:
 
 
     func _on_create_project_button_pressed():
-        var main: Control = get_parent().get_parent()
-        projects_dir.make_dir_recursive(name_line_edit.text)
+        var main: VBoxContainer = get_parent().get_parent().get_node("Main")
+        if projects_dir.make_dir_recursive(name_line_edit.text) != OK:
+            warning_label.text = "Can't create project directory!"
+            return
         main.project_file = ConfigFile.new()
         main.project_dir = DirAccess.open("%s/%s" % [projects_dir.get_current_dir(), name_line_edit.text])
+        if not main.project_dir:
+            warning_label.text = "Can't open project directory!"
+            return
+        var cfg: ConfigFile = MISC.get_editor_settings()
+        cfg.set_value("editor", "recent_project", main.project_dir.get_current_dir())
+        MISC.save_editor_settings(cfg)
         main.save_project()
         hide()
+
+
+class EditorSettingsWindow:
+    extends PopupWindow
+    
+    
+    func _init():
+        super._init()
+        title = "Editor Settings"
+        about_to_hide.connect(_on_about_to_hide)
+    
+    
+    func _on_about_to_hide():
+        var cfg = MISC.get_editor_settings()
+        # TODO: Save editor settings!
+        if MISC.save_editor_settings(cfg) != OK:
+            print("ERROR: Can't save editor settings file")

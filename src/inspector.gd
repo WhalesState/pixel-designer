@@ -9,9 +9,19 @@ func add_label(text: String, text_alignment := HORIZONTAL_ALIGNMENT_CENTER):
 	add_child(label)
 
 
-func add_bool_property(property_name: String, property_owner: Node, property: String, default_value = null):
+func add_bool_property(property_category: String, property_name: String, property_owner: Node, property: String, default_value = null):
+	var category: Category
+	if not property_category.is_empty():
+		category = get_node_or_null(property_category)
+		if not category:
+			category = Category.new(property_category)
+			category.name = property_category
+			add_child(category)
 	var hbox := HBoxContainer.new()
-	add_child(hbox)
+	if category:
+		category.get_child(0).add_child(hbox)
+	else:
+		add_child(hbox, false, INTERNAL_MODE_FRONT)
 	var name_hbox := NameHBox.new(property_name)
 	hbox.add_child(name_hbox)
 	var reset_button: ResetButton
@@ -30,9 +40,19 @@ func add_bool_property(property_name: String, property_owner: Node, property: St
 	checkbox.toggled.connect(_on_bool_checkbox_toggled.bind(property_owner, property, reset_button))
 
 
-func add_vec2_property(property_name: String, property_owner: Node, property: String, default_value = null, hint := [-9999,9999,1.0, true, true]):
+func add_vec2_property(property_category: String, property_name: String, property_owner: Node, property: String, default_value = null, hint := [-9999,9999,1.0, true, true]):
+	var category: Category
+	if not property_category.is_empty():
+		category = get_node_or_null(property_category)
+		if not category:
+			category = Category.new(property_category)
+			category.name = property_category
+			add_child(category)
 	var hbox := HBoxContainer.new()
-	add_child(hbox)
+	if category:
+		category.get_child(0).add_child(hbox)
+	else:
+		add_child(hbox, false, INTERNAL_MODE_FRONT)
 	var name_hbox := NameHBox.new(property_name)
 	hbox.add_child(name_hbox)
 	var reset_button: ResetButton
@@ -179,3 +199,13 @@ class SpinBoxSlider:
 	func _on_spinbox_focus_toggled(toggled_on: bool):
 		if slider_visible:
 			slider_margin.visible = not toggled_on
+
+
+class Category:
+	extends FoldableContainer
+	
+	
+	func _init(_title: String):
+		title = _title
+		var vbox = VBoxContainer.new()
+		add_child(vbox)

@@ -10,19 +10,19 @@ const THEME: Theme = preload("res://theme/data/theme.tres")
 
 static func _prepare() -> void:
 	var dir = DirAccess.open(OS.get_user_data_dir())
-	if dir:
-		if not dir.dir_exists("projects"):
-			if not OK == dir.make_dir_recursive("projects"):
-				print("ERROR: Can't create projects directory")
-		if not dir.file_exists("editor_settings.cfg"):
-			var cfg := ConfigFile.new()
-			cfg.set_value("editor", "theme", "Default Dark")
-			cfg.set_value("editor", "font", "ConfigRounded")
-			cfg.set_value("editor", "font_size", 16)
-			if not OK == cfg.save(OS.get_user_data_dir() + "/editor_settings.cfg"):
-				print("ERROR: Can't save editor settings")
-	else:
+	if not dir:
 		print("ERROR: Can't access user directory")
+		return
+	if not dir.dir_exists("projects"):
+		if dir.make_dir_recursive("projects") != OK:
+			print("ERROR: Can't create projects directory")
+	if not dir.file_exists("editor_settings.cfg"):
+		if save_editor_settings(get_editor_settings()) != OK:
+			print("ERROR: Can't save editor settings")
+
+
+static func save_editor_settings(cfg: ConfigFile) -> int:
+	return cfg.save(OS.get_user_data_dir() + "/editor_settings.cfg")
 
 
 static func open_user_data_dir() -> void:
@@ -53,15 +53,14 @@ static func get_projects_dir() -> DirAccess:
 
 
 static func get_editor_settings() -> ConfigFile:
+	var dir = DirAccess.open(OS.get_user_data_dir())
 	var cfg := ConfigFile.new()
-	if not FileAccess.file_exists("user://editor_settings.cfg"):
+	if not dir.file_exists("editor_settings.cfg"):
 		cfg.set_value("editor", "theme", "Default Dark")
 		cfg.set_value("editor", "font", "ConfigRounded")
 		cfg.set_value("editor", "font_size", 16)
-		if not OK == cfg.save("user://editor_settings.cfg"):
-			print("ERROR: Can't save editor settings")
 	else:
-		if not OK == cfg.load("user://editor_settings.cfg"):
+		if cfg.load(OS.get_user_data_dir() + "/editor_settings.cfg") != OK:
 			print("ERROR: Can't load editor settings")
 	return cfg
 

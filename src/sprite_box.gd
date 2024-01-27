@@ -122,7 +122,6 @@ class SpriteButton:
 	
 	
 	func _on_sprite_button_toggled(toggled_on: bool):
-		
 		if toggled_on:
 			var inspector = get_parent().get_node("%Inspector")
 			if inspector.get_child_count() > 0:
@@ -132,10 +131,10 @@ class SpriteButton:
 			emit_signal("selected", spr.get_child(0))
 			inspector.clear()
 			inspector.add_label(spr.name)
-			inspector.add_vec2_property("Position", spr, "position", Vector2.ZERO)
-			inspector.add_vec2_property("Size", spr, "size", null, [1, 1024, 1, false, false])
-			inspector.add_bool_property("Checker", spr, "checker_visible", true)
-			inspector.add_vec2_property("Checker Size", spr, "checker_size", null, [1, 1024, 1, false, false])
+			inspector.add_vec2_property("Transform", "Position", spr, "position", Vector2.ZERO)
+			inspector.add_vec2_property("Transform", "Size", spr, "size", null, [1, 1024, 1, false, false])
+			inspector.add_bool_property("Checker", "Visible", spr, "checker_visible", true)
+			inspector.add_vec2_property("Checker", "Size", spr, "checker_size", null, [1, 1024, 1, false, false])
 	
 	
 	func _get_drag_data(_pos: Vector2):
@@ -171,6 +170,7 @@ class Sprite:
 			checker.scale = value
 			checker.region_rect.size = (size / checker.scale).ceil()
 	
+	
 	func _init(spr_size := Vector2(16, 16)):
 		size = spr_size
 		stretch = true
@@ -189,6 +189,26 @@ class Sprite:
 		checker.texture = MISC.get_icon("checker")
 		vp.add_child(checker, false, INTERNAL_MODE_FRONT)
 		resized.connect(_on_resized)
+	
+	
+	func get_data() -> Dictionary:
+		var data := {}
+		data["checker_visible"] = checker_visible
+		data["checker_size"] = checker_size
+		data["position"] = position
+		data["size"] = size
+		return data
+	
+	
+	func load_data(data: Dictionary) -> int:
+		# set them manually one by one for now, just in case it sets another class variable later.
+		if data.is_empty():
+			return ERR_INVALID_DATA
+		checker_visible = data["checker_visible"]
+		checker_size = data["checker_size"]
+		position = data["position"]
+		size = data["size"]
+		return OK
 	
 	
 	func _on_resized():

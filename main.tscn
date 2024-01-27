@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dqv51anjjqx8t"]
+[gd_scene load_steps=11 format=3 uid="uid://dqv51anjjqx8t"]
 
 [ext_resource type="Script" path="res://src/main.gd" id="1_dw5sk"]
 [ext_resource type="Script" path="res://src/layout.gd" id="2_o2lxl"]
@@ -8,8 +8,6 @@
 [ext_resource type="Script" path="res://src/overlays.gd" id="8_7dpry"]
 [ext_resource type="Script" path="res://src/inspector.gd" id="9_pmqlo"]
 [ext_resource type="Texture2D" uid="uid://cgaooac1icvie" path="res://theme/data/icons/center_view.svg" id="9_xp642"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bc42x"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_xmlwc"]
 device = -1
@@ -113,19 +111,6 @@ script = ExtResource("8_7dpry")
 
 [node name="Control" type="Control" parent="Layout/CenterContainer"]
 layout_mode = 2
-metadata/_edit_lock_ = true
-
-[node name="MarginContainer" type="MarginContainer" parent="Layout/CenterContainer/Control"]
-layout_mode = 0
-offset_left = 123.0
-offset_top = 164.0
-offset_right = 319.0
-offset_bottom = 339.0
-
-[node name="Panel" type="PanelContainer" parent="Layout/CenterContainer/Control/MarginContainer"]
-visible = false
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_bc42x")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Layout/CenterContainer"]
 layout_mode = 2
