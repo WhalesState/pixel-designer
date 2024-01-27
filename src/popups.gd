@@ -80,4 +80,3 @@ class ProjectNameWindow:
         main.project_dir = DirAccess.open("%s/%s" % [projects_dir.get_current_dir(), name_line_edit.text])
         main.save_project()
         hide()
-

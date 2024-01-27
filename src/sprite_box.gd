@@ -17,15 +17,6 @@ func create_new_sprite(spr_name := "Sprite", spr_size := Vector2(16, 16)) -> Spr
 	return sprite
 
 
-func create_sprite_layer(sprite: Sprite, layer_name := "Layer") -> Layer:
-	var layer = Layer.new()
-	sprite.get_child(0).add_child(layer)
-	layer.name = layer_name
-	# Test
-	layer.texture = preload("res://test.png")
-	return layer
-
-
 func create_sprite_button(sprite: Sprite):
 	var spr_button := SpriteButton.new(sprite, sprite_group)
 	spr_button.selected.connect(_on_sprite_button_selected)
@@ -36,7 +27,6 @@ func create_sprite_button(sprite: Sprite):
 
 func _on_create_sprite_pressed():
 	var sprite = create_new_sprite()
-	create_sprite_layer(sprite)
 	create_sprite_button(sprite)
 
 
@@ -49,12 +39,7 @@ func _on_sprite_button_right_pressed(mpos: Vector2, spr_button: SpriteButton):
 func _on_sprite_menu_id_pressed(id: int):
 	match id:
 		sprite_menu.ADD_LAYER:
-			var spr_button = sprite_menu.button
-			var layer = create_sprite_layer(spr_button.get_meta("node"))
-			if spr_button == sprite_group.get_pressed_button():
-				var layers_tab: TabBox = get_node("%LayersTab")
-				var layer_ind := layers_tab.add_tab(layer.name, true, true, false, true)
-				layers_tab.tab_bar.get_child(layer_ind).set_meta("node", layer)
+			pass
 		sprite_menu.REMOVE_SPRITE:
 			remove_sprite(sprite_menu.button)
 			sprite_menu.button = null
@@ -70,17 +55,11 @@ func remove_sprite(spr_button: SpriteButton):
 		if get_child_count() > 0:
 			get_child(0).button_pressed = true
 		else:
-			get_node("%LayersTab").clear()
 			get_node("%Inspector").clear()
 			get_node("%Overlays").selected = null
 
 
 func _on_sprite_button_selected(vp_node: SubViewport):
-	var layers_tab: TabBox = get_node("%LayersTab")
-	layers_tab.clear()
-	for child in vp_node.get_children():
-		var layer_ind := layers_tab.add_tab(child.name, true, true, false, true)
-		layers_tab.tab_bar.get_child(layer_ind).set_meta("node", child)
 	get_node("%Overlays").selected = vp_node.get_parent()
 
 
@@ -175,16 +154,6 @@ class SpriteButton:
 	func _drop_data(_pos: Vector2, data: Variant):
 		get_parent().get_node("%Sprites").move_child(data.get_meta("node"), get_index())
 		get_parent().move_child(data, get_index())
-
-
-class Layer:
-	extends Sprite2D
-	
-	var cells := []
-	var cur_cell = 0
-	
-	func _init():
-		centered = false
 
 
 class Sprite:

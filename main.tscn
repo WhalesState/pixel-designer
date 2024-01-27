@@ -1,13 +1,11 @@
-[gd_scene load_steps=22 format=3 uid="uid://dqv51anjjqx8t"]
+[gd_scene load_steps=12 format=3 uid="uid://dqv51anjjqx8t"]
 
 [ext_resource type="Script" path="res://src/main.gd" id="1_dw5sk"]
+[ext_resource type="Script" path="res://src/layout.gd" id="2_o2lxl"]
 [ext_resource type="Script" path="res://src/camera.gd" id="3_aca2k"]
 [ext_resource type="Texture2D" uid="uid://cvcyjp5a1a80p" path="res://theme/data/icons/add.svg" id="4_yw4fg"]
 [ext_resource type="Script" path="res://src/sprite_box.gd" id="5_t0iwl"]
-[ext_resource type="Script" path="res://src/layers_tab.gd" id="6_q2nhl"]
 [ext_resource type="Script" path="res://src/overlays.gd" id="8_7dpry"]
-[ext_resource type="Script" path="res://addons/gui/expandable_container/extendable_container.gd" id="8_edl3s"]
-[ext_resource type="Theme" uid="uid://bu55kdwxq2xad" path="res://theme/default_dark.tres" id="8_ye8qb"]
 [ext_resource type="Script" path="res://src/inspector.gd" id="9_pmqlo"]
 [ext_resource type="Texture2D" uid="uid://cgaooac1icvie" path="res://theme/data/icons/center_view.svg" id="9_xp642"]
 
@@ -21,61 +19,6 @@ unicode = 102
 [sub_resource type="Shortcut" id="Shortcut_1mixe"]
 events = [SubResource("InputEventKey_xmlwc")]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_3bwkf"]
-
-[sub_resource type="Image" id="Image_prs66"]
-data = {
-"data": PackedByteArray(255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 180, 180, 180, 81, 177, 177, 177, 88, 179, 179, 179, 10, 255, 255, 255, 0, 255, 255, 255, 0, 179, 179, 179, 10, 177, 177, 177, 88, 179, 179, 179, 80, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 177, 177, 177, 88, 178, 178, 178, 115, 178, 178, 178, 96, 179, 179, 179, 10, 179, 179, 179, 10, 178, 178, 178, 96, 178, 178, 178, 115, 177, 177, 177, 88, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 179, 179, 179, 10, 177, 177, 177, 95, 178, 178, 178, 115, 178, 178, 178, 96, 178, 178, 178, 96, 178, 178, 178, 115, 177, 177, 177, 95, 199, 199, 199, 9, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 179, 179, 179, 10, 177, 177, 177, 95, 178, 178, 178, 115, 178, 178, 178, 115, 177, 177, 177, 95, 199, 199, 199, 9, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 179, 179, 179, 10, 177, 177, 177, 88, 177, 177, 177, 88, 199, 199, 199, 9, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0),
-"format": "RGBA8",
-"height": 16,
-"mipmaps": false,
-"width": 16
-}
-
-[sub_resource type="ImageTexture" id="ImageTexture_yj8xp"]
-image = SubResource("Image_prs66")
-
-[sub_resource type="Image" id="Image_w3o0y"]
-data = {
-"data": PackedByteArray(255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 180, 180, 180, 81, 177, 177, 177, 88, 179, 179, 179, 10, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 177, 177, 177, 88, 178, 178, 178, 115, 177, 177, 177, 95, 179, 179, 179, 10, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 179, 179, 179, 10, 178, 178, 178, 96, 178, 178, 178, 115, 177, 177, 177, 95, 179, 179, 179, 10, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 179, 179, 179, 10, 178, 178, 178, 96, 178, 178, 178, 115, 177, 177, 177, 88, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 179, 179, 179, 10, 178, 178, 178, 96, 178, 178, 178, 115, 177, 177, 177, 88, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 179, 179, 179, 10, 178, 178, 178, 96, 178, 178, 178, 115, 177, 177, 177, 95, 199, 199, 199, 9, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 177, 177, 177, 88, 178, 178, 178, 115, 177, 177, 177, 95, 199, 199, 199, 9, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 179, 179, 179, 80, 177, 177, 177, 88, 199, 199, 199, 9, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0),
-"format": "RGBA8",
-"height": 16,
-"mipmaps": false,
-"width": 16
-}
-
-[sub_resource type="ImageTexture" id="ImageTexture_2vaio"]
-image = SubResource("Image_w3o0y")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7gel7"]
-content_margin_left = 16.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.1, 0.1, 0.1, 0.6)
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_13tga"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.2, 0.2, 0.2, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e1e0l"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.2, 0.2, 0.2, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
 [node name="Main" type="VBoxContainer"]
 texture_filter = 2
 anchors_preset = 15
@@ -83,36 +26,31 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 0
 script = ExtResource("1_dw5sk")
 metadata/_edit_lock_ = true
 
-[node name="MainMargin" type="MarginContainer" parent="."]
+[node name="Layout" type="Container" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
+script = ExtResource("2_o2lxl")
 
-[node name="MainHSplit" type="HSplitContainer" parent="MainMargin"]
-layout_mode = 2
-split_offset = 256
-
-[node name="LeftSplit" type="VSplitContainer" parent="MainMargin/MainHSplit"]
-layout_mode = 2
-split_offset = 256
-
-[node name="SpritePanel" type="PanelContainer" parent="MainMargin/MainHSplit/LeftSplit"]
+[node name="LeftContainer" type="ScrollContainer" parent="Layout"]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel"]
+[node name="VSplitContainer" type="VSplitContainer" parent="Layout/LeftContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Layout/LeftContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Layout/LeftContainer/VSplitContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="Layout/LeftContainer/VSplitContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Sprites"
@@ -120,19 +58,18 @@ horizontal_alignment = 1
 clip_text = true
 text_overrun_behavior = 1
 
-[node name="CreateSprite" type="Button" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/HBoxContainer"]
+[node name="CreateSprite" type="Button" parent="Layout/LeftContainer/VSplitContainer/VBoxContainer/HBoxContainer"]
 clip_contents = true
 layout_mode = 2
 icon = ExtResource("4_yw4fg")
 flat = true
 
-[node name="SpriteScroll" type="ScrollContainer" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer"]
+[node name="SpriteScroll" type="ScrollContainer" parent="Layout/LeftContainer/VSplitContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-follow_focus = true
 horizontal_scroll_mode = 3
 
-[node name="SpriteBox" type="VBoxContainer" parent="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/SpriteScroll"]
+[node name="SpriteBox" type="VBoxContainer" parent="Layout/LeftContainer/VSplitContainer/VBoxContainer/SpriteScroll"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -140,26 +77,10 @@ size_flags_vertical = 3
 theme_override_constants/separation = 8
 script = ExtResource("5_t0iwl")
 
-[node name="LayersTab" type="VBoxContainer" parent="MainMargin/MainHSplit/LeftSplit"]
-unique_name_in_owner = true
+[node name="CenterContainer" type="MarginContainer" parent="Layout"]
 layout_mode = 2
-theme_override_constants/separation = 0
-script = ExtResource("6_q2nhl")
 
-[node name="RightSplit" type="HSplitContainer" parent="MainMargin/MainHSplit"]
-layout_mode = 2
-split_offset = -256
-
-[node name="MiddleSplit" type="VSplitContainer" parent="MainMargin/MainHSplit/RightSplit"]
-layout_mode = 2
-size_flags_horizontal = 3
-split_offset = -256
-
-[node name="Margin" type="MarginContainer" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="ViewportContainer" type="SubViewportContainer" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin"]
+[node name="ViewportContainer" type="SubViewportContainer" parent="Layout/CenterContainer"]
 texture_filter = 1
 layout_mode = 2
 size_flags_vertical = 3
@@ -167,100 +88,70 @@ mouse_filter = 0
 mouse_force_pass_scroll_events = false
 stretch = true
 
-[node name="Viewport" type="SubViewport" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer"]
+[node name="Viewport" type="SubViewport" parent="Layout/CenterContainer/ViewportContainer"]
 transparent_bg = true
 handle_input_locally = false
 snap_2d_transforms_to_pixel = true
 canvas_item_default_texture_filter = 0
-size = Vector2i(484, 465)
+size = Vector2i(504, 437)
 render_target_update_mode = 4
 
-[node name="Node" type="Node2D" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport"]
+[node name="Node" type="Node2D" parent="Layout/CenterContainer/ViewportContainer/Viewport"]
 
-[node name="Camera" type="Camera2D" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node"]
+[node name="Camera" type="Camera2D" parent="Layout/CenterContainer/ViewportContainer/Viewport/Node"]
 unique_name_in_owner = true
 zoom = Vector2(10, 10)
 script = ExtResource("3_aca2k")
 
-[node name="Sprites" type="Node2D" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node"]
+[node name="Sprites" type="Node2D" parent="Layout/CenterContainer/ViewportContainer/Viewport/Node"]
 unique_name_in_owner = true
 
-[node name="Overlays" type="Node2D" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node"]
+[node name="Overlays" type="Node2D" parent="Layout/CenterContainer/ViewportContainer/Viewport/Node"]
 unique_name_in_owner = true
 texture_filter = 2
 script = ExtResource("8_7dpry")
 
-[node name="Control" type="Control" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin"]
+[node name="Control" type="Control" parent="Layout/CenterContainer"]
 layout_mode = 2
 metadata/_edit_lock_ = true
 
-[node name="MarginContainer" type="MarginContainer" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/Control"]
+[node name="MarginContainer" type="MarginContainer" parent="Layout/CenterContainer/Control"]
 layout_mode = 0
 offset_left = 123.0
 offset_top = 164.0
 offset_right = 319.0
 offset_bottom = 339.0
 
-[node name="Panel" type="PanelContainer" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/Control/MarginContainer"]
+[node name="Panel" type="PanelContainer" parent="Layout/CenterContainer/Control/MarginContainer"]
 visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bc42x")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Layout/CenterContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 
-[node name="CenterViewButton" type="Button" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/HBoxContainer"]
+[node name="CenterViewButton" type="Button" parent="Layout/CenterContainer/HBoxContainer"]
 layout_mode = 2
 shortcut = SubResource("Shortcut_1mixe")
 icon = ExtResource("9_xp642")
 
-[node name="BottomPanel" type="PanelContainer" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit"]
-layout_mode = 2
-theme = ExtResource("8_ye8qb")
-theme_override_styles/panel = SubResource("StyleBoxEmpty_3bwkf")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/BottomPanel"]
+[node name="BottomContainer" type="ScrollContainer" parent="Layout"]
 layout_mode = 2
 
-[node name="ExtendableContainer" type="Container" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/BottomPanel/VBoxContainer"]
-custom_minimum_size = Vector2(0, 31)
-layout_mode = 2
-script = ExtResource("8_edl3s")
-title = "hello"
-arrow_icon = SubResource("ImageTexture_yj8xp")
-arrow_collapsed_icon = SubResource("ImageTexture_2vaio")
-panel_style = SubResource("StyleBoxFlat_7gel7")
-title_style = SubResource("StyleBoxFlat_13tga")
-collapsed_title_style = SubResource("StyleBoxFlat_e1e0l")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/BottomPanel/VBoxContainer/ExtendableContainer"]
+[node name="RightContainer" type="ScrollContainer" parent="Layout"]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/BottomPanel/VBoxContainer/ExtendableContainer/VBoxContainer"]
-layout_mode = 2
-text = "Hello"
-
-[node name="Button2" type="Button" parent="MainMargin/MainHSplit/RightSplit/MiddleSplit/BottomPanel/VBoxContainer/ExtendableContainer/VBoxContainer"]
-layout_mode = 2
-text = "Hello2"
-
-[node name="InspectorPanel" type="PanelContainer" parent="MainMargin/MainHSplit/RightSplit"]
-layout_mode = 2
-
-[node name="ScrollContainer" type="ScrollContainer" parent="MainMargin/MainHSplit/RightSplit/InspectorPanel"]
-layout_mode = 2
-follow_focus = true
-
-[node name="Inspector" type="VBoxContainer" parent="MainMargin/MainHSplit/RightSplit/InspectorPanel/ScrollContainer"]
+[node name="Inspector" type="VBoxContainer" parent="Layout/RightContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 8
 script = ExtResource("9_pmqlo")
 
-[connection signal="pressed" from="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/HBoxContainer/CreateSprite" to="MainMargin/MainHSplit/LeftSplit/SpritePanel/VBoxContainer/SpriteScroll/SpriteBox" method="_on_create_sprite_pressed"]
-[connection signal="gui_input" from="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/Control" to="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node/Camera" method="_on_viewport_gui_input"]
-[connection signal="pressed" from="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/HBoxContainer/CenterViewButton" to="MainMargin/MainHSplit/RightSplit/MiddleSplit/Margin/ViewportContainer/Viewport/Node/Camera" method="focus_selected_sprite"]
+[connection signal="pressed" from="Layout/LeftContainer/VSplitContainer/VBoxContainer/HBoxContainer/CreateSprite" to="Layout/LeftContainer/VSplitContainer/VBoxContainer/SpriteScroll/SpriteBox" method="_on_create_sprite_pressed"]
+[connection signal="gui_input" from="Layout/CenterContainer/Control" to="Layout/CenterContainer/ViewportContainer/Viewport/Node/Camera" method="_on_viewport_gui_input"]
+[connection signal="pressed" from="Layout/CenterContainer/HBoxContainer/CenterViewButton" to="Layout/CenterContainer/ViewportContainer/Viewport/Node/Camera" method="focus_selected_sprite"]
