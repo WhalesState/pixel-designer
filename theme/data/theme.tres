@@ -1,13 +1,38 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://dhfcrer0jftay"]
+[gd_resource type="Theme" load_steps=19 format=3 uid="uid://dhfcrer0jftay"]
 
+[ext_resource type="FontFile" uid="uid://4r45g5vuubdc" path="res://theme/data/fonts/BebasNeue.ttf" id="1_g4mhi"]
 [ext_resource type="Texture2D" uid="uid://dycgjsan8d4c1" path="res://theme/data/icons/checker.png" id="1_ho8vt"]
 [ext_resource type="Texture2D" uid="uid://5jd67ltue2fk" path="res://theme/data/icons/hidden.svg" id="1_oaahv"]
+[ext_resource type="FontFile" uid="uid://buou37ythfmdi" path="res://theme/data/fonts/ConfigRounded.ttf" id="2_qpsb0"]
 [ext_resource type="Texture2D" uid="uid://dpsetqh1l11go" path="res://theme/data/icons/visible.svg" id="2_u56yu"]
 [ext_resource type="Texture2D" uid="uid://jgkgu43yecq6" path="res://theme/data/icons/linked.svg" id="3_4252b"]
+[ext_resource type="FontFile" uid="uid://bnbimnioegnle" path="res://theme/data/fonts/HubotSans.ttf" id="3_pkun2"]
 [ext_resource type="Texture2D" uid="uid://cf7ldjjynaspo" path="res://theme/data/icons/reset.svg" id="3_tn5vp"]
+[ext_resource type="FontFile" uid="uid://5g7fmhe243uv" path="res://theme/data/fonts/Inter.ttf" id="4_gpoty"]
+[ext_resource type="FontFile" uid="uid://cepen3a4yw87o" path="res://theme/data/fonts/Lato.ttf" id="5_0l4la"]
 [ext_resource type="Texture2D" uid="uid://bsj7g2jc738b3" path="res://theme/data/icons/unlinked.svg" id="5_ayiv4"]
+[ext_resource type="FontFile" uid="uid://witogynagld4" path="res://theme/data/fonts/Nunito.ttf" id="6_iyoxx"]
+[ext_resource type="FontFile" uid="uid://dq88rm0fjrk62" path="res://theme/data/fonts/Oswald.ttf" id="8_2b1j0"]
+[ext_resource type="FontFile" uid="uid://3cq127fygioe" path="res://theme/data/fonts/Poppins.ttf" id="9_mjuc1"]
+[ext_resource type="FontFile" uid="uid://citxixfr7h1mp" path="res://theme/data/fonts/Roboto.ttf" id="10_yfo2k"]
+[ext_resource type="FontFile" uid="uid://cswqgkvpipmf2" path="res://theme/data/fonts/SpaceGrotesk.ttf" id="11_hij8v"]
+[ext_resource type="FontFile" uid="uid://dtmmtasqr68aa" path="res://theme/data/fonts/Teko.ttf" id="12_0ui48"]
+
+[sub_resource type="FontVariation" id="FontVariation_pte4t"]
 
 [resource]
+Fonts/fonts/BebasNeue = ExtResource("1_g4mhi")
+Fonts/fonts/ConfigRounded = ExtResource("2_qpsb0")
+Fonts/fonts/Default = SubResource("FontVariation_pte4t")
+Fonts/fonts/HubotSans = ExtResource("3_pkun2")
+Fonts/fonts/Inter = ExtResource("4_gpoty")
+Fonts/fonts/Lato = ExtResource("5_0l4la")
+Fonts/fonts/Nunito = ExtResource("6_iyoxx")
+Fonts/fonts/Oswald = ExtResource("8_2b1j0")
+Fonts/fonts/Poppins = ExtResource("9_mjuc1")
+Fonts/fonts/Roboto = ExtResource("10_yfo2k")
+Fonts/fonts/SpaceGrotesk = ExtResource("11_hij8v")
+Fonts/fonts/Teko = ExtResource("12_0ui48")
 Icons/icons/checker = ExtResource("1_ho8vt")
 Icons/icons/hidden = ExtResource("1_oaahv")
 Icons/icons/linked = ExtResource("3_4252b")

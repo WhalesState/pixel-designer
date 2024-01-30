@@ -7,6 +7,7 @@ enum {
 	PROJECT_SAVE,
 	PROJECT_SAVE_AS,
 	PROJECT_SETTINGS,
+	PROJECT_FOLDER,
 	PROJECT_EXIT,
 	EDITOR_DATA_FOLDER,
 	EDITOR_FULLSCREEN,
@@ -21,6 +22,7 @@ const MENUS := {
 		"Save Project": PROJECT_SAVE,
 		"Save Project As": PROJECT_SAVE_AS,
 		"Project Settings": PROJECT_SETTINGS,
+		"Open Project Folder": PROJECT_FOLDER,
 		"Exit": PROJECT_EXIT,
 	},
 	"Editor": {
@@ -31,12 +33,13 @@ const MENUS := {
 	},
 }
 
+var popups: Control
 
-func _ready() -> void:
+
+func _init(popups_node: Control):
 	name = "TopMenu"
-	for child in get_children():
-		remove_child(child)
-		child.queue_free()
+	popups = popups_node
+	add_theme_constant_override("separation", 8)
 	for menu in MENUS.keys():
 		var menu_button := MenuButton.new()
 		menu_button.switch_on_hover = true
@@ -54,13 +57,16 @@ func _ready() -> void:
 func _on_menu_id_pressed(item_id: int) -> void:
 	match item_id:
 		PROJECT_NEW, PROJECT_SAVE_AS:
-			Popups.project_name_window.popup()
+			popups.project_name_window.popup()
 		PROJECT_OPEN:
 			pass
 		PROJECT_SAVE:
 			get_parent().save_project()
 		PROJECT_SETTINGS:
 			pass
+		PROJECT_FOLDER:
+			if (get_parent().project_dir):
+				OS.shell_open(get_parent().project_dir.get_current_dir())
 		PROJECT_EXIT:
 			if Engine.is_editor_hint():
 				return
@@ -74,4 +80,4 @@ func _on_menu_id_pressed(item_id: int) -> void:
 				return
 			MISC.toggle_always_on_top()
 		EDITOR_SETTINGS:
-			pass
+			popups.editor_settings_window.popup()

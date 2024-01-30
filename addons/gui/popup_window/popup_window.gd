@@ -13,14 +13,20 @@ func _init():
     exclusive = true
     initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS
     close_requested.connect(_on_close_requested)
+    visibility_changed.connect(_on_visibility_changed)
     if Engine.is_editor_hint():
         visible = visible_in_editor
     else:
         visible = false
 
 
-func _on_close_requested():
+func _on_visibility_changed():
+    if visible:
+        return
     emit_signal("about_to_hide")
+
+
+func _on_close_requested():
     hide()
 
 

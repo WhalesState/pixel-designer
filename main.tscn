@@ -1,13 +1,17 @@
-[gd_scene load_steps=11 format=3 uid="uid://dqv51anjjqx8t"]
+[gd_scene load_steps=14 format=3 uid="uid://dqv51anjjqx8t"]
 
+[ext_resource type="Theme" uid="uid://bu55kdwxq2xad" path="res://theme/default_dark.tres" id="1_1pnsj"]
 [ext_resource type="Script" path="res://src/main.gd" id="1_dw5sk"]
 [ext_resource type="Script" path="res://src/layout.gd" id="2_o2lxl"]
 [ext_resource type="Script" path="res://src/camera.gd" id="3_aca2k"]
 [ext_resource type="Texture2D" uid="uid://cvcyjp5a1a80p" path="res://theme/data/icons/add.svg" id="4_yw4fg"]
 [ext_resource type="Script" path="res://src/sprite_box.gd" id="5_t0iwl"]
+[ext_resource type="Script" path="res://src/layer_box.gd" id="6_6bb1f"]
 [ext_resource type="Script" path="res://src/overlays.gd" id="8_7dpry"]
 [ext_resource type="Script" path="res://src/inspector.gd" id="9_pmqlo"]
 [ext_resource type="Texture2D" uid="uid://cgaooac1icvie" path="res://theme/data/icons/center_view.svg" id="9_xp642"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_4rmk1"]
 
 [sub_resource type="InputEventKey" id="InputEventKey_xmlwc"]
 device = -1
@@ -24,6 +28,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme = ExtResource("1_1pnsj")
 script = ExtResource("1_dw5sk")
 metadata/_edit_lock_ = true
 
@@ -32,42 +37,45 @@ layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("2_o2lxl")
 
-[node name="LeftContainer" type="ScrollContainer" parent="Layout"]
+[node name="LeftContainer" type="PanelContainer" parent="Layout"]
 layout_mode = 2
 
 [node name="VSplitContainer" type="VSplitContainer" parent="Layout/LeftContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+split_offset = -128
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Layout/LeftContainer/VSplitContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Layout/LeftContainer/VSplitContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Layout/LeftContainer/VSplitContainer/ScrollContainer"]
+clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Layout/LeftContainer/VSplitContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer"]
+clip_contents = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Layout/LeftContainer/VSplitContainer/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Sprites"
 horizontal_alignment = 1
-clip_text = true
-text_overrun_behavior = 1
 
-[node name="CreateSprite" type="Button" parent="Layout/LeftContainer/VSplitContainer/VBoxContainer/HBoxContainer"]
-clip_contents = true
+[node name="CreateSprite" type="Button" parent="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 icon = ExtResource("4_yw4fg")
-flat = true
 
-[node name="SpriteScroll" type="ScrollContainer" parent="Layout/LeftContainer/VSplitContainer/VBoxContainer"]
+[node name="SpriteScroll" type="ScrollContainer" parent="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 3
 
-[node name="SpriteBox" type="VBoxContainer" parent="Layout/LeftContainer/VSplitContainer/VBoxContainer/SpriteScroll"]
+[node name="SpriteBox" type="VBoxContainer" parent="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer/SpriteScroll"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -75,49 +83,60 @@ size_flags_vertical = 3
 theme_override_constants/separation = 8
 script = ExtResource("5_t0iwl")
 
-[node name="CenterContainer" type="MarginContainer" parent="Layout"]
+[node name="LayerBox" type="Tree" parent="Layout/LeftContainer/VSplitContainer"]
+unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("6_6bb1f")
 
-[node name="ViewportContainer" type="SubViewportContainer" parent="Layout/CenterContainer"]
+[node name="CenterContainer" type="ScrollContainer" parent="Layout"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_4rmk1")
+
+[node name="MarginContainer" type="MarginContainer" parent="Layout/CenterContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ViewportContainer" type="SubViewportContainer" parent="Layout/CenterContainer/MarginContainer"]
 texture_filter = 1
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 0
 mouse_force_pass_scroll_events = false
 stretch = true
 
-[node name="Viewport" type="SubViewport" parent="Layout/CenterContainer/ViewportContainer"]
+[node name="Viewport" type="SubViewport" parent="Layout/CenterContainer/MarginContainer/ViewportContainer"]
 transparent_bg = true
 handle_input_locally = false
 snap_2d_transforms_to_pixel = true
 canvas_item_default_texture_filter = 0
-size = Vector2i(504, 437)
+size = Vector2i(504, 440)
 render_target_update_mode = 4
 
-[node name="Node" type="Node2D" parent="Layout/CenterContainer/ViewportContainer/Viewport"]
+[node name="Node" type="Node2D" parent="Layout/CenterContainer/MarginContainer/ViewportContainer/Viewport"]
 
-[node name="Camera" type="Camera2D" parent="Layout/CenterContainer/ViewportContainer/Viewport/Node"]
+[node name="Camera" type="Camera2D" parent="Layout/CenterContainer/MarginContainer/ViewportContainer/Viewport/Node"]
 unique_name_in_owner = true
-zoom = Vector2(10, 10)
+position = Vector2(25.8377, 18.6011)
+zoom = Vector2(5, 5)
 script = ExtResource("3_aca2k")
 
-[node name="Sprites" type="Node2D" parent="Layout/CenterContainer/ViewportContainer/Viewport/Node"]
+[node name="Sprites" type="Node2D" parent="Layout/CenterContainer/MarginContainer/ViewportContainer/Viewport/Node"]
 unique_name_in_owner = true
 
-[node name="Overlays" type="Node2D" parent="Layout/CenterContainer/ViewportContainer/Viewport/Node"]
+[node name="Overlays" type="Node2D" parent="Layout/CenterContainer/MarginContainer/ViewportContainer/Viewport/Node"]
 unique_name_in_owner = true
 texture_filter = 2
 script = ExtResource("8_7dpry")
 
-[node name="Control" type="Control" parent="Layout/CenterContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Layout/CenterContainer/MarginContainer"]
 layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="Layout/CenterContainer"]
-layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 10
 size_flags_vertical = 0
 
-[node name="CenterViewButton" type="Button" parent="Layout/CenterContainer/HBoxContainer"]
+[node name="FocusSelectedButton" type="Button" parent="Layout/CenterContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 shortcut = SubResource("Shortcut_1mixe")
 icon = ExtResource("9_xp642")
@@ -137,6 +156,6 @@ size_flags_vertical = 3
 theme_override_constants/separation = 8
 script = ExtResource("9_pmqlo")
 
-[connection signal="pressed" from="Layout/LeftContainer/VSplitContainer/VBoxContainer/HBoxContainer/CreateSprite" to="Layout/LeftContainer/VSplitContainer/VBoxContainer/SpriteScroll/SpriteBox" method="_on_create_sprite_pressed"]
-[connection signal="gui_input" from="Layout/CenterContainer/Control" to="Layout/CenterContainer/ViewportContainer/Viewport/Node/Camera" method="_on_viewport_gui_input"]
-[connection signal="pressed" from="Layout/CenterContainer/HBoxContainer/CenterViewButton" to="Layout/CenterContainer/ViewportContainer/Viewport/Node/Camera" method="focus_selected_sprite"]
+[connection signal="pressed" from="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer/HBoxContainer/CreateSprite" to="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer/SpriteScroll/SpriteBox" method="_on_create_sprite_pressed"]
+[connection signal="gui_input" from="Layout/CenterContainer/MarginContainer/ViewportContainer" to="Layout/CenterContainer/MarginContainer/ViewportContainer/Viewport/Node/Camera" method="_on_viewport_gui_input"]
+[connection signal="pressed" from="Layout/CenterContainer/MarginContainer/HBoxContainer/FocusSelectedButton" to="Layout/CenterContainer/MarginContainer/ViewportContainer/Viewport/Node/Camera" method="focus_selected_sprite"]

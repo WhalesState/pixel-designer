@@ -5,6 +5,8 @@ const DS_FULLSCREEN = DisplayServer.WINDOW_MODE_FULLSCREEN
 const DS_WINDOWED = DisplayServer.WINDOW_MODE_WINDOWED
 const DS_ALWAYS_ON_TOP = DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP
 
+const SPRITE_MATERIAL: CanvasItemMaterial = preload("res://constants/sprite_material.tres")
+
 const THEME: Theme = preload("res://theme/data/theme.tres")
 
 
@@ -19,10 +21,10 @@ static func _prepare() -> void:
 	if not dir.file_exists("editor_settings.cfg"):
 		if save_editor_settings(get_editor_settings()) != OK:
 			print("ERROR: Can't save editor settings")
-
-
-static func save_editor_settings(cfg: ConfigFile) -> int:
-	return cfg.save(OS.get_user_data_dir() + "/editor_settings.cfg")
+	var fonts := get_editor_fonts()
+	for font in fonts.keys():
+		if not THEME.has_font(font, "Fonts"):
+			THEME.set_font(font, "Fonts", fonts[font])
 
 
 static func open_user_data_dir() -> void:
@@ -45,11 +47,44 @@ static func get_projects_dir() -> DirAccess:
 	if not project_dir.dir_exists("projects"):
 		print("Warning: Project dir doesn't exists, creating...")
 		if not OK == project_dir.make_dir_recursive("projects"):
-			print("ERROR: Can't create projects directory")
+			print("ERROR: Can't create projects directory!")
 			return
 	if not OK == project_dir.change_dir("projects"):
-		print("ERROR: Can't access projects directory")
+		print("ERROR: Can't access projects directory!")
 	return project_dir
+
+
+static func get_editor_fonts() -> Dictionary:
+	var fonts := {}
+	var fonts_dir = DirAccess.open("res://theme/data/fonts")
+	if not fonts_dir:
+		print("ERROR: Can't open fonts dir!")
+	var files = fonts_dir.get_files()
+	for font_file in files:
+		if not font_file.get_extension() == "ttf":
+			continue
+		fonts[font_file.get_basename()] = load("%s/%s" % [fonts_dir.get_current_dir(), font_file])
+	return fonts
+
+
+static func get_editor_themes() -> Dictionary:
+	var themes := {}
+	var themes_dir = DirAccess.open("res://theme/")
+	if not themes_dir:
+		print("ERROR: Can't open themes dir!")
+	var files = themes_dir.get_files()
+	for theme_file in files:
+		if not theme_file.get_extension() == "tres":
+			continue
+		var theme = load("%s/%s" % [themes_dir.get_current_dir(), theme_file])
+		if not theme is Theme:
+			continue
+		themes[theme_file.get_basename().capitalize()] = theme
+	return themes
+
+
+static func save_editor_settings(cfg: ConfigFile) -> int:
+	return cfg.save(OS.get_user_data_dir() + "/editor_settings.cfg")
 
 
 static func get_editor_settings() -> ConfigFile:
@@ -57,7 +92,7 @@ static func get_editor_settings() -> ConfigFile:
 	var cfg := ConfigFile.new()
 	if not dir.file_exists("editor_settings.cfg"):
 		cfg.set_value("editor", "theme", "Default Dark")
-		cfg.set_value("editor", "font", "ConfigRounded")
+		cfg.set_value("editor", "font", "Default")
 		cfg.set_value("editor", "font_size", 16)
 	else:
 		if cfg.load(OS.get_user_data_dir() + "/editor_settings.cfg") != OK:

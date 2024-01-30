@@ -1,18 +1,26 @@
 @tool
 extends Control
 
-@onready var project_name_window := ProjectNameWindow.new()
-@onready var editor_settings_window := EditorSettingsWindow.new()
+var main: VBoxContainer
+var project_name_window: ProjectNameWindow
+var editor_settings_window: EditorSettingsWindow
 
 
-func _ready():
+func _init(main_node: VBoxContainer):
+    name = "Popups"
+    main = main_node
+    size_flags_horizontal = SIZE_SHRINK_BEGIN
+    size_flags_vertical = SIZE_SHRINK_BEGIN
+    project_name_window = ProjectNameWindow.new(main)
     add_child(project_name_window)
+    editor_settings_window = EditorSettingsWindow.new(main)
     add_child(editor_settings_window)
 
 
 class ProjectNameWindow:
     extends PopupWindow
 
+    var main: VBoxContainer
     var name_line_edit := LineEdit.new()
     var warning_label := Label.new()
     var project_button := Button.new()
@@ -20,7 +28,8 @@ class ProjectNameWindow:
     var projects := PackedStringArray()
 
 
-    func _init():
+    func _init(_main: VBoxContainer):
+        main = _main
         super._init()
         title = "Project Name"
         min_size = Vector2(256, 128)
@@ -76,7 +85,6 @@ class ProjectNameWindow:
 
 
     func _on_create_project_button_pressed():
-        var main: VBoxContainer = get_parent().get_parent().get_node("Main")
         if projects_dir.make_dir_recursive(name_line_edit.text) != OK:
             warning_label.text = "Can't create project directory!"
             return
@@ -95,15 +103,103 @@ class ProjectNameWindow:
 class EditorSettingsWindow:
     extends PopupWindow
     
+    var main: VBoxContainer
+    var editor_settings: ConfigFile = MISC.get_editor_settings()
+    var theme_options := OptionButton.new()
+    var font_options := OptionButton.new()
+    var font_size_spinbox := SpinBox.new()
     
-    func _init():
+    
+    func _init(_main: VBoxContainer):
+        main = _main
         super._init()
         title = "Editor Settings"
+        min_size = Vector2(320, 128)
+        max_size = Vector2(640, 480)
+        initial_position = WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS
+        about_to_popup.connect(_on_about_to_popup)
         about_to_hide.connect(_on_about_to_hide)
+        var margin := MarginContainer.new()
+        margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+        for dir in ["left", "right", "top", "bottom"]:
+            margin.add_theme_constant_override("margin_%s" % dir, 8)
+        add_child(margin)
+        var grid := GridContainer.new()
+        grid.columns = 2
+        grid.add_theme_constant_override("v_separation", 8)
+        margin.add_child(grid)
+        var theme_label := Label.new()
+        theme_label.text = "Theme"
+        theme_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        grid.add_child(theme_label)
+        theme_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        var themes = MISC.get_editor_themes()
+        var cur_theme = editor_settings.get_value("editor", "theme")
+        for i in themes.keys().size():
+            theme_options.add_item(themes.keys()[i], i)
+            if not theme_options.selected:
+                if themes.keys()[i] != cur_theme:
+                    continue
+                font_options.selected = i
+        theme_options.item_selected.connect(_on_theme_options_item_selected)
+        grid.add_child(theme_options)
+        var font_label := Label.new()
+        font_label.text = "Font"
+        font_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        grid.add_child(font_label)
+        font_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        var font_list = MISC.THEME.get_font_list("Fonts")
+        var cur_font = editor_settings.get_value("editor", "font")
+        for i in font_list.size():
+            font_options.add_item(font_list[i], i)
+            if not font_options.selected:
+                if font_list[i] != cur_font:
+                    continue
+                font_options.selected = i
+        font_options.item_selected.connect(_on_font_options_item_selected)
+        grid.add_child(font_options)
+        var font_size_label := Label.new()
+        font_size_label.text = "Font Size"
+        font_size_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        grid.add_child(font_size_label)
+        font_size_spinbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+        font_size_spinbox.suffix = "px"
+        font_size_spinbox.min_value = 12
+        font_size_spinbox.max_value = 32
+        font_size_spinbox.step = 1
+        font_size_spinbox.value = editor_settings.get_value("editor", "font_size", 16)
+        font_size_spinbox.value_changed.connect(_on_font_size_spinbox_value_changed)
+        grid.add_child(font_size_spinbox)
+    
+    
+    func _on_theme_options_item_selected(id: int):
+        var theme_name = theme_options.get_item_text(id)
+        editor_settings.set_value("editor", "theme", theme_name)
+        main.theme = MISC.get_editor_themes()[theme_name]
+        var font_name = editor_settings.get_value("editor", "font", "Default")
+        main.theme.default_font = MISC.THEME.get_font(font_name, "Fonts")
+        main.theme.default_font_size = editor_settings.get_value("editor", "font_size", 16)
+        main.popups.theme = main.theme
+    
+    
+    func _on_font_options_item_selected(id: int):
+        var font_name = font_options.get_item_text(id)
+        if not MISC.THEME.has_font(font_name, "Fonts"):
+            print("ERROR: Theme data doesn't have such font: %s" % font_name)
+            return
+        editor_settings.set_value("editor", "font", font_name)
+        main.theme.default_font = MISC.THEME.get_font(font_name, "Fonts")
+    
+    
+    func _on_font_size_spinbox_value_changed(font_size: int):
+        editor_settings.set_value("editor", "font_size", font_size)
+        main.theme.default_font_size = font_size
+    
+    
+    func _on_about_to_popup():
+        pass
     
     
     func _on_about_to_hide():
-        var cfg = MISC.get_editor_settings()
-        # TODO: Save editor settings!
-        if MISC.save_editor_settings(cfg) != OK:
+        if MISC.save_editor_settings(editor_settings) != OK:
             print("ERROR: Can't save editor settings file")

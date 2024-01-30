@@ -17,11 +17,6 @@ config/features=PackedStringArray("4.2", "GL Compatibility")
 boot_splash/bg_color=Color(0.121569, 0.113725, 0.145098, 1)
 config/icon="res://icon.svg"
 
-[autoload]
-
-G="*res://src/global.gd"
-Popups="*res://src/popups.gd"
-
 [display]
 
 window/size/viewport_width=1024
@@ -34,7 +29,6 @@ enabled=PackedStringArray("res://addons/gui/plugin.cfg", "res://addons/p_tools/p
 [gui]
 
 fonts/dynamic_fonts/use_oversampling=false
-theme/custom="res://theme/default_dark.tres"
 
 [rendering]
 

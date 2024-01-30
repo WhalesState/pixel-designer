@@ -48,9 +48,13 @@ func _on_viewport_gui_input(ev: InputEvent):
 				get_viewport().set_input_as_handled()
 			elif ev.button_index == MOUSE_BUTTON_LEFT:
 				var mpos = get_global_mouse_position()
-				for sprite in get_node("%Sprites").get_children():
+				var sprites = get_node("%Sprites").get_children()
+				sprites.reverse()
+				for sprite in sprites:
+					if not sprite.visible:
+						continue
 					if sprite.get_rect().has_point(mpos):
 						var sprite_button = sprite.get_meta("button")
 						if sprite_button.button_group.get_pressed_button() != sprite_button:
 							sprite_button.button_pressed = true
-						break
+							break

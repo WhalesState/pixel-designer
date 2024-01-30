@@ -61,6 +61,7 @@ func remove_sprite(spr_button: SpriteButton):
 
 func _on_sprite_button_selected(vp_node: SubViewport):
 	get_node("%Overlays").selected = vp_node.get_parent()
+	get_node("%LayerBox").sprite_vp = vp_node
 
 
 class SpriteButton:
@@ -95,12 +96,14 @@ class SpriteButton:
 			return
 		if ev.button_index == MOUSE_BUTTON_LEFT and ev.double_click:
 			var line_edit := LineEdit.new()
+			line_edit.name = "NameEdit"
 			line_edit.text = text
 			line_edit.caret_blink = true
 			line_edit.caret_blink_interval = 0.5
 			line_edit.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-			line_edit.text_submitted.connect(_on_line_edit_submitted.bind(line_edit))
-			line_edit.focus_exited.connect(_on_line_edit_submitted.bind("", line_edit, false))
+			line_edit.gui_input.connect(_on_line_edit_gui_input)
+			line_edit.text_submitted.connect(_on_line_edit_submitted)
+			line_edit.focus_exited.connect(_on_line_edit_submitted.bind(""))
 			add_child(line_edit)
 			line_edit.grab_focus()
 			line_edit.caret_column = text.length()
@@ -108,13 +111,29 @@ class SpriteButton:
 			emit_signal("right_pressed", get_global_mouse_position(), self)
 	
 	
-	func _on_line_edit_submitted(new_text: String, line_edit: LineEdit, rename := true):
+	func _on_line_edit_gui_input(ev: InputEvent):
+		var line_edit: LineEdit = get_node_or_null("NameEdit")
+		if not line_edit:
+			return
+		if not ev.is_action_pressed("ui_cancel"):
+			return
+		grab_focus()
+	
+	
+	func _on_line_edit_submitted(new_text: String):
+		var line_edit: LineEdit = get_node_or_null("NameEdit")
+		if not line_edit:
+			return
+		line_edit.gui_input.disconnect(_on_line_edit_gui_input)
+		line_edit.text_submitted.disconnect(_on_line_edit_submitted)
+		line_edit.focus_exited.disconnect(_on_line_edit_submitted)
 		line_edit.queue_free()
 		grab_focus()
-		if rename:
-			get_meta("node").name = new_text
-			text = get_meta("node").name
-			get_parent().get_node("%Inspector").get_child(0).text = text
+		if new_text.is_empty():
+			return
+		get_meta("node").name = new_text
+		text = get_meta("node").name
+		get_parent().get_node("%Inspector").get_child(0).text = text
 	
 	
 	func _on_visibility_button_toggled(toggled_on: bool):
@@ -175,11 +194,11 @@ class Sprite:
 		size = spr_size
 		stretch = true
 		var vp := SubViewport.new()
+		vp.name = "Viewport"
 		vp.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 		vp.transparent_bg = true
 		add_child(vp, true)
-		material = CanvasItemMaterial.new()
-		material.blend_mode = CanvasItemMaterial.BLEND_MODE_PREMULT_ALPHA
+		material = MISC.SPRITE_MATERIAL
 		# Checker
 		checker.centered = false
 		checker.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
@@ -197,6 +216,7 @@ class Sprite:
 		data["checker_size"] = checker_size
 		data["position"] = position
 		data["size"] = size
+		data["visible"] = visible
 		return data
 	
 	
@@ -208,6 +228,7 @@ class Sprite:
 		checker_size = data["checker_size"]
 		position = data["position"]
 		size = data["size"]
+		visible = data["visible"]
 		return OK
 	
 	
