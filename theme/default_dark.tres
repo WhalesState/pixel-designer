@@ -1,4 +1,6 @@
-[gd_resource type="Theme" load_steps=29 format=3 uid="uid://bu55kdwxq2xad"]
+[gd_resource type="Theme" load_steps=31 format=3 uid="uid://bu55kdwxq2xad"]
+
+[ext_resource type="FontFile" uid="uid://dtmmtasqr68aa" path="res://theme/data/fonts/Teko.ttf" id="1_eoion"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wkwnx"]
 draw_center = false
@@ -87,6 +89,9 @@ content_margin_bottom = 3.0
 draw_center = false
 border_width_bottom = 2
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0pdka"]
+bg_color = Color(0.0705882, 0.0705882, 0.0705882, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_623y4"]
 bg_color = Color(0.109804, 0.109804, 0.109804, 1)
 
@@ -104,6 +109,10 @@ color = Color(0.8, 0.8, 0.8, 1)
 grow_end = 4.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_box8h"]
+content_margin_left = 6.0
+content_margin_top = 6.0
+content_margin_right = 6.0
+content_margin_bottom = 6.0
 bg_color = Color(0.109804, 0.109804, 0.109804, 1)
 border_width_left = 2
 border_width_top = 2
@@ -178,11 +187,21 @@ expand_margin_top = 32.0
 expand_margin_right = 8.0
 expand_margin_bottom = 8.0
 
-[sub_resource type="FontVariation" id="FontVariation_pte4t"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v4m1i"]
+bg_color = Color(0.109804, 0.109804, 0.109804, 1)
+border_width_left = 8
+border_width_top = 32
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0.156863, 0.156863, 0.156863, 1)
+expand_margin_left = 8.0
+expand_margin_top = 32.0
+expand_margin_right = 8.0
+expand_margin_bottom = 8.0
 
 [resource]
-default_font = SubResource("FontVariation_pte4t")
-default_font_size = 12
+default_font = ExtResource("1_eoion")
+default_font_size = 24
 Button/colors/font_pressed_color = Color(1, 1, 1, 1)
 Button/styles/focus = SubResource("StyleBoxFlat_wkwnx")
 Button/styles/hover = SubResource("StyleBoxFlat_eq1v6")
@@ -196,6 +215,7 @@ MenuButton/styles/focus = SubResource("StyleBoxFlat_q8vga")
 MenuButton/styles/hover = SubResource("StyleBoxEmpty_ohye5")
 MenuButton/styles/normal = SubResource("StyleBoxEmpty_jspfl")
 MenuButton/styles/pressed = SubResource("StyleBoxFlat_4ps5e")
+Panel/styles/panel = SubResource("StyleBoxFlat_0pdka")
 PanelContainer/styles/panel = SubResource("StyleBoxFlat_623y4")
 PopupMenu/styles/hover = SubResource("StyleBoxFlat_6mnpr")
 PopupMenu/styles/labeled_separator_left = SubResource("StyleBoxLine_ci38x")
@@ -216,7 +236,7 @@ Tree/constants/draw_relationship_lines = 1
 Tree/constants/parent_hl_line_width = 2
 Tree/styles/focus = SubResource("StyleBoxFlat_p72bf")
 Window/constants/resize_margin = 8
-Window/constants/title_height = 34
-Window/font_sizes/title_font_size = 20
+Window/constants/title_height = 40
+Window/font_sizes/title_font_size = 24
 Window/styles/embedded_border = SubResource("StyleBoxFlat_yrxxx")
-Window/styles/embedded_unfocused_border = null
+Window/styles/embedded_unfocused_border = SubResource("StyleBoxFlat_v4m1i")

@@ -4,6 +4,7 @@ extends Control
 var main: VBoxContainer
 var project_name_window: ProjectNameWindow
 var editor_settings_window: EditorSettingsWindow
+var projects_window: ProjectsWindow
 
 
 func _init(main_node: VBoxContainer):
@@ -15,6 +16,8 @@ func _init(main_node: VBoxContainer):
     add_child(project_name_window)
     editor_settings_window = EditorSettingsWindow.new(main)
     add_child(editor_settings_window)
+    projects_window = ProjectsWindow.new()
+    add_child(projects_window)
 
 
 class ProjectNameWindow:
@@ -34,14 +37,8 @@ class ProjectNameWindow:
         title = "Project Name"
         min_size = Vector2(256, 128)
         max_size = Vector2(640, 480)
-        initial_position = WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS
         projects_dir = MISC.get_projects_dir()
         about_to_popup.connect(_on_about_to_popup)
-        var margin := MarginContainer.new()
-        margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-        for dir in ["left", "right", "top", "bottom"]:
-            margin.add_theme_constant_override("margin_%s" % dir, 8)
-        add_child(margin)
         var vbox := VBoxContainer.new()
         margin.add_child(vbox)
         name_line_edit.placeholder_text = "Enter project name..."
@@ -114,16 +111,11 @@ class EditorSettingsWindow:
         main = _main
         super._init()
         title = "Editor Settings"
-        min_size = Vector2(320, 128)
+        unresizable = true
+        min_size = Vector2(320, 0)
         max_size = Vector2(640, 480)
-        initial_position = WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS
         about_to_popup.connect(_on_about_to_popup)
         about_to_hide.connect(_on_about_to_hide)
-        var margin := MarginContainer.new()
-        margin.set_anchors_preset(Control.PRESET_FULL_RECT)
-        for dir in ["left", "right", "top", "bottom"]:
-            margin.add_theme_constant_override("margin_%s" % dir, 8)
-        add_child(margin)
         var grid := GridContainer.new()
         grid.columns = 2
         grid.add_theme_constant_override("v_separation", 8)
@@ -133,12 +125,11 @@ class EditorSettingsWindow:
         theme_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
         grid.add_child(theme_label)
         theme_options.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-        var themes = MISC.get_editor_themes()
         var cur_theme = editor_settings.get_value("editor", "theme")
-        for i in themes.keys().size():
-            theme_options.add_item(themes.keys()[i], i)
+        for i in MISC.EDITOR_THEMES.keys().size():
+            theme_options.add_item(MISC.EDITOR_THEMES.keys()[i], i)
             if not theme_options.selected:
-                if themes.keys()[i] != cur_theme:
+                if MISC.EDITOR_THEMES.keys()[i] != cur_theme:
                     continue
                 font_options.selected = i
         theme_options.item_selected.connect(_on_theme_options_item_selected)
@@ -175,11 +166,11 @@ class EditorSettingsWindow:
     func _on_theme_options_item_selected(id: int):
         var theme_name = theme_options.get_item_text(id)
         editor_settings.set_value("editor", "theme", theme_name)
-        main.theme = MISC.get_editor_themes()[theme_name]
+        main.set_editor_theme(MISC.EDITOR_THEMES[theme_name])
         var font_name = editor_settings.get_value("editor", "font", "Default")
         main.theme.default_font = MISC.THEME.get_font(font_name, "Fonts")
         main.theme.default_font_size = editor_settings.get_value("editor", "font_size", 16)
-        main.popups.theme = main.theme
+        reset_size.call_deferred()
     
     
     func _on_font_options_item_selected(id: int):
@@ -189,11 +180,13 @@ class EditorSettingsWindow:
             return
         editor_settings.set_value("editor", "font", font_name)
         main.theme.default_font = MISC.THEME.get_font(font_name, "Fonts")
+        reset_size.call_deferred()
     
     
     func _on_font_size_spinbox_value_changed(font_size: int):
         editor_settings.set_value("editor", "font_size", font_size)
         main.theme.default_font_size = font_size
+        reset_size.call_deferred()
     
     
     func _on_about_to_popup():
@@ -203,3 +196,61 @@ class EditorSettingsWindow:
     func _on_about_to_hide():
         if MISC.save_editor_settings(editor_settings) != OK:
             print("ERROR: Can't save editor settings file")
+
+
+class ProjectsWindow:
+    extends PopupWindow
+    
+    var projects_dir: DirAccess
+    
+    
+    func _init():
+        super._init()
+        title = "Projects"
+        min_size = Vector2(256, 128)
+        max_size = Vector2(640, 480)
+        projects_dir = MISC.get_projects_dir()
+        about_to_popup.connect(_on_about_to_popup)
+    
+    
+    func _on_about_to_popup():
+        pass
+
+
+class PopupWindow:
+    extends Window
+    
+    signal about_to_hide
+    
+    var margin := MarginContainer.new()
+    
+    
+    func _init():
+        wrap_controls = true
+        transient = true
+        exclusive = true
+        initial_position = Window.WINDOW_INITIAL_POSITION_CENTER_SCREEN_WITH_KEYBOARD_FOCUS
+        close_requested.connect(_on_close_requested)
+        visibility_changed.connect(_on_visibility_changed)
+        margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+        for dir in ["left", "right", "top", "bottom"]:
+            margin.add_theme_constant_override("margin_%s" % dir, 8)
+        add_child(margin)
+        hide()
+    
+    
+    func _on_visibility_changed():
+        if not visible:
+            emit_signal("about_to_hide")
+    
+    
+    func _on_close_requested():
+        hide()
+    
+    
+    func _input(ev: InputEvent):
+        if not visible:
+            return
+        if ev.is_action_pressed("ui_cancel"):
+            hide()
+            get_viewport().set_input_as_handled()

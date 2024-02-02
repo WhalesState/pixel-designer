@@ -38,15 +38,15 @@ func _on_sprite_button_right_pressed(mpos: Vector2, spr_button: SpriteButton):
 
 func _on_sprite_menu_id_pressed(id: int):
 	match id:
-		sprite_menu.ADD_LAYER:
+		SpriteMenu.RENAME_SPRITE:
 			pass
-		sprite_menu.REMOVE_SPRITE:
+		SpriteMenu.REMOVE_SPRITE:
 			remove_sprite(sprite_menu.button)
 			sprite_menu.button = null
 
 
 func remove_sprite(spr_button: SpriteButton):
-	var sprite = spr_button.get_meta("node")
+	var sprite = spr_button.sprite
 	sprite.get_parent().remove_child(sprite)
 	sprite.queue_free()
 	spr_button.get_parent().remove_child(spr_button)
@@ -70,6 +70,8 @@ class SpriteButton:
 	signal selected(sprite_viewport: SubViewport)
 	signal right_pressed(mpos: Vector2, sprite_button: SpriteButton)
 	
+	var sprite: Sprite
+
 	
 	func _init(sprite_node: Node, sprite_group: ButtonGroup):
 		text = sprite_node.name
@@ -77,8 +79,8 @@ class SpriteButton:
 		button_group = sprite_group
 		clip_text = true
 		alignment = HORIZONTAL_ALIGNMENT_LEFT
-		set_meta("node", sprite_node)
-		sprite_node.set_meta("button", self)
+		sprite = sprite_node
+		sprite_node.sprite_button = self
 		var visibility_button := TextureButton.new()
 		visibility_button.focus_mode = FOCUS_NONE
 		visibility_button.texture_normal = MISC.get_icon("hidden")
@@ -95,65 +97,30 @@ class SpriteButton:
 		if not (ev is InputEventMouseButton and ev.pressed):
 			return
 		if ev.button_index == MOUSE_BUTTON_LEFT and ev.double_click:
-			var line_edit := LineEdit.new()
-			line_edit.name = "NameEdit"
-			line_edit.text = text
-			line_edit.caret_blink = true
-			line_edit.caret_blink_interval = 0.5
+			var line_edit := NodeRenamer.new(sprite)
 			line_edit.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
-			line_edit.gui_input.connect(_on_line_edit_gui_input)
-			line_edit.text_submitted.connect(_on_line_edit_submitted)
-			line_edit.focus_exited.connect(_on_line_edit_submitted.bind(""))
+			line_edit.node_renamed.connect(_on_sprite_renamed)
 			add_child(line_edit)
-			line_edit.grab_focus()
-			line_edit.caret_column = text.length()
 		elif ev.button_index == MOUSE_BUTTON_RIGHT:
-			emit_signal("right_pressed", get_global_mouse_position(), self)
+			emit_signal("right_pressed", DisplayServer.mouse_get_position(), self)
 	
-	
-	func _on_line_edit_gui_input(ev: InputEvent):
-		var line_edit: LineEdit = get_node_or_null("NameEdit")
-		if not line_edit:
-			return
-		if not ev.is_action_pressed("ui_cancel"):
-			return
-		grab_focus()
-	
-	
-	func _on_line_edit_submitted(new_text: String):
-		var line_edit: LineEdit = get_node_or_null("NameEdit")
-		if not line_edit:
-			return
-		line_edit.gui_input.disconnect(_on_line_edit_gui_input)
-		line_edit.text_submitted.disconnect(_on_line_edit_submitted)
-		line_edit.focus_exited.disconnect(_on_line_edit_submitted)
-		line_edit.queue_free()
-		grab_focus()
-		if new_text.is_empty():
-			return
-		get_meta("node").name = new_text
-		text = get_meta("node").name
-		get_parent().get_node("%Inspector").get_child(0).text = text
+
+	func _on_sprite_renamed(new_name: String):
+		text = new_name
+		get_node("%Inspector").label.text = text
 	
 	
 	func _on_visibility_button_toggled(toggled_on: bool):
-		get_meta("node").visible = toggled_on
+		sprite.visible = toggled_on
 	
 	
 	func _on_sprite_button_toggled(toggled_on: bool):
 		if toggled_on:
-			var inspector = get_parent().get_node("%Inspector")
-			if inspector.get_child_count() > 0:
-				if inspector.get_child(0).text == text:
+			if get_parent().get_node("%Inspector").selected:
+				if get_parent().get_node("%Inspector").selected == sprite:
 					return
-			var spr = get_meta("node")
-			emit_signal("selected", spr.get_child(0))
-			inspector.clear()
-			inspector.add_label(spr.name)
-			inspector.add_vec2_property("Transform", "Position", spr, "position", Vector2.ZERO)
-			inspector.add_vec2_property("Transform", "Size", spr, "size", null, [1, 1024, 1, false, false])
-			inspector.add_bool_property("Checker", "Visible", spr, "checker_visible", true)
-			inspector.add_vec2_property("Checker", "Size", spr, "checker_size", null, [1, 1024, 1, false, false])
+			emit_signal("selected", sprite.get_child(0))
+			get_parent().get_node("%Inspector").load_properties(sprite)
 	
 	
 	func _get_drag_data(_pos: Vector2):
@@ -170,13 +137,14 @@ class SpriteButton:
 	
 	
 	func _drop_data(_pos: Vector2, data: Variant):
-		get_parent().get_node("%Sprites").move_child(data.get_meta("node"), get_index())
+		get_parent().get_node("%Sprites").move_child(data.sprite, get_index())
 		get_parent().move_child(data, get_index())
 
 
 class Sprite:
 	extends SubViewportContainer
 	
+	var sprite_button: SpriteButton
 	var checker := Sprite2D.new()
 	var checker_visible := true:
 		set(value):
@@ -231,27 +199,40 @@ class Sprite:
 		visible = data["visible"]
 		return OK
 	
+
+	func get_properties() -> Dictionary:
+		var properties := {}
+		# inspector.add_vec2_property("Transform", "Position", spr, "position", Vector2.ZERO)
+		# inspector.add_vec2_property("Transform", "Size", spr, "size", null, [1, 1024, 1, false, false])
+		# inspector.add_bool_property("Checker", "Visible", spr, "checker_visible", true)
+		# inspector.add_vec2_property("Checker", "Size", spr, "checker_size", null, [1, 1024, 1, false, false])
+		properties["position"] = ["Transform", "Position", TYPE_VECTOR2, Vector2.ZERO]
+		properties["size"] = ["Transform", "Size", TYPE_VECTOR2, null, [1, 1024, 1, false, false]]
+		properties["checker_visible"] = ["Checker", "Visible", TYPE_BOOL, true]
+		properties["checker_size"] = ["Checker", "Size", TYPE_VECTOR2, null, [1, 1024, 1, false, false]]
+		return properties
 	
+
 	func _on_resized():
 		checker.region_rect.size = (size / checker.scale).ceil()
 
 
 class SpriteMenu:
 	extends PopupMenu
-	
-	var button: SpriteButton
-	
+
 	enum {
-		ADD_LAYER,
+		RENAME_SPRITE,
 		REMOVE_SPRITE,
 	}
 
 	const ITEMS := {
-		"Add Layer": ADD_LAYER,
-		"Remove Sprite": REMOVE_SPRITE,
+		"Rename sprite": RENAME_SPRITE,
+		"Remove sprite": REMOVE_SPRITE,
 	}
-	
-	
+
+	var button: SpriteButton
+
+
 	func _init():
 		for item in ITEMS.keys():
 			add_item(item, ITEMS[item])

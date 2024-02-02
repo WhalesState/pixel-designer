@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dqv51anjjqx8t"]
+[gd_scene load_steps=15 format=3 uid="uid://dqv51anjjqx8t"]
 
 [ext_resource type="Theme" uid="uid://bu55kdwxq2xad" path="res://theme/default_dark.tres" id="1_1pnsj"]
 [ext_resource type="Script" path="res://src/main.gd" id="1_dw5sk"]
@@ -21,6 +21,10 @@ unicode = 102
 [sub_resource type="Shortcut" id="Shortcut_1mixe"]
 events = [SubResource("InputEventKey_xmlwc")]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s4kb3"]
+bg_color = Color(0.0980392, 0.0980392, 0.0980392, 1)
+draw_center = false
+
 [node name="Main" type="VBoxContainer"]
 texture_filter = 2
 anchors_preset = 15
@@ -37,45 +41,44 @@ layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("2_o2lxl")
 
-[node name="LeftContainer" type="PanelContainer" parent="Layout"]
-layout_mode = 2
-
-[node name="VSplitContainer" type="VSplitContainer" parent="Layout/LeftContainer"]
+[node name="LeftContainer" type="VSplitContainer" parent="Layout"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 split_offset = -128
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Layout/LeftContainer/VSplitContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="Layout/LeftContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Layout/LeftContainer/VSplitContainer/ScrollContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Layout/LeftContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Layout/LeftContainer/PanelContainer/ScrollContainer"]
 clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="Layout/LeftContainer/PanelContainer/ScrollContainer/VBoxContainer"]
 clip_contents = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="Layout/LeftContainer/PanelContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Sprites"
 horizontal_alignment = 1
 
-[node name="CreateSprite" type="Button" parent="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
+[node name="CreateSprite" type="Button" parent="Layout/LeftContainer/PanelContainer/ScrollContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 icon = ExtResource("4_yw4fg")
 
-[node name="SpriteScroll" type="ScrollContainer" parent="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer"]
+[node name="SpriteScroll" type="ScrollContainer" parent="Layout/LeftContainer/PanelContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-horizontal_scroll_mode = 3
 
-[node name="SpriteBox" type="VBoxContainer" parent="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer/SpriteScroll"]
+[node name="SpriteBox" type="VBoxContainer" parent="Layout/LeftContainer/PanelContainer/ScrollContainer/VBoxContainer/SpriteScroll"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -83,10 +86,11 @@ size_flags_vertical = 3
 theme_override_constants/separation = 8
 script = ExtResource("5_t0iwl")
 
-[node name="LayerBox" type="Tree" parent="Layout/LeftContainer/VSplitContainer"]
+[node name="LayerBox" type="Tree" parent="Layout/LeftContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+allow_rmb_select = true
 script = ExtResource("6_6bb1f")
 
 [node name="CenterContainer" type="ScrollContainer" parent="Layout"]
@@ -99,7 +103,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="ViewportContainer" type="SubViewportContainer" parent="Layout/CenterContainer/MarginContainer"]
-texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -112,14 +115,14 @@ transparent_bg = true
 handle_input_locally = false
 snap_2d_transforms_to_pixel = true
 canvas_item_default_texture_filter = 0
-size = Vector2i(504, 440)
+size = Vector2i(568, 361)
 render_target_update_mode = 4
 
 [node name="Node" type="Node2D" parent="Layout/CenterContainer/MarginContainer/ViewportContainer/Viewport"]
 
 [node name="Camera" type="Camera2D" parent="Layout/CenterContainer/MarginContainer/ViewportContainer/Viewport/Node"]
 unique_name_in_owner = true
-position = Vector2(25.8377, 18.6011)
+position = Vector2(24.7003, 27.8844)
 zoom = Vector2(5, 5)
 script = ExtResource("3_aca2k")
 
@@ -143,19 +146,37 @@ icon = ExtResource("9_xp642")
 
 [node name="BottomContainer" type="ScrollContainer" parent="Layout"]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_s4kb3")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Layout/BottomContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+metadata/_edit_lock_ = true
 
 [node name="RightContainer" type="ScrollContainer" parent="Layout"]
 layout_mode = 2
 
-[node name="Inspector" type="VBoxContainer" parent="Layout/RightContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Layout/RightContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Layout/RightContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Inspector" type="VBoxContainer" parent="Layout/RightContainer/VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 200)
+custom_minimum_size = Vector2(200, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_constants/separation = 8
 script = ExtResource("9_pmqlo")
 
-[connection signal="pressed" from="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer/HBoxContainer/CreateSprite" to="Layout/LeftContainer/VSplitContainer/ScrollContainer/VBoxContainer/SpriteScroll/SpriteBox" method="_on_create_sprite_pressed"]
+[connection signal="pressed" from="Layout/LeftContainer/PanelContainer/ScrollContainer/VBoxContainer/HBoxContainer/CreateSprite" to="Layout/LeftContainer/PanelContainer/ScrollContainer/VBoxContainer/SpriteScroll/SpriteBox" method="_on_create_sprite_pressed"]
 [connection signal="gui_input" from="Layout/CenterContainer/MarginContainer/ViewportContainer" to="Layout/CenterContainer/MarginContainer/ViewportContainer/Viewport/Node/Camera" method="_on_viewport_gui_input"]
 [connection signal="pressed" from="Layout/CenterContainer/MarginContainer/HBoxContainer/FocusSelectedButton" to="Layout/CenterContainer/MarginContainer/ViewportContainer/Viewport/Node/Camera" method="focus_selected_sprite"]

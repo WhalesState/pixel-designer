@@ -24,7 +24,7 @@ func cam_zoom(value: int):
 func focus_selected_sprite():
 	var cur_spr_button = get_node("%SpriteBox").sprite_group.get_pressed_button()
 	if cur_spr_button:
-		var cur_spr = cur_spr_button.get_meta("node")
+		var cur_spr = cur_spr_button.sprite
 		position = cur_spr.position + (cur_spr.size / 2)
 
 
@@ -54,7 +54,9 @@ func _on_viewport_gui_input(ev: InputEvent):
 					if not sprite.visible:
 						continue
 					if sprite.get_rect().has_point(mpos):
-						var sprite_button = sprite.get_meta("button")
+						var sprite_button = sprite.sprite_button
 						if sprite_button.button_group.get_pressed_button() != sprite_button:
 							sprite_button.button_pressed = true
+							sprite_button.grab_focus()
+							get_viewport().set_input_as_handled()
 							break

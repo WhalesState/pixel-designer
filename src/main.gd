@@ -5,6 +5,11 @@ var popups = preload("res://src/popups.gd").new(self)
 var top_menu = preload("res://src/top_menu.gd").new(popups)
 var project_file: ConfigFile
 var project_dir: DirAccess
+var bg_color := Color(0.2,0.2,0.2):
+	set(value):
+		bg_color = value
+		bg_color.a = 1.0
+		queue_redraw()
 
 
 func _init():
@@ -13,8 +18,7 @@ func _init():
 	var cfg = MISC.get_editor_settings()
 	# Set editor theme.
 	var editor_theme = cfg.get_value("editor", "theme", "Default Dark")
-	theme = MISC.get_editor_themes()[editor_theme]
-	popups.theme = theme
+	set_editor_theme(MISC.EDITOR_THEMES[editor_theme])
 	# Set editor font.
 	var font_name = cfg.get_value("editor", "font", "Default")
 	if MISC.THEME.has_font(font_name, "Fonts"):
@@ -34,6 +38,8 @@ func _init():
 
 func _ready():
 	get_parent().add_child.call_deferred(popups, true)
+	# get_node("%Inspector").selected = null
+
 	if project_file:
 		reload_project()
 
@@ -54,10 +60,22 @@ func _input(ev: InputEvent):
 	elif ev.keycode == KEY_Z:
 		if ev.ctrl_pressed:
 			if ev.shift_pressed:
-				print("Undo")
-			else:
 				print("Redo")
+			else:
+				print("Undo")
 			get_viewport().set_input_as_handled()
+
+
+func _draw():
+	draw_rect(Rect2(Vector2.ZERO, size), bg_color)
+
+
+func set_editor_theme(editor_theme: Theme):
+	theme = editor_theme
+	popups.theme = editor_theme
+	var clear_color: Color = editor_theme.get_stylebox("panel", "Panel").bg_color
+	clear_color.a = 1.0
+	RenderingServer.set_default_clear_color(clear_color)
 
 
 func save_project():

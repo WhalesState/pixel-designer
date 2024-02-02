@@ -6,12 +6,12 @@ enum {
 	PROJECT_OPEN,
 	PROJECT_SAVE,
 	PROJECT_SAVE_AS,
-	PROJECT_SETTINGS,
 	PROJECT_FOLDER,
+	PROJECT_SETTINGS,
 	PROJECT_EXIT,
 	EDITOR_DATA_FOLDER,
 	EDITOR_FULLSCREEN,
-	EDITOR_ALWAYS_ON_TOP,
+	# EDITOR_ALWAYS_ON_TOP,
 	EDITOR_SETTINGS,
 }
 
@@ -21,14 +21,14 @@ const MENUS := {
 		"Open Project": PROJECT_OPEN,
 		"Save Project": PROJECT_SAVE,
 		"Save Project As": PROJECT_SAVE_AS,
-		"Project Settings": PROJECT_SETTINGS,
 		"Open Project Folder": PROJECT_FOLDER,
+		"Project Settings": PROJECT_SETTINGS,
 		"Exit": PROJECT_EXIT,
 	},
 	"Editor": {
 		"Open Data Folder": EDITOR_DATA_FOLDER,
 		"Toggle Fullscreen": EDITOR_FULLSCREEN,
-		"Toggle Always On Top": EDITOR_ALWAYS_ON_TOP,
+		# "Toggle Always On Top": EDITOR_ALWAYS_ON_TOP,
 		"Editor Settings": EDITOR_SETTINGS,
 	},
 }
@@ -47,7 +47,9 @@ func _init(popups_node: Control):
 		menu_button.text = menu
 		menu_button.flat = false
 		menu_button.focus_mode = FOCUS_ALL
-		menu_button.get_popup().id_pressed.connect(_on_menu_id_pressed)
+		var popup := menu_button.get_popup()
+		popup.id_pressed.connect(_on_menu_id_pressed)
+		popup.always_on_top = true
 		add_child(menu_button)
 		var menu_popup = menu_button.get_popup()
 		for item in MENUS[menu].keys():
@@ -75,9 +77,9 @@ func _on_menu_id_pressed(item_id: int) -> void:
 			MISC.open_user_data_dir()
 		EDITOR_FULLSCREEN:
 			MISC.toggle_fullscreen()
-		EDITOR_ALWAYS_ON_TOP:
-			if Engine.is_editor_hint():
-				return
-			MISC.toggle_always_on_top()
+		# EDITOR_ALWAYS_ON_TOP:
+		# 	if Engine.is_editor_hint():
+		# 		return
+		# 	MISC.toggle_always_on_top()
 		EDITOR_SETTINGS:
 			popups.editor_settings_window.popup()

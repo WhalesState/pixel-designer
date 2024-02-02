@@ -1,3 +1,4 @@
 # Godot 4+ specific ignores
+.vscode/
 .godot/
 /addons/p_tools/

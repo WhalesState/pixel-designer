@@ -3,12 +3,15 @@ class_name MISC
 
 const DS_FULLSCREEN = DisplayServer.WINDOW_MODE_FULLSCREEN
 const DS_WINDOWED = DisplayServer.WINDOW_MODE_WINDOWED
-const DS_ALWAYS_ON_TOP = DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP
+# const DS_ALWAYS_ON_TOP = DisplayServer.WINDOW_FLAG_ALWAYS_ON_TOP
 
 const SPRITE_MATERIAL: CanvasItemMaterial = preload("res://constants/sprite_material.tres")
 
 const THEME: Theme = preload("res://theme/data/theme.tres")
 
+const EDITOR_THEMES: Dictionary = {
+	"Default Dark": preload("res://theme/default_dark.tres"),
+}
 
 static func _prepare() -> void:
 	var dir = DirAccess.open(OS.get_user_data_dir())
@@ -37,9 +40,9 @@ static func toggle_fullscreen() -> void:
 	DisplayServer.window_set_mode(mode)
 
 
-static func toggle_always_on_top() -> void:
-	var is_always_on_top = DisplayServer.window_get_flag(DS_ALWAYS_ON_TOP)
-	DisplayServer.window_set_flag(DS_ALWAYS_ON_TOP, not is_always_on_top)
+# static func toggle_always_on_top() -> void:
+# 	var is_always_on_top = DisplayServer.window_get_flag(DS_ALWAYS_ON_TOP)
+# 	DisplayServer.window_set_flag(DS_ALWAYS_ON_TOP, not is_always_on_top)
 
 
 static func get_projects_dir() -> DirAccess:
@@ -65,22 +68,6 @@ static func get_editor_fonts() -> Dictionary:
 			continue
 		fonts[font_file.get_basename()] = load("%s/%s" % [fonts_dir.get_current_dir(), font_file])
 	return fonts
-
-
-static func get_editor_themes() -> Dictionary:
-	var themes := {}
-	var themes_dir = DirAccess.open("res://theme/")
-	if not themes_dir:
-		print("ERROR: Can't open themes dir!")
-	var files = themes_dir.get_files()
-	for theme_file in files:
-		if not theme_file.get_extension() == "tres":
-			continue
-		var theme = load("%s/%s" % [themes_dir.get_current_dir(), theme_file])
-		if not theme is Theme:
-			continue
-		themes[theme_file.get_basename().capitalize()] = theme
-	return themes
 
 
 static func save_editor_settings(cfg: ConfigFile) -> int:

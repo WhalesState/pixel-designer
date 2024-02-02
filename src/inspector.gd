@@ -1,15 +1,44 @@
 @tool
 extends VBoxContainer
 
+enum {
+	CATEGORY,
+	DISPLAY_NAME,
+	TYPE,
+	DEFAULT_VALUE,
+	HINTS,
+}
 
-func add_label(text: String, text_alignment := HORIZONTAL_ALIGNMENT_CENTER):
-	var label := Label.new()
-	label.horizontal_alignment = text_alignment
-	label.text = text
-	add_child(label)
+var selected = null
+var label := InspectorLabel.new()
 
 
-func add_bool_property(property_category: String, property_name: String, property_owner: Node, property: String, default_value = null):
+func _ready():
+	get_parent().get_parent().add_child.call_deferred(label, true, INTERNAL_MODE_FRONT)
+
+
+## property: [CATEGORY, DISPLAY_NAME, TYPE, DEFAULT_VALUE, HINTS]
+func load_properties(node: Node):
+	var properties := {}
+	properties = node.get_properties()
+	if properties.keys().size() == 0:
+		return
+	clear()
+	label.text = node.name
+	selected = node
+	for property in properties.keys():
+		var data = properties[property]
+		match data[TYPE]:
+			TYPE_BOOL:
+				add_bool_property(data[CATEGORY], data[DISPLAY_NAME], node, property, data[DEFAULT_VALUE])
+			TYPE_VECTOR2:
+				if data.size() > 4:
+					add_vec2_property(data[CATEGORY], data[DISPLAY_NAME], node, property, data[DEFAULT_VALUE], data[HINTS])
+				else:
+					add_vec2_property(data[CATEGORY], data[DISPLAY_NAME], node, property, data[DEFAULT_VALUE])
+
+
+func add_bool_property(property_category: String, display_name: String, property_owner: Node, property: String, default_value = null):
 	var category: Category
 	if not property_category.is_empty():
 		category = get_node_or_null(property_category)
@@ -22,7 +51,7 @@ func add_bool_property(property_category: String, property_name: String, propert
 		category.get_child(0).add_child(hbox)
 	else:
 		add_child(hbox, false, INTERNAL_MODE_FRONT)
-	var name_hbox := NameHBox.new(property_name)
+	var name_hbox := NameHBox.new(display_name)
 	hbox.add_child(name_hbox)
 	var reset_button: ResetButton
 	if typeof(default_value) == TYPE_BOOL:
@@ -76,6 +105,8 @@ func add_vec2_property(property_category: String, property_name: String, propert
 
 
 func clear():
+	label.text = ""
+	selected = null
 	for child in get_children():
 		remove_child(child)
 		child.queue_free()
@@ -159,6 +190,7 @@ class SpinBoxSlider:
 	
 	
 	func _init(_suffix := SUFFIX_NONE, _slider_visible := true, _min_value := 0, _max_value := 100, _step := 1, _allow_greater := false, _allow_lesser := false):
+		spinbox.get_line_edit().context_menu_enabled = false
 		add_child(margin, false, INTERNAL_MODE_FRONT)
 		margin.set_anchors_preset(PRESET_FULL_RECT)
 		margin.minimum_size_changed.connect(_on_margin_minimum_size_changed)
@@ -209,3 +241,14 @@ class Category:
 		title = _title
 		var vbox = VBoxContainer.new()
 		add_child(vbox)
+
+
+class InspectorLabel:
+	extends Label
+
+	var node: Node
+
+	func _init():
+		add_theme_stylebox_override("normal", get_theme_stylebox("panel", "PanelContainer"))
+		name = "InspectorLabel"
+		horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
