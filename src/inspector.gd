@@ -189,14 +189,15 @@ class SpinBoxSlider:
 	var slider := HSlider.new()
 	
 	
-	func _init(_suffix := SUFFIX_NONE, _slider_visible := true, _min_value := 0, _max_value := 100, _step := 1, _allow_greater := false, _allow_lesser := false):
-		spinbox.get_line_edit().context_menu_enabled = false
+	func _init(_suffix := SUFFIX_NONE, _slider_visible := true, _min_value := 0, _max_value := 100, _step := 1.0, _allow_greater := false, _allow_lesser := false):
 		add_child(margin, false, INTERNAL_MODE_FRONT)
 		margin.set_anchors_preset(PRESET_FULL_RECT)
 		margin.minimum_size_changed.connect(_on_margin_minimum_size_changed)
 		
 		margin.add_child(spinbox)
 		spinbox.select_all_on_focus = true
+		spinbox.get_line_edit().context_menu_enabled = false
+		spinbox.get_line_edit().gui_input.connect(_on_gui_input)
 		spinbox.add_theme_icon_override("updown", ImageTexture.new())
 		spinbox.get_child(0, true).focus_entered.connect(_on_spinbox_focus_toggled.bind(true))
 		spinbox.get_child(0, true).focus_exited.connect(_on_spinbox_focus_toggled.bind(false))
@@ -210,9 +211,6 @@ class SpinBoxSlider:
 		slider_margin.add_child(slider)
 		slider.scrollable = false
 		slider.focus_mode = FOCUS_NONE
-		
-		share(spinbox)
-		spinbox.share(slider)
 		slider.modulate.a = 0.25
 		
 		suffix = _suffix
@@ -222,10 +220,26 @@ class SpinBoxSlider:
 		allow_greater = _allow_greater
 		allow_lesser = _allow_lesser
 		slider_visible = _slider_visible
+
+		share(spinbox)
+		spinbox.share(slider)
 	
 	
 	func _on_margin_minimum_size_changed():
 		custom_minimum_size = get_child(0, true).get_minimum_size()
+	
+	
+	func _on_gui_input(ev: InputEvent):
+		if not spinbox.get_line_edit().is_focus_edit():
+			return
+		if ev.is_action_pressed("ui_focus_next") or ev.is_action_pressed("ui_focus_prev"):
+			value = float(spinbox.get_line_edit().text)
+			get_viewport().set_input_as_handled()
+			await get_tree().process_frame
+			var cur_focus = get_viewport().gui_get_focus_owner()
+			if cur_focus and cur_focus is LineEdit:
+				cur_focus.grab_focus_edit()
+			
 	
 	
 	func _on_spinbox_focus_toggled(toggled_on: bool):

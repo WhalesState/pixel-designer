@@ -10,6 +10,18 @@ func _ready():
 	sprite_menu.id_pressed.connect(_on_sprite_menu_id_pressed)
 
 
+func clear():
+	get_node("%Camera").reset()
+	get_node("%Inspector").clear()
+	get_node("%LayerBox").sprite_vp = null
+	get_node("%Overlays").selected = null
+	for child in get_children():
+		child.sprite.get_parent().remove_child(child.sprite)
+		child.sprite.queue_free()
+		remove_child(child)
+		child.queue_free()
+
+
 func create_new_sprite(spr_name := "Sprite", spr_size := Vector2(16, 16)) -> Sprite:
 	var sprite := Sprite.new(spr_size)
 	get_node("%Sprites").add_child(sprite)
@@ -185,6 +197,10 @@ class Sprite:
 		data["position"] = position
 		data["size"] = size
 		data["visible"] = visible
+		var layers := {}
+		for layer in get_child(0).get_children():
+			layers[layer.name] = layer.get_data()
+		data["layers"] = layers
 		return data
 	
 	
@@ -197,6 +213,13 @@ class Sprite:
 		position = data["position"]
 		size = data["size"]
 		visible = data["visible"]
+		for layer_name in data["layers"].keys():
+			match data["layers"][layer_name]["type"]:
+				"LabelLayer":
+					var label_layer = LabelLayer.new()
+					label_layer.name = layer_name
+					get_child(0).add_child(label_layer)
+					label_layer.load_data(data["layers"][layer_name])
 		return OK
 	
 

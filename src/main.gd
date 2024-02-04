@@ -53,6 +53,7 @@ func _input(ev: InputEvent):
 	if ev.keycode == KEY_S:
 		if ev.ctrl_pressed:
 			if ev.shift_pressed:
+				popups.project_name_window.state = popups.project_name_window.SAVE_PROJECT_AS
 				popups.project_name_window.popup()
 			else:
 				save_project()
@@ -91,22 +92,16 @@ func save_project():
 		if not OK == project_file.save(project_dir.get_current_dir() + "/project.cfg"):
 			print("Warning: Can't save project file")
 			MISC._prepare()
+			popups.project_name_window.state = popups.project_name_window.SAVE_PROJECT_AS
 			popups.project_name_window.popup()
 	else:
+		popups.project_name_window.state = popups.project_name_window.SAVE_PROJECT_AS
 		popups.project_name_window.popup()
 
 
 func reload_project():
-	get_node("%Overlays").selected = null
-	get_node("%Inspector").clear()
-	var sprites_node = get_node("%Sprites")
-	for spr in sprites_node.get_children():
-		sprites_node.remove_child(spr)
-		spr.queue_free()
 	var sprite_box = get_node("%SpriteBox")
-	for spr_button in sprite_box.get_children():
-		sprite_box.remove_child(spr_button)
-		spr_button.queue_free()
+	sprite_box.clear()
 	if project_file.has_section("sprites"):
 		for key in project_file.get_section_keys("sprites"):
 			var sprite_data = project_file.get_value("sprites", key)

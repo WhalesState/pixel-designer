@@ -96,27 +96,6 @@ func add_layer_item(node_parent: TreeItem, node: Node):
 		add_layer_item(item, child)
 
 
-class LabelLayer:
-	extends Label
-	
-	var actual_position := Vector2.ZERO:
-		set(value):
-			actual_position = value
-			position = actual_position - pivot_offset
-	
-	
-	func _init():
-		name = "LabelLayer"
-		text = "TEST"
-	
-	
-	## property: [CATEGORY, DISPLAY_NAME, TYPE, DEFAULT_VALUE, HINTS]
-	func get_properties() -> Dictionary:
-		var properties = {}
-		properties["actual_position"] = ["Transform", "Position", TYPE_VECTOR2, Vector2.ZERO]
-		return properties
-
-
 class LayerMenu:
 	extends PopupMenu
 	

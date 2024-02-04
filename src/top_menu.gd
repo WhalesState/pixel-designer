@@ -58,10 +58,14 @@ func _init(popups_node: Control):
 
 func _on_menu_id_pressed(item_id: int) -> void:
 	match item_id:
-		PROJECT_NEW, PROJECT_SAVE_AS:
+		PROJECT_NEW:
+			popups.project_name_window.state = popups.project_name_window.CREATE_PROJECT
+			popups.project_name_window.popup()
+		PROJECT_SAVE_AS:
+			popups.project_name_window.state = popups.project_name_window.SAVE_PROJECT_AS
 			popups.project_name_window.popup()
 		PROJECT_OPEN:
-			pass
+			popups.projects_window.popup()
 		PROJECT_SAVE:
 			get_parent().save_project()
 		PROJECT_SETTINGS:

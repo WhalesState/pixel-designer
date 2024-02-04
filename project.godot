@@ -28,6 +28,7 @@ enabled=PackedStringArray("res://addons/gui/plugin.cfg", "res://addons/p_tools/p
 [gui]
 
 fonts/dynamic_fonts/use_oversampling=false
+fonts/dynamic_fonts/line_join=3
 
 [rendering]
 

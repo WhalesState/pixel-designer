@@ -4,6 +4,15 @@ extends Camera2D
 var is_pan := false
 
 
+func _init():
+	reset()
+
+
+func reset():
+	position = Vector2.ZERO
+	zoom = Vector2(10, 10)
+
+
 func cam_zoom(value: int):
 	if (zoom.x >= 10 and value > 0) or (zoom.x > 10 and value < 0):
 		value *= 10
@@ -26,6 +35,8 @@ func focus_selected_sprite():
 	if cur_spr_button:
 		var cur_spr = cur_spr_button.sprite
 		position = cur_spr.position + (cur_spr.size / 2)
+	else:
+		reset()
 
 
 func _on_viewport_gui_input(ev: InputEvent):
