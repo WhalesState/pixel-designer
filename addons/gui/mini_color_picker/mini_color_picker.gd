@@ -115,7 +115,6 @@ class ColorWheel:
         picker_shape = SHAPE_OKHSL_CIRCLE
         can_add_swatches = false
         sampler_visible = false
-        color_modes_visible = false
         sliders_visible = false
         hex_visible = false
         presets_visible = false
@@ -123,9 +122,9 @@ class ColorWheel:
         add_theme_constant_override("sv_height", 72)
         add_theme_constant_override("h_width", 24)
         size_flags_vertical = SIZE_EXPAND_FILL
-        get_child(0, true).size_flags_vertical = SIZE_EXPAND_FILL
-        get_child(0, true).get_child(0).size_flags_vertical = SIZE_EXPAND_FILL
-        get_child(0, true).get_child(0).get_child(0).size_flags_vertical = SIZE_EXPAND_FILL
+        # get_child(0, true).size_flags_vertical = SIZE_EXPAND_FILL
+        # get_child(0, true).get_child(0).size_flags_vertical = SIZE_EXPAND_FILL
+        # get_child(0, true).get_child(0).get_child(0).size_flags_vertical = SIZE_EXPAND_FILL
     
     ## Switch color wheel shape.
     func _on_switch_wheel_pressed():
@@ -229,7 +228,8 @@ class SlidersWindow:
     func _init():
         exclusive = true
         wrap_controls = true
-        unresizable = true
+        transient = true
+        unresizable = false
         close_requested.connect(_on_close_requested)
         hide()
         title = "Color Edit"
@@ -281,13 +281,13 @@ class ColorSliders:
     
     
     func _init():
-        get_child(0, true).get_child(0).get_child(0).hide()
-        get_child(0, true).get_child(0).get_child(3).hide()
+        # get_child(0, true).get_child(0).get_child(0).hide()
+        # get_child(0, true).get_child(0).get_child(2).hide()
+        wheel_visible = false
+        sampler_visible = false
         color_mode = MODE_HSV
-        picker_shape = SHAPE_NONE
         can_add_swatches = false
         sampler_visible = false
-        color_modes_visible = false
         hex_visible = false
         presets_visible = false
         custom_minimum_size.x = 256
@@ -296,6 +296,6 @@ class ColorSliders:
     
     ## On switch slider button pressed.
     func _on_switch_pressed():
-        var mode := [MODE_HSV, MODE_RGB, MODE_OKHSL]
+        var mode := [MODE_HSV, MODE_RGB, MODE_OKHSL, MODE_RAW]
         var cur = wrapi(mode.find(color_mode) + 1, 0, mode.size())
         color_mode = mode[cur]

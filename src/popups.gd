@@ -116,12 +116,13 @@ class ProjectNameWindow:
 			var font_cfg := ConfigFile.new()
 			font_cfg.load("%s/%s.import" % [builtin_fonts_dir.get_current_dir(), file_name])	
 			var base_name = file_name.get_basename()
-			var font_size = font_cfg.get_value("params", "preload")[0]["size"].y
-			var font_path = "%s/fonts/%s.pixelfont" % [project_dir.get_current_dir(), base_name]
-			var file = FileAccess.open(font_path, FileAccess.WRITE)
-			# [display name, font data, font size, antialiased?]
-			file.store_var([base_name.capitalize(), font_file.data, font_size, false])
-			file.close()
+			var font_size = font_cfg.get_value("params", "preload")[0]["size"].x
+			var file = ConfigFile.new()
+			file.set_value("font", "display_name", base_name.capitalize())
+			file.set_value("font", "size", font_size)
+			file.set_value("font", "antialiased", false)
+			file.set_value("font", "data", font_file.data)
+			file.save("%s/fonts/%s.pixelfont" % [project_dir.get_current_dir(), base_name])
 		main.project_file = project_file
 		main.project_dir = project_dir
 		var cfg: ConfigFile = MISC.get_editor_settings()
@@ -129,6 +130,7 @@ class ProjectNameWindow:
 		MISC.save_editor_settings(cfg)
 		if state == CREATE_PROJECT:
 			main.get_node("%SpriteBox").clear()
+			main.reload_project()
 		main.save_project()
 		hide()
 

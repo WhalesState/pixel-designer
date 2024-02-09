@@ -13,6 +13,7 @@ func _ready():
 func clear():
 	get_node("%Camera").reset()
 	get_node("%Inspector").clear()
+	get_node("%Inspector").fonts = {}
 	get_node("%LayerBox").sprite_vp = null
 	get_node("%Overlays").selected = null
 	for child in get_children():
@@ -68,18 +69,18 @@ func remove_sprite(spr_button: SpriteButton):
 			get_child(0).button_pressed = true
 		else:
 			get_node("%Inspector").clear()
-			get_node("%Overlays").selected = null
 
 
-func _on_sprite_button_selected(vp_node: SubViewport):
-	get_node("%Overlays").selected = vp_node.get_parent()
-	get_node("%LayerBox").sprite_vp = vp_node
+func _on_sprite_button_selected(spr_node: Sprite):
+	get_node("%Overlays").selected = spr_node
+	get_node("%LayerBox").sprite_vp = spr_node.get_child(0)
+	get_node("%Inspector").load_properties(spr_node)
 
 
 class SpriteButton:
 	extends Button
 	
-	signal selected(sprite_viewport: SubViewport)
+	signal selected(sprite_node: Sprite)
 	signal right_pressed(mpos: Vector2, sprite_button: SpriteButton)
 	
 	var sprite: Sprite
@@ -116,7 +117,7 @@ class SpriteButton:
 		elif ev.button_index == MOUSE_BUTTON_RIGHT:
 			emit_signal("right_pressed", DisplayServer.mouse_get_position(), self)
 	
-
+	
 	func _on_sprite_renamed(new_name: String):
 		text = new_name
 		get_node("%Inspector").label.text = text
@@ -131,8 +132,7 @@ class SpriteButton:
 			if get_parent().get_node("%Inspector").selected:
 				if get_parent().get_node("%Inspector").selected == sprite:
 					return
-			emit_signal("selected", sprite.get_child(0))
-			get_parent().get_node("%Inspector").load_properties(sprite)
+			emit_signal("selected", sprite)
 	
 	
 	func _get_drag_data(_pos: Vector2):
@@ -190,6 +190,12 @@ class Sprite:
 		resized.connect(_on_resized)
 	
 	
+	func _set(property: StringName, _value: Variant):
+		if property in ["position", "size"]:
+			get_parent().get_node("%Overlays").queue_redraw()
+		return false
+	
+	
 	func get_data() -> Dictionary:
 		var data := {}
 		data["checker_visible"] = checker_visible
@@ -216,7 +222,7 @@ class Sprite:
 		for layer_name in data["layers"].keys():
 			match data["layers"][layer_name]["type"]:
 				"LabelLayer":
-					var label_layer = LabelLayer.new()
+					var label_layer = LabelLayer.new(get_parent().get_node("%Inspector"))
 					label_layer.name = layer_name
 					get_child(0).add_child(label_layer)
 					label_layer.load_data(data["layers"][layer_name])
@@ -225,13 +231,9 @@ class Sprite:
 
 	func get_properties() -> Dictionary:
 		var properties := {}
-		# inspector.add_vec2_property("Transform", "Position", spr, "position", Vector2.ZERO)
-		# inspector.add_vec2_property("Transform", "Size", spr, "size", null, [1, 1024, 1, false, false])
-		# inspector.add_bool_property("Checker", "Visible", spr, "checker_visible", true)
-		# inspector.add_vec2_property("Checker", "Size", spr, "checker_size", null, [1, 1024, 1, false, false])
-		properties["position"] = ["Transform", "Position", TYPE_VECTOR2, Vector2.ZERO]
+		properties["position"] = ["Transform", "Position", TYPE_VECTOR2, Vector2.ZERO, []]
 		properties["size"] = ["Transform", "Size", TYPE_VECTOR2, null, [1, 1024, 1, false, false]]
-		properties["checker_visible"] = ["Checker", "Visible", TYPE_BOOL, true]
+		properties["checker_visible"] = ["Checker", "Visible", TYPE_BOOL, true, []]
 		properties["checker_size"] = ["Checker", "Size", TYPE_VECTOR2, null, [1, 1024, 1, false, false]]
 		return properties
 	

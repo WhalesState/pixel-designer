@@ -66,8 +66,10 @@ func _on_viewport_gui_input(ev: InputEvent):
 						continue
 					if sprite.get_rect().has_point(mpos):
 						var sprite_button = sprite.sprite_button
-						if sprite_button.button_group.get_pressed_button() != sprite_button:
+						if get_node("%Inspector").selected != sprite:
 							sprite_button.button_pressed = true
+							if get_node("%Inspector").selected != sprite:
+								sprite_button.emit_signal("selected", sprite)
 							sprite_button.grab_focus()
 							get_viewport().set_input_as_handled()
 							break

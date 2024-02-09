@@ -13,5 +13,3 @@ func _draw():
 	if not selected:
 		return
 	draw_rect(Rect2(selected.position, selected.size), Color(0.0, 1.0, 1.0, 1.0), false)
-	#var zoom = get_node("%Camera").zoom
-	#draw_texture_rect(MISC.get_icon("visible"), Rect2(selected.position - Vector2(8, 8) / zoom, Vector2(16, 16) / zoom), false)

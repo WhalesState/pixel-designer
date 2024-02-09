@@ -38,7 +38,6 @@ func _init():
 
 func _ready():
 	get_parent().add_child.call_deferred(popups, true)
-	# get_node("%Inspector").selected = null
 
 	if project_file:
 		reload_project()
@@ -102,6 +101,23 @@ func save_project():
 func reload_project():
 	var sprite_box = get_node("%SpriteBox")
 	sprite_box.clear()
+	var fonts_dir = DirAccess.open( "%s/fonts" % project_dir.get_current_dir())
+	if not fonts_dir:
+		print("ERROR: Can't access fonts dir!")
+	else:
+		for file in fonts_dir.get_files():
+			if not file.get_extension() == "pixelfont":
+				continue
+			var font_file = ConfigFile.new()
+			if not font_file.load("%s/%s" % [fonts_dir.get_current_dir(), file]) == OK:
+				continue
+			var font := FontFile.new()
+			font.data = font_file.get_value("font", "data")
+			font.antialiasing = font_file.get_value("font", "antialiased", false)
+			font.font_name = font_file.get_value("font", "display_name")
+			font.set_meta("size", font_file.get_value("font", "size"))
+			# font.fixed_size = font_file.get_value("font", "size")
+			get_node("%Inspector").fonts[font.font_name] = font
 	if project_file.has_section("sprites"):
 		for key in project_file.get_section_keys("sprites"):
 			var sprite_data = project_file.get_value("sprites", key)

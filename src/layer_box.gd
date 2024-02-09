@@ -15,6 +15,7 @@ var sprite_vp: SubViewport:
 
 func _init() -> void:
 	allow_rmb_select = true
+	# hide_folding = true
 	item_activated.connect(_on_item_activated)
 	item_edited.connect(_on_item_edited)
 	item_mouse_selected.connect(_on_item_mouse_selected)
@@ -30,8 +31,14 @@ func _on_layer_menu_id_pressed(id: int) -> void:
 	match id:
 		LayerMenu.ADD_CHILD_LAYER:
 			# TODO: show add layer window
-			var label_layer = LabelLayer.new()
+			if get_node("%Inspector").fonts.is_empty():
+				print("ERROR: No fonts found in project.")
+				return
+			var label_layer = LabelLayer.new(get_node("%Inspector"))
 			get_selected().get_meta("node").add_child(label_layer)
+			label_layer.name = "LabelLayer"
+			label_layer.font = get_node("%Inspector").fonts.keys()[0]
+			label_layer.font_size = get_node("%Inspector").fonts.values()[0].get_meta("size")
 			reload_layers_tree()
 		LayerMenu.DUPLICATE_LAYER:
 			pass
@@ -72,9 +79,7 @@ func _on_item_selected():
 	if get_selected().get_meta("node") == sprite_vp:
 		print("root")
 		return
-	# TODO: Update inspector with selected layer.
 	get_node("%Inspector").load_properties(get_selected().get_meta("node"))
-	# print("Selected")
 
 
 func reload_layers_tree() -> void:
@@ -89,7 +94,7 @@ func reload_layers_tree() -> void:
 
 
 func add_layer_item(node_parent: TreeItem, node: Node):
-	var item := create_item(node_parent, 1)
+	var item := create_item(node_parent, -1)
 	item.set_text(0, node.name)
 	item.set_meta("node", node)
 	for child in node.get_children():

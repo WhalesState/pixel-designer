@@ -11,6 +11,7 @@ enum {
 
 var selected = null
 var label := InspectorLabel.new()
+var fonts := {}
 
 
 func _ready():
@@ -28,17 +29,10 @@ func load_properties(node: Node):
 	selected = node
 	for property in properties.keys():
 		var data = properties[property]
-		match data[TYPE]:
-			TYPE_BOOL:
-				add_bool_property(data[CATEGORY], data[DISPLAY_NAME], node, property, data[DEFAULT_VALUE])
-			TYPE_VECTOR2:
-				if data.size() > 4:
-					add_vec2_property(data[CATEGORY], data[DISPLAY_NAME], node, property, data[DEFAULT_VALUE], data[HINTS])
-				else:
-					add_vec2_property(data[CATEGORY], data[DISPLAY_NAME], node, property, data[DEFAULT_VALUE])
+		add_property(data[CATEGORY], data[DISPLAY_NAME], data[TYPE], node, property, data[DEFAULT_VALUE], data[HINTS])
 
 
-func add_bool_property(property_category: String, display_name: String, property_owner: Node, property: String, default_value = null):
+func add_property(property_category: String, property_name: String, property_type: Variant, property_owner: Node, property: String, default_value = null, hints := []):
 	var category: Category
 	if not property_category.is_empty():
 		category = get_node_or_null(property_category)
@@ -47,61 +41,68 @@ func add_bool_property(property_category: String, display_name: String, property
 			category.name = property_category
 			add_child(category)
 	var hbox := HBoxContainer.new()
-	if category:
-		category.get_child(0).add_child(hbox)
-	else:
-		add_child(hbox, false, INTERNAL_MODE_FRONT)
-	var name_hbox := NameHBox.new(display_name)
-	hbox.add_child(name_hbox)
-	var reset_button: ResetButton
-	if typeof(default_value) == TYPE_BOOL:
-		reset_button = ResetButton.new(default_value)
-		name_hbox.add_child(reset_button)
-	var checkbox := CheckBox.new()
-	checkbox.flat = true
-	checkbox.text = "On"
-	checkbox.size_flags_horizontal = SIZE_EXPAND_FILL
-	checkbox.button_pressed = property_owner.get(property)
-	hbox.add_child(checkbox)
-	if reset_button:
-		reset_button.visible = default_value != checkbox.button_pressed
-		reset_button.pressed.connect(_on_reset_property_pressed.bind([checkbox], default_value))
-	checkbox.toggled.connect(_on_bool_checkbox_toggled.bind(property_owner, property, reset_button))
-
-
-func add_vec2_property(property_category: String, property_name: String, property_owner: Node, property: String, default_value = null, hint := [-9999,9999,1.0, true, true]):
-	var category: Category
-	if not property_category.is_empty():
-		category = get_node_or_null(property_category)
-		if not category:
-			category = Category.new(property_category)
-			category.name = property_category
-			add_child(category)
-	var hbox := HBoxContainer.new()
+	hbox.custom_minimum_size.y = 24
 	if category:
 		category.get_child(0).add_child(hbox)
 	else:
 		add_child(hbox, false, INTERNAL_MODE_FRONT)
 	var name_hbox := NameHBox.new(property_name)
 	hbox.add_child(name_hbox)
-	var reset_button: ResetButton
-	if typeof(default_value) == TYPE_VECTOR2:
+	var node
+	var reset_button = null
+	if default_value != null:
 		reset_button = ResetButton.new(default_value)
 		name_hbox.add_child(reset_button)
-	var vbox := VBoxContainer.new()
-	vbox.size_flags_horizontal = SIZE_EXPAND_FILL
-	hbox.add_child(vbox)
-	var x_spinbox := SpinBoxSlider.new(SpinBoxSlider.SUFFIX_PIXEL, false, hint[0], hint[1], hint[2], hint[3], hint[4])
-	x_spinbox.value = property_owner.get(property).x
-	vbox.add_child(x_spinbox)
-	var y_spinbox := SpinBoxSlider.new(SpinBoxSlider.SUFFIX_PIXEL, false, hint[0], hint[1], hint[2], hint[3], hint[4])
-	y_spinbox.value = property_owner.get(property).y
-	vbox.add_child(y_spinbox)
+	match property_type:
+		TYPE_STRING:
+			node = LineEdit.new()
+			node.text = property_owner.get(property)
+			if reset_button:
+				reset_button.visible = default_value != node.text
+			node.text_changed.connect(_on_property_changed.bind(property_owner, property, reset_button))
+		TYPE_COLOR:
+			node = ColorPickerButton.new()
+			node.color = property_owner.get(property)
+			if reset_button:
+				reset_button.visible = default_value != node.color
+			node.edit_alpha = hints[0]
+			node.color_changed.connect(_on_property_changed.bind(property_owner, property, reset_button))
+		TYPE_FLOAT, TYPE_INT:
+			if hints.is_empty():
+				hints = [-1000, 1000, 1.0, true, true]
+			node = SpinBoxSlider.new(SpinBoxSlider.SUFFIX_PIXEL, true, hints[0], hints[1], hints[2], hints[3], hints[4])
+			node.value = property_owner.get(property)
+			if reset_button:
+				reset_button.visible = default_value != node.value
+			node.value_changed.connect(_on_property_changed.bind(property_owner, property, reset_button))
+		FontFile:
+			node = FontOptions.new(property_owner, property, self)
+		TYPE_BOOL:
+			node = CheckBox.new()
+			node.flat = true
+			node.text = "On"
+			node.button_pressed = property_owner.get(property)
+			if reset_button:
+				reset_button.visible = default_value != node.button_pressed
+			node.toggled.connect(_on_property_changed.bind(property_owner, property, reset_button))
+		TYPE_VECTOR2:
+			if hints.is_empty():
+				hints = [-9999,9999,1.0, true, true]
+			node = VBoxContainer.new()
+			var x_spinbox = SpinBoxSlider.new(SpinBoxSlider.SUFFIX_NONE, false, hints[0], hints[1], hints[2], hints[3], hints[4])
+			x_spinbox.value = property_owner.get(property).x
+			node.add_child(x_spinbox)
+			var y_spinbox = SpinBoxSlider.new(SpinBoxSlider.SUFFIX_NONE, false, hints[0], hints[1], hints[2], hints[3], hints[4])
+			y_spinbox.value = property_owner.get(property).y
+			node.add_child(y_spinbox)
+			if reset_button:
+				reset_button.visible = default_value != Vector2(x_spinbox.value, y_spinbox.value)
+			x_spinbox.value_changed.connect(_on_vec2_property_changed.bind(x_spinbox, y_spinbox, property_owner, property, reset_button))
+			y_spinbox.value_changed.connect(_on_vec2_property_changed.bind(x_spinbox, y_spinbox, property_owner, property, reset_button))
 	if reset_button:
-		reset_button.visible = default_value != Vector2(x_spinbox.value, y_spinbox.value)
-		reset_button.pressed.connect(_on_reset_property_pressed.bind([x_spinbox, y_spinbox], default_value))
-	x_spinbox.value_changed.connect(_on_vec2_spinbox_value_changed.bind(x_spinbox, y_spinbox, property_owner, property, reset_button))
-	y_spinbox.value_changed.connect(_on_vec2_spinbox_value_changed.bind(x_spinbox, y_spinbox, property_owner, property, reset_button))
+		reset_button.pressed.connect(_on_reset_property_pressed.bind(node, default_value))
+	hbox.add_child(node)
+	node.size_flags_horizontal = SIZE_EXPAND_FILL
 
 
 func clear():
@@ -112,28 +113,33 @@ func clear():
 		child.queue_free()
 
 
-func _on_bool_checkbox_toggled(toggled_on: bool, property_owner: Node, property: String, reset_button: Button):
-	property_owner.set(property, toggled_on)
+func _on_property_changed(value: Variant, property_owner: Node, property: String, reset_button: Button):
+	property_owner.set(property, value)
 	if reset_button:
-		reset_button.visible = reset_button.get_meta("default_value") != toggled_on
+		reset_button.visible = reset_button.get_meta("default_value") != value
 
 
-func _on_vec2_spinbox_value_changed(_value: float, x_value_owner: Range, y_value_owner: Range, property_owner: Node, property: String, reset_button = null):
+func _on_vec2_property_changed(_value: float, x_value_owner: Range, y_value_owner: Range, property_owner: Node, property: String, reset_button = null):
 	var value = Vector2(x_value_owner.value, y_value_owner.value)
 	property_owner.set(property, value)
 	if reset_button:
 		reset_button.visible = reset_button.get_meta("default_value") != value
-	get_node("%Overlays").queue_redraw()
 
 
-func _on_reset_property_pressed(nodes: Array, value: Variant):
+func _on_reset_property_pressed(node: Node, value: Variant):
 	match typeof(value):
+		TYPE_FLOAT, TYPE_INT:
+			node.value = value
 		TYPE_BOOL:
-			nodes[0].button_pressed = value
+			node.button_pressed = value
+		TYPE_COLOR:
+			node.color = value
 		TYPE_VECTOR2:
-			nodes[0].value = value.x
-			nodes[1].value = value.y
-			get_node("%Overlays").queue_redraw()
+			node.get_child(0).value = value.x
+			node.get_child(1).value = value.y
+		TYPE_STRING:
+			node.text = value
+			node.emit_signal("text_changed", value)
 
 
 class ResetButton:
@@ -266,3 +272,33 @@ class InspectorLabel:
 		add_theme_stylebox_override("normal", get_theme_stylebox("panel", "PanelContainer"))
 		name = "InspectorLabel"
 		horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+
+class FontOptions:
+	extends OptionButton
+	
+	var layer: Node
+	var inspector: VBoxContainer
+	
+	
+	func _init(_layer: Node, _property: String, _inspector: VBoxContainer):
+		layer = _layer
+		inspector = _inspector
+		item_selected.connect(_on_item_selected.bind(_property))
+	
+	
+	func _ready():
+		update_items()
+	
+	
+	func update_items():
+		clear()
+		var fonts = inspector.fonts.keys()
+		for i in fonts.size():
+			add_item(fonts[i], i)
+			if layer.font == fonts[i]:
+				selected = i
+	
+	
+	func _on_item_selected(index: int, property: String):
+		layer.set(property, get_item_text(index))
