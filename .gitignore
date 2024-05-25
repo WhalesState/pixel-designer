@@ -1,0 +1,5 @@
+# Ignore import files ? it will be generated on startup.
+# Safe as long as we are using the default import settings
+**.import
+
+.godot/
