@@ -18,3 +18,7 @@ run/main_loop_type="MainTree"
 run/root_type="MainRoot"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Editor="*res://src/editor.gd"

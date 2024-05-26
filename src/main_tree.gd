@@ -22,3 +22,7 @@ extends SceneTree
 ##func _enter_tree():
 ##    var tree: MainTree = get_tree()
 ##[/codeblock]
+
+
+func _init():
+	root.theme = EditorTheme.new()
