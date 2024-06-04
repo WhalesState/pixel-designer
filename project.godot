@@ -11,12 +11,12 @@ config_version=5
 [application]
 
 config/name="Pixel Designer"
-config/version="1.0"
+config/version="1.0.0"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="PDesigner"
 run/main_loop_type="MainTree"
 run/root_type="MainRoot"
-config/features=PackedStringArray("4.2", "GL Compatibility")
+config/features=PackedStringArray("4.2")
 config/icon="res://icon.svg"
 
 [autoload]

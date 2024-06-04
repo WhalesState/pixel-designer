@@ -69,11 +69,8 @@ func _init(_base_color := Color("#1F1B24"), _accent_color := Color("#332940"), _
 	accent_color = _accent_color
 	is_dark_theme = _is_dark_theme
 	default_separation = _default_separation
-
-	add_type("GuiBase")
 	set_type_variation("GuiBase", "PanelContainer")
-	set_stylebox("panel", "GuiBase", EditorTheme.create_flat_stylebox(2))
-
+	set_stylebox("panel", "GuiBase", create_flat_stylebox(2))
 	can_update = true
 	update_colors()
 
@@ -91,7 +88,7 @@ func update_colors():
 
 
 ## Returns a new [StyleBoxFlat].
-static func create_flat_stylebox(
+func create_flat_stylebox(
 		content_margin := 0, corner_radius := 0, border_width := 0,
 		bg_color := Color(0.6, 0.6, 0.6, 1), border_color := Color(0.8, 0.8, 0.8, 1)
 		) -> StyleBoxFlat:

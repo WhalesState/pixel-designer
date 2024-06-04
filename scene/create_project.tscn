@@ -1,0 +1,111 @@
+[gd_scene format=3 uid="uid://0yqgu6ho6qk"]
+
+[node name="PC" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"GuiBase"
+
+[node name="MC" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBC" type="VBoxContainer" parent="MC"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Grid" type="GridContainer" parent="MC/VBC"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="L" type="Label" parent="MC/VBC/Grid"]
+layout_mode = 2
+text = "Project name : "
+horizontal_alignment = 2
+
+[node name="ProjectName" type="LineEdit" parent="MC/VBC/Grid"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Enter project name..."
+
+[node name="L2" type="Label" parent="MC/VBC/Grid"]
+visible = false
+custom_minimum_size = Vector2(0, 31)
+layout_mode = 2
+size_flags_vertical = 0
+text = "Width : "
+horizontal_alignment = 2
+
+[node name="ViewportWidth" type="SpinBox" parent="MC/VBC/Grid"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+min_value = 8.0
+max_value = 2048.0
+value = 16.0
+suffix = "px"
+
+[node name="L3" type="Label" parent="MC/VBC/Grid"]
+visible = false
+custom_minimum_size = Vector2(0, 31)
+layout_mode = 2
+size_flags_vertical = 0
+text = "Height : "
+horizontal_alignment = 2
+
+[node name="ViewportHeight" type="SpinBox" parent="MC/VBC/Grid"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+min_value = 8.0
+max_value = 2048.0
+value = 16.0
+suffix = "px"
+
+[node name="Warning" type="Label" parent="MC/VBC"]
+unique_name_in_owner = true
+modulate = Color(1, 0.203922, 0.203922, 1)
+layout_mode = 2
+size_flags_vertical = 3
+text = "Project name can't be empty!"
+horizontal_alignment = 1
+
+[node name="HBC" type="HBoxContainer" parent="MC/VBC"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Spacer" type="Control" parent="MC/VBC/HBC"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="Save" type="Button" parent="MC/VBC/HBC"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+disabled = true
+text = "Save"
+
+[node name="Spacer2" type="Control" parent="MC/VBC/HBC"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="Cancel" type="Button" parent="MC/VBC/HBC"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+text = "Cancel"
+
+[node name="Spacer3" type="Control" parent="MC/VBC/HBC"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
