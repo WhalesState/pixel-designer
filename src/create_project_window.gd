@@ -36,7 +36,7 @@ func _init(_editor: Editor):
 		editor.projects_dir.make_dir(project_name.text)
 		editor.project_dir = DirAccess.open(editor.projects_dir.get_current_dir() + "/" + project_name.text)
 		editor.project_settings = ConfigFile.new()
-		editor.editor_settings.set_value("application", "recent", project_name.text)
+		editor.editor_settings.set_value("editor", "recent", project_name.text)
 		editor.save_editor_settings()
 		if vp_width.visible:
 			# Create new project from menu.

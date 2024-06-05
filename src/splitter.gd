@@ -32,13 +32,11 @@ extends Control
 
 var draggers := []
 var children := []
-var draggers_offset := PackedFloat32Array()
 
 var prev_size: Vector2
 
 
-func _init(offsets := PackedFloat32Array()):
-	draggers_offset = offsets
+func _init():
 	child_order_changed.connect(queue_redraw)
 
 
@@ -82,7 +80,11 @@ func sort_children():
 		custom_minimum_size = children[0].get_combined_minimum_size()
 	else:
 		var use_offsets = false
-		if draggers_offset.size() == children.size() - 1:
+		var draggers_offset = []
+		for child in children:
+			if child.has_meta("dragger_offset"):
+				draggers_offset.append(child.get_meta("dragger_offset"))
+		if draggers_offset.size() >= children.size() - 1:
 			use_offsets = true
 		else:
 			draggers_offset.clear()
@@ -123,8 +125,6 @@ func sort_children():
 					cur_pos[1 if vertical else 0] += child_size[1 if vertical else 0] + separation
 			# A hack to fix draggers position.
 			for i in draggers.size():
-				if draggers_offset.size() != draggers.size():
-					draggers_offset.resize(draggers.size())
 				move_dragger(draggers[i], i, true)
 		else:
 			var cur_pos := Vector2.ZERO
@@ -162,25 +162,25 @@ func move_dragger(dragger: Dragger, idx: int, reset_pos:= false):
 	var relative := Vector2.ZERO
 	if not reset_pos:
 		relative = get_local_mouse_position() - dragger.position
-	var min = 0
-	var max = size[1 if vertical else 0] - separation
+	var _min = 0
+	var _max = size[1 if vertical else 0] - separation
 	if idx > 0:
-		min = draggers[idx - 1].position[1 if vertical else 0] + separation
-	min = max(min, min + children[idx].get_combined_minimum_size()[1 if vertical else 0])
+		_min = draggers[idx - 1].position[1 if vertical else 0] + separation
+	_min = max(_min, _min + children[idx].get_combined_minimum_size()[1 if vertical else 0])
 	if idx < draggers.size() - 1:
-		max = draggers[idx + 1].position[1 if vertical else 0] - separation
-	max = min(max, max - children[idx + 1].get_combined_minimum_size()[1 if vertical else 0])
+		_max = draggers[idx + 1].position[1 if vertical else 0] - separation
+	_max = min(_max, _max - children[idx + 1].get_combined_minimum_size()[1 if vertical else 0])
 	var new_pos = dragger.position[1 if vertical else 0] + relative[1 if vertical else 0]
 	if not reset_pos:
-		new_pos -= floor(separation / 2)
+		new_pos -= floor(separation / 2.0)
 	else:
 		new_pos = (dragger.position / (prev_size / size))[1 if vertical else 0]
-	new_pos = clamp(new_pos, min, max)
+	new_pos = clamp(new_pos, _min, _max)
 	var pos := Vector2.ZERO
 	pos[1 if vertical else 0] = new_pos
 	if pos != dragger.position:
 		dragger.position = pos
-		draggers_offset[idx] = (dragger.position / size)[1 if vertical else 0]
+		children[idx].set_meta("dragger_offset", (dragger.position / size)[1 if vertical else 0])
 		sort_children()
 
 
@@ -203,8 +203,8 @@ class Dragger:
 
 	var vertical = false
 	var is_dragging = false
+	var mouse_in = false
 	var normal_color := Color(0.498, 0.498, 0.498, 1.0)
-	var pressed_color := Color.BLUE_VIOLET
 
 
 	func _init(sep: int, is_vertical: bool):
@@ -221,10 +221,11 @@ class Dragger:
 			modulate = normal_color if entered else Color.TRANSPARENT
 		var default_cursor = get_cursor_shape()
 		mouse_default_cursor_shape = (CURSOR_VSIZE if vertical else CURSOR_HSIZE) if entered else default_cursor
+		mouse_in = entered
 
 
 	func _draw():
-		var offset := Vector2(0 if vertical else size.x - 4, size.y - 4 if vertical else 0)
+		var offset := Vector2(0.0 if vertical else (size.x - 4), (size.y - 4) if vertical else 0.0)
 		draw_rect(Rect2(floor(offset / 2), size - offset), Color.WHITE)
 
 
@@ -232,7 +233,13 @@ class Dragger:
 		var mb = event as InputEventMouseButton
 		if mb and mb.button_index == MOUSE_BUTTON_LEFT:
 			is_dragging = mb.pressed
-			modulate = pressed_color if is_dragging else (Color.TRANSPARENT if autohide else normal_color)
+			if is_dragging:
+				modulate = get_tree().get_root().theme.accent_color
+			else:
+				if autohide:
+					modulate = normal_color if mouse_in else Color.TRANSPARENT
+				else:
+					modulate = normal_color
 			get_viewport().set_input_as_handled()
 		var mm = event as InputEventMouseMotion
 		if mm and is_dragging:
