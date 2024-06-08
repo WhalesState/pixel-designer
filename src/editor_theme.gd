@@ -64,13 +64,15 @@ var default_separation : int:
 			set_constant("v_separation", type, default_separation)
 
 
-func _init(_base_color := Color("#1F1B24"), _accent_color := Color("#332940"), _is_dark_theme := true, _default_separation := 4):
+func _init(_base_color := Color("#1F1B24"), _accent_color := Color("#b48ee7"), _is_dark_theme := true, _default_separation := 4):
 	base_color = _base_color
 	accent_color = _accent_color
 	is_dark_theme = _is_dark_theme
 	default_separation = _default_separation
 	set_type_variation("GuiBase", "PanelContainer")
 	set_stylebox("panel", "GuiBase", create_flat_stylebox(2))
+	set_type_variation("MainScreenButton", "Button")
+	set_color("font_pressed_color", "MainScreenButton", accent_color)
 	can_update = true
 	update_colors()
 
