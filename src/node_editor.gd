@@ -35,11 +35,3 @@ func _init():
 	var spr = Sprite2D.new()
 	spr.texture = load("./icon.svg")
 	root.add_child(spr)
-
-
-func load_plugin():
-	pass
-
-
-func unload_plugin():
-	pass

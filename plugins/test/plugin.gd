@@ -16,7 +16,7 @@ var rect := TextureRect.new()
 
 func load_plugin():
 	print("Test plugin loaded")
-	rect.texture = load("./icon.svg")
+	rect.texture = preload("./icons/icon.svg")
 	rect.name = "TEST PLUGIN"
 	Editor.add_control(rect, Editor.Base.TOP_LEFT_DOCK)
 

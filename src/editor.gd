@@ -87,7 +87,8 @@ func _init():
 	else:
 		save_editor_settings()
 	# pack plugins
-	pack_plugins()
+	if Engine.is_editor_hint():
+		pack_plugins()
 	# GUI
 	gui_base.name = "GuiBase"
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -167,6 +168,7 @@ func _input(ev: InputEvent) -> void:
 		if k.keycode == KEY_S and k.is_command_or_control_pressed():
 			if k.shift_pressed:
 				create_project_window.title = "Save Project As.."
+				create_project_window.show_size_settings(true)
 				create_project_window.popup_centered()
 			else:
 				save()
@@ -180,17 +182,14 @@ func _input(ev: InputEvent) -> void:
 
 
 func _ready():
+	load_plugins()
 	get_tree().get_root().min_size = gui_base.get_minimum_size()
 	# create_project_window.popup_centered()
 
 
-func _enter_tree():
-	load_plugins()
-
-
 func _exit_tree():
-	save_editor_settings()
 	unload_plugins()
+	save_editor_settings()
 
 
 func pack_plugins():
@@ -198,20 +197,29 @@ func pack_plugins():
 	if internal_plugins_dir:
 		for plugin in internal_plugins_dir.get_directories():
 			var plugin_path = internal_plugins_dir.get_current_dir() + "/" + plugin
-			var dir = DirAccess.open(plugin_path)
-			if dir:
-				dir.list_dir_begin()
-				var file_name = dir.get_next()
+			var files = get_dir_files(plugin_path)
+			if files.size() > 0:
 				var pck := PCKPacker.new()
 				pck.pck_start(plugins_dir.get_current_dir() + "/" + plugin + ".pck")
-				while file_name != "":
-					if dir.current_is_dir():
-						file_name = dir.get_next()
-						continue
-					pck.add_file("res://loaded_plugins/" + plugin + "/" + file_name, plugin_path + "/" + file_name)
-					file_name = dir.get_next()
+				for file in files:
+					pck.add_file(file.replace("res://plugins/", "res://loaded_plugins/") , file)
 				pck.flush(true)
-				dir.list_dir_end()
+
+
+func get_dir_files(path: String) -> Array:
+	var files := []
+	var dir = DirAccess.open(path)
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "": 
+			if dir.current_is_dir():
+				files.append_array(get_dir_files(dir.get_current_dir() + "/" + file_name))
+			else:
+				files.append(dir.get_current_dir() + "/" + file_name)
+			file_name = dir.get_next()
+		dir.list_dir_end()
+	return files
 
 
 func load_plugins():
@@ -279,6 +287,7 @@ func save():
 		save_project_settings()
 	else:
 		create_project_window.title = "Save Project"
+		create_project_window.show_size_settings(false)
 		create_project_window.popup_centered()
 
 

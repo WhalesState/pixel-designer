@@ -58,7 +58,7 @@ func _init(_editor: Editor):
 			editor.save()
 		clear_and_hide()
 	)
-	show_size_settings(true)
+	show_size_settings(false)
 
 
 func clear_and_hide() -> void:

@@ -12,6 +12,10 @@
 class_name Plugin
 extends Node
 
+## This is the base of all editor plugins, just to make sure your plugin.gd file has load_plugin() and unload_plugin().
+##
+## For usage example, see "plugins/test/plugin.gd"
+
 
 func load_plugin():
 	pass
