@@ -87,7 +87,7 @@ func _init():
 	else:
 		save_editor_settings()
 	# pack plugins
-	if Engine.is_editor_hint():
+	if OS.is_debug_build():
 		pack_plugins()
 	# GUI
 	gui_base.name = "GuiBase"
@@ -197,29 +197,13 @@ func pack_plugins():
 	if internal_plugins_dir:
 		for plugin in internal_plugins_dir.get_directories():
 			var plugin_path = internal_plugins_dir.get_current_dir() + "/" + plugin
-			var files = get_dir_files(plugin_path)
+			var files = MISC.get_dir_files(plugin_path)
 			if files.size() > 0:
 				var pck := PCKPacker.new()
 				pck.pck_start(plugins_dir.get_current_dir() + "/" + plugin + ".pck")
 				for file in files:
 					pck.add_file(file.replace("res://plugins/", "res://loaded_plugins/") , file)
 				pck.flush(true)
-
-
-func get_dir_files(path: String) -> Array:
-	var files := []
-	var dir = DirAccess.open(path)
-	if dir:
-		dir.list_dir_begin()
-		var file_name = dir.get_next()
-		while file_name != "": 
-			if dir.current_is_dir():
-				files.append_array(get_dir_files(dir.get_current_dir() + "/" + file_name))
-			else:
-				files.append(dir.get_current_dir() + "/" + file_name)
-			file_name = dir.get_next()
-		dir.list_dir_end()
-	return files
 
 
 func load_plugins():
@@ -332,6 +316,11 @@ func _on_menu_id_pressed(_id: int, _name: String, _button: MenuButton) -> void:
 func add_control(control: Control, base: Base):
 	var container = get_container(base)
 	if container:
+		if container.has_node(str(control.name)):
+			var _idx = 1
+			while container.has_node(str(control.name) + str(_idx)):
+				_idx += 1
+			control.name = str(control.name) + str(_idx)
 		container.add_child(control)
 
 
@@ -375,7 +364,6 @@ func remove_center_control(control: Control):
 	_main_screen_buttons.remove_child(button)
 	button.queue_free()
 	center_dock.remove_child(control)
-	control.queue_free()
 	if center_dock.current_tab != -1:
 		center_dock.get_tab_control(center_dock.current_tab).get_meta("button").button_pressed = true
 

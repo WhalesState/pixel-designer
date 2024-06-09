@@ -10,11 +10,19 @@
 *********************************************************************"""
 
 class_name Plugin
-extends Node
+extends Object
 
 ## This is the base of all editor plugins, just to make sure your plugin.gd file has load_plugin() and unload_plugin().
 ##
-## For usage example, see "plugins/test/plugin.gd"
+## Why is it needed?[br]
+## If you want to share your plugin with PixelDesigner users, you can easily share the .pck file in user data folder and they can import it easily from any released version.[br]
+## Your plugin files will always be packed when you run the program from the editor, and you can find the packed files by looking at the "user://plugins/" folder in debug builds.
+## Or from the Project menu "Project -> Open User Data Folder" and navigate to plugins folder.[br]
+## For usage example, see "plugins/PixelDesigner.Test/plugin.gd".[br]
+## Plugin folders should have a unique name ie. "YourName.PluginName-1.0.0", else, the plugin files will replace the existing ones when it's loaded.[br]
+## The contents of the "res://plugins/" should not be exported when exporting the program.[br]
+## And they will be loaded when the plugin is enabled into "res://loaded_plugins/PluginName/".[br]
+## Plugins are loaded when the editor is ready and the plugin is enabled, and unloaded when the editor is closed or the plugin is disabled.[br]
 
 
 func load_plugin():
