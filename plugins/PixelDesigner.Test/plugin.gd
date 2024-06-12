@@ -11,11 +11,13 @@
 
 extends Plugin
 
-var rect := TextureRect.new()
+## Use load_plugin() to initialize your plugin scene, and unload_plugin() to free it.
+var rect: TextureRect
 
 
 func load_plugin():
 	print("Test plugin loaded")
+	rect = TextureRect.new()
 	rect.texture = preload("./icons/icon.svg")
 	rect.name = "TEST PLUGIN"
 	Editor.add_control(rect, Editor.Base.TOP_LEFT_DOCK)
@@ -23,4 +25,6 @@ func load_plugin():
 
 func unload_plugin():
 	print("Test plugin unloaded")
+	# The editor never frees your nodes, it just removes them from the scene tree.
 	Editor.remove_control(rect, Editor.Base.TOP_LEFT_DOCK)
+	rect.queue_free()

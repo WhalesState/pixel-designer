@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://dhp7cfh6xmck3"]
+
+[node name="MarginContainer" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="GridSettings" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 3
+
+[node name="GridOffset" type="Label" parent="GridSettings"]
+layout_mode = 2
+text = "Grid Offset :"
+horizontal_alignment = 2
+
+[node name="GridOffsetX" type="SpinBox" parent="GridSettings"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+suffix = "px"
+
+[node name="GridOffsetY" type="SpinBox" parent="GridSettings"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+suffix = "px"
+
+[node name="GridStep" type="Label" parent="GridSettings"]
+layout_mode = 2
+text = "Grid Step :"
+horizontal_alignment = 2
+
+[node name="GridStepX" type="SpinBox" parent="GridSettings"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 128.0
+value = 1.0
+suffix = "px"
+
+[node name="GridStepY" type="SpinBox" parent="GridSettings"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 128.0
+value = 1.0
+suffix = "px"
+
+[node name="PrimaryGridStep" type="Label" parent="GridSettings"]
+layout_mode = 2
+text = "Primary Grid Step :"
+
+[node name="PrimaryGridStepX" type="SpinBox" parent="GridSettings"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 128.0
+value = 1.0
+suffix = "steps"
+
+[node name="PrimaryGridStepY" type="SpinBox" parent="GridSettings"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(128, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 128.0
+value = 1.0
+suffix = "steps"

@@ -55,7 +55,7 @@ var bottom_dock := TabContainer.new()
 var top_right_dock := TabContainer.new()
 var bottom_right_dock := TabContainer.new()
 
-var node_editor := NodeEditor.new()
+var node_editor: NodeEditor 
 
 var projects_dir: DirAccess
 var plugins_dir: DirAccess
@@ -140,20 +140,23 @@ func _init():
 	bottom_right_dock.hide()
 	main_split.add_child(right_split)
 	main_vbox.add_child(main_split)
-	# Add controls to the editor.
-	add_center_control(node_editor, preload("res://icons/node_editor.svg"))
-	# OS.shell_open(user_dir.get_current_dir())
 	# Load Recent project if exists.
 	var recent_project = editor_settings.get_value("editor", "recent", "")
 	if not recent_project.is_empty():
 		project_dir = DirAccess.open(projects_dir.get_current_dir() + "/" + recent_project)
 		project_settings.load(projects_dir.get_current_dir() + "/" + recent_project + "/project.cfg")
-		reload_project()
+	# Add controls to the editor.
+	node_editor = NodeEditor.new(self)
+	add_center_control(node_editor, preload("res://icons/node_editor.svg"))
 	# Popups
 	add_child(create_project_window)
 	add_child(editor_settings_window)
 	# Menus
 	var project_menu := MenuButton.new()
+	project_menu.get_popup().add_item("Save Project")
+	project_menu.get_popup().add_item("Save Project As...")
+	project_menu.get_popup().add_item("Open Project")
+	project_menu.get_popup().add_item("Exit")
 	add_menu("Project", project_menu)
 	var editor_menu := MenuButton.new()
 	editor_menu.get_popup().add_item("Editor Settings")
@@ -189,6 +192,9 @@ func _ready():
 
 func _exit_tree():
 	unload_plugins()
+	for plugin in plugin_list.values():
+		plugin.free()
+	undo_redo.free()
 	save_editor_settings()
 
 
@@ -286,8 +292,10 @@ func get_viewport_size() -> Vector2:
 func add_menu(menu_name: String, menu_button: MenuButton):
 	menu_button.name = menu_name.capitalize()
 	menu_button.text = menu_name
+	menu_button.focus_mode = FOCUS_NONE
+	menu_button.switch_on_hover = true
 	top_menu.add_child(menu_button)
-	menu_button.get_popup().id_pressed.connect(_on_menu_id_pressed.bind(menu_name, menu_button))
+	menu_button.get_popup().id_pressed.connect(_on_menu_id_pressed.bind(menu_name, menu_button.get_popup()))
 	return menu_button.get_index()
 
 
@@ -296,11 +304,21 @@ func remove_menu(menu_button: MenuButton) -> void:
 	menu_button.queue_free()
 
 
-func _on_menu_id_pressed(_id: int, _name: String, _button: MenuButton) -> void:
-	var item_name: String = _button.get_popup().get_item_text(_id)
+func _on_menu_id_pressed(_id: int, _name: String, _menu: PopupMenu) -> void:
+	var item_name: String = _menu.get_item_text(_id)
 	match _name:
 		"Project":
-			pass
+			match item_name:
+				"Save Project":
+					save()
+				"Save Project As...":
+					create_project_window.title = "Save Project As..."
+					create_project_window.show_size_settings(true)
+					create_project_window.popup_centered()
+				"Open Project":
+					pass
+				"Exit":
+					get_tree().quit()
 		"Editor":
 			match item_name:
 				"Editor Settings":
@@ -308,7 +326,7 @@ func _on_menu_id_pressed(_id: int, _name: String, _button: MenuButton) -> void:
 		"Help":
 			pass
 		_:
-			print("Unknown menu: " + _name)
+			print("Unknown menu: " + _name, " : ", item_name)
 	prints(_name, item_name)
 
 
@@ -397,6 +415,12 @@ func save_editor_settings():
 		editor_settings.set_value("editor", "center_dock_offset", 0.7)
 		editor_settings.set_value("editor", "top_left_dock_offset", 0.6)
 		editor_settings.set_value("editor", "top_right_split_offset", 0.6)
+		editor_settings.set_value("editor", "show_grid", true)
+		editor_settings.set_value("editor", "show_rulers", true)
+		editor_settings.set_value("editor", "show_guides", true)
+		editor_settings.set_value("editor", "grid_offset", Vector2.ZERO)
+		editor_settings.set_value("editor", "grid_step", Vector2(16, 16))
+		editor_settings.set_value("editor", "primary_grid_step", Vector2i(8, 8))
 	else:
 		editor_settings.set_value("editor", "left_split_offset", left_split.get_meta("dragger_offset", 0.2))
 		editor_settings.set_value("editor", "center_split_offset", center_split.get_meta("dragger_offset", 0.8))
@@ -407,4 +431,5 @@ func save_editor_settings():
 
 
 func save_project_settings():
-	project_settings.save(project_dir.get_current_dir() + "/project.cfg")
+	if project_dir:
+		project_settings.save(project_dir.get_current_dir() + "/project.cfg")
