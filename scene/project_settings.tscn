@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://8cqkprwuv0g0"]
+
+[node name="ProjectSettings" type="TabContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Project" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="FoldableContainer" type="FoldableContainer" parent="Project"]
+layout_mode = 2
+title = "Viewport"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Project/FoldableContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="Project/FoldableContainer/VBoxContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="Label" type="Label" parent="Project/FoldableContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Width :"
+horizontal_alignment = 2
+
+[node name="ViewportWidth" type="SpinBox" parent="Project/FoldableContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 8.0
+max_value = 2048.0
+value = 16.0
+rounded = true
+suffix = "px"
+
+[node name="Label2" type="Label" parent="Project/FoldableContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "Height :"
+horizontal_alignment = 2
+
+[node name="ViewportHeight" type="SpinBox" parent="Project/FoldableContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 8.0
+max_value = 2048.0
+value = 16.0
+rounded = true
+suffix = "px"
+
+[node name="HSeparator" type="HSeparator" parent="Project/FoldableContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="SnapTransforms" type="CheckButton" parent="Project/FoldableContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Snap 2D Transforms"
+
+[node name="SnapVertices" type="CheckButton" parent="Project/FoldableContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Snap 2D Vertices"

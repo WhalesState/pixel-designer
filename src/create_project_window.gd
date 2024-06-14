@@ -50,7 +50,8 @@ func _init(_editor: Editor):
 		editor.save_editor_settings()
 		if vp_width.visible:
 			# Create new project from menu.
-			editor.project_settings.set_value("project", "size", Vector2(vp_width.value, vp_height.value))
+			editor.project_settings.set_value("project", "view_width", vp_width.value)
+			editor.project_settings.set_value("project", "view_height", vp_height.value)
 			editor.save_project_settings()
 			editor.reload_project()
 		else:

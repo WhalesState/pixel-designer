@@ -34,6 +34,7 @@ var VERSION = ProjectSettings.get_setting_with_override("application/config/vers
 ## popups
 var create_project_window := CreateProjectWindow.new(self)
 var editor_settings_window := EditorSettingsWindow.new(self)
+var project_settings_window := ProjectSettingsWindow.new(self)
 
 ## The base panel container which contains all the editor GUI.
 var gui_base := PanelContainer.new()
@@ -151,11 +152,13 @@ func _init():
 	# Popups
 	add_child(create_project_window)
 	add_child(editor_settings_window)
+	add_child(project_settings_window)
 	# Menus
 	var project_menu := MenuButton.new()
 	project_menu.get_popup().add_item("Save Project")
 	project_menu.get_popup().add_item("Save Project As...")
 	project_menu.get_popup().add_item("Open Project")
+	project_menu.get_popup().add_item("Project Settings")
 	project_menu.get_popup().add_item("Exit")
 	add_menu("Project", project_menu)
 	var editor_menu := MenuButton.new()
@@ -167,27 +170,30 @@ func _init():
 
 func _input(ev: InputEvent) -> void:
 	var k: InputEventKey = ev as InputEventKey
-	if k and not k.is_echo():
-		if k.keycode == KEY_S and k.is_command_or_control_pressed():
-			if k.shift_pressed:
-				create_project_window.title = "Save Project As.."
-				create_project_window.show_size_settings(true)
-				create_project_window.popup_centered()
-			else:
-				save()
-			get_viewport().set_input_as_handled()
-		elif k.keycode == KEY_Z and k.is_command_or_control_pressed():
-			if k.shift_pressed:
-				print("Redo")
-			else:
-				print("Undo")
-			get_viewport().set_input_as_handled()
+	if not k or not k.is_pressed():
+		return
+	if k.keycode == KEY_Z and k.is_command_or_control_pressed():
+		if k.shift_pressed:
+			undo_redo.redo()
+		else:
+			undo_redo.undo()
+		get_viewport().set_input_as_handled()
+	if k.is_echo():
+		return
+	if k.keycode == KEY_S and k.is_command_or_control_pressed():
+		if k.shift_pressed:
+			create_project_window.title = "Save Project As.."
+			create_project_window.show_size_settings(true)
+			create_project_window.popup_centered()
+		else:
+			save()
+		get_viewport().set_input_as_handled()
 
 
 func _ready():
 	load_plugins()
 	get_tree().get_root().min_size = gui_base.get_minimum_size()
-	# create_project_window.popup_centered()
+	node_editor.call_deferred("center_view")
 
 
 func _exit_tree():
@@ -273,7 +279,11 @@ func _set_plugin_enabled(plugin: String, enabled: bool) -> void:
 
 func save():
 	if project_dir:
-		project_settings.set_value("project", "size", get_viewport_size())
+		var vp_size = get_viewport_size()
+		project_settings.set_value("project", "view_width", vp_size.x)
+		project_settings.set_value("project", "view_height", vp_size.y)
+		project_settings.set_value("project", "snap_2d_transforms_to_pixel", node_editor.root.snap_2d_transforms_to_pixel)
+		project_settings.set_value("project", "snap_2d_vertices_to_pixel", node_editor.root.snap_2d_vertices_to_pixel)
 		save_project_settings()
 	else:
 		create_project_window.title = "Save Project"
@@ -286,7 +296,11 @@ func reload_project():
 
 
 func get_viewport_size() -> Vector2:
-	return Vector2(16, 16)
+	if node_editor:
+		return node_editor.root.size
+	else:
+		print("ERROR: NodeEditor root is not accessible. Returning default size (16, 16).")
+		return Vector2(16, 16)
 
 
 func add_menu(menu_name: String, menu_button: MenuButton):
@@ -317,6 +331,8 @@ func _on_menu_id_pressed(_id: int, _name: String, _menu: PopupMenu) -> void:
 					create_project_window.popup_centered()
 				"Open Project":
 					pass
+				"Project Settings":
+					project_settings_window.popup_centered()
 				"Exit":
 					get_tree().quit()
 		"Editor":
