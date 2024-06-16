@@ -43,7 +43,7 @@ var cur_action := ACTION_NONE
 var drag_type := DRAG_NONE
 var is_dragging := false
 var prev_rect := Rect2()
-var drag_from := Vector2.ZERO
+var prev_mpos := Vector2.ZERO
 var drag_to := Vector2.ZERO
 var old_position := Vector2.ZERO
 
@@ -72,6 +72,8 @@ func _init(_editor: Editor):
 	var spr = TextureRect.new()
 	spr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	spr.size = Vector2(64, 64)
+	spr.texture_filter = Control.TEXTURE_FILTER_LINEAR
+	root.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR
 	spr.texture = load("./icon.svg")
 	root.add_child(spr)
 	# Load editor settings. Maybe this can be project based.
@@ -173,7 +175,7 @@ func _gui_input(ev: InputEvent):
 		if mb.pressed:
 			cur_action = ACTION_NONE
 			drag_type = DRAG_NONE
-			drag_from = Vector2.ZERO
+			prev_mpos = Vector2.ZERO
 			if selected:
 				const dragger = [
 					DRAG_TOP_LEFT,
@@ -210,12 +212,8 @@ func _gui_input(ev: InputEvent):
 				if resize_drag != DRAG_NONE:
 					drag_type = resize_drag
 					cur_action = ACTION_RESIZE
-					drag_from = get_custom_transform().affine_inverse()._xform(mb.position)
+					prev_mpos = mb.position
 			if drag_type == DRAG_NONE:
-				# for i in range(root.get_child_count() -1, -1, -1):
-					# var layer: CanvasGroup = root.get_child(i) as CanvasGroup
-					# if not layer or not layer.visible:
-					# 	continue
 				for j in range(root.get_child_count() - 1, -1, -1):
 					var node: Control = root.get_child(j) as Control
 					if not node:
@@ -227,12 +225,12 @@ func _gui_input(ev: InputEvent):
 							if mb.shift_pressed:
 								continue
 							cur_action = ACTION_MOVE
-							drag_from = get_custom_transform().affine_inverse()._xform(mb.position)
+							prev_mpos = mb.position
 							return
 						if not mb.alt_pressed or not selected:
 							action_select_node(node)
 						cur_action = ACTION_MOVE
-						drag_from = get_custom_transform().affine_inverse()._xform(mb.position)
+						prev_mpos = mb.position
 						return
 				action_select_node(null)
 		else:
@@ -249,15 +247,14 @@ func _gui_input(ev: InputEvent):
 	var mm: InputEventMouseMotion = ev as InputEventMouseMotion
 	if mm and mm.button_mask == MOUSE_BUTTON_MASK_LEFT:
 		if cur_action == ACTION_MOVE:
-			if not is_dragging and drag_from.distance_to(get_custom_transform().affine_inverse()._xform(mm.position)) > 4:
+			if not is_dragging and prev_mpos.distance_to(mm.position) > 8:
 				old_position = selected.position
 				is_dragging = true
 			if not is_dragging:
 				return
+			var drag_from := get_custom_transform().affine_inverse()._xform(prev_mpos)
 			drag_to = get_custom_transform().affine_inverse()._xform(mm.position)
-			var new_pos = old_position + (drag_to - drag_from)
-			if mm.ctrl_pressed:
-				new_pos = snap_point(new_pos)
+			var new_pos = round(old_position + (drag_to - drag_from))
 			if mm.shift_pressed:
 				if abs(new_pos.x - old_position.x) > abs(new_pos.y - old_position.y):
 					new_pos.y = old_position.y
@@ -274,22 +271,23 @@ func _gui_input(ev: InputEvent):
 			var current_end := prev_rect.size
 			var max_begin := current_begin + ((current_end - selected.get_minimum_size()) / 2.0) if mm.alt_pressed else current_begin + current_end - selected.get_minimum_size()
 			var min_end := (current_end + selected.get_minimum_size()) / 2.0 if mm.alt_pressed else selected.get_minimum_size()
+			var drag_from := get_custom_transform().affine_inverse()._xform(prev_mpos)
 			drag_to = get_custom_transform().affine_inverse()._xform(mm.position)
 			var drag_begin := current_begin + (drag_to - drag_from)
 			var drag_end := current_end + (drag_to - drag_from)
-			# Horizontal resize
+			# Horizontal resize.
 			if drag_type == DRAG_LEFT or drag_type == DRAG_TOP_LEFT or drag_type == DRAG_BOTTOM_LEFT:
 				current_begin.x = min(drag_begin.x, max_begin.x)
 				current_end.x += prev_rect.position.x - current_begin.x
 			elif drag_type == DRAG_RIGHT or drag_type == DRAG_TOP_RIGHT or drag_type == DRAG_BOTTOM_RIGHT:
 				current_end.x = max(drag_end.x, min_end.x)
-			# Vertical resize
+			# Vertical resize.
 			if drag_type == DRAG_TOP or drag_type == DRAG_TOP_LEFT or drag_type == DRAG_TOP_RIGHT:
 				current_begin.y = min(drag_begin.y, max_begin.y)
 				current_end.y += prev_rect.position.y - current_begin.y
 			elif drag_type == DRAG_BOTTOM or drag_type == DRAG_BOTTOM_LEFT or drag_type == DRAG_BOTTOM_RIGHT:
 				current_end.y = max(drag_end.y, min_end.y)
-			# Uniform resize
+			# Uniform resize.
 			if mm.shift_pressed:
 				var aspect: float = prev_rect.size.y / prev_rect.size.x
 				if drag_type == DRAG_LEFT or drag_type == DRAG_RIGHT:
@@ -306,7 +304,7 @@ func _gui_input(ev: InputEvent):
 						if drag_type == DRAG_TOP_RIGHT or drag_type == DRAG_TOP_LEFT:
 							current_begin.y = prev_rect.position.y + ((prev_rect.size.x - current_end.x) * aspect) 
 						current_end.y = current_end.x * aspect
-			# Symmetric resize
+			# Symmetric resize.
 			if mm.alt_pressed:
 				if drag_type == DRAG_LEFT or drag_type == DRAG_TOP_LEFT or drag_type == DRAG_BOTTOM_LEFT:
 					current_end.x += prev_rect.position.x - current_begin.x
@@ -318,18 +316,17 @@ func _gui_input(ev: InputEvent):
 				elif drag_type == DRAG_BOTTOM or drag_type == DRAG_BOTTOM_LEFT or drag_type == DRAG_BOTTOM_RIGHT:
 					current_begin.y += prev_rect.size.y - current_end.y
 					current_end.y += prev_rect.position.y - current_begin.y
-			# Snap resize
-			if mm.ctrl_pressed:
-				if current_begin.x != prev_rect.position.x:
-					current_end.x -= snap_point(current_begin).x - current_begin.x
-					current_begin.x = snap_point(current_begin).x
-				if current_begin.y != prev_rect.position.y:
-					current_end.y -= snap_point(current_begin).y - current_begin.y
-					current_begin.y = snap_point(current_begin).y
-				if current_begin.x + current_end.x != prev_rect.position.x + prev_rect.size.x:
-					current_end.x = snap_point(current_end).x
-				if current_begin.y + current_end.y != prev_rect.position.y + prev_rect.size.y:
-					current_end.y = snap_point(current_end).y
+			# Snap to pixels.
+			if current_begin.x != prev_rect.position.x:
+				current_end.x -= round(current_begin.x) - current_begin.x
+				current_begin.x = round(current_begin.x)
+			if current_begin.y != prev_rect.position.y:
+				current_end.y -= round(current_begin.y) - current_begin.y
+				current_begin.y = round(current_begin.y)
+			if current_begin.x + current_end.x != prev_rect.position.x + prev_rect.size.x:
+				current_end.x = round(current_end.x)
+			if current_begin.y + current_end.y != prev_rect.position.y + prev_rect.size.y:
+				current_end.y = round(current_end.y)
 			selected.position = current_begin
 			selected.size = current_end
 			get_control_viewport().queue_redraw()
@@ -384,14 +381,3 @@ func action_select_node(node: Control):
 	undo_redo.add_undo_property(self, "selected", selected)
 	undo_redo.add_do_property(self, "selected", node)
 	undo_redo.commit_action()
-
-
-func snap_point(point: Vector2) -> Vector2:
-	var new_point = point.round()
-	if show_grid:
-		if grid_step != Vector2.ONE:
-			if int(new_point.x) % int(grid_step.x) != 0:
-				new_point.x = round(new_point.x / grid_step.x) * grid_step.x
-			if int(new_point.y) % int(grid_step.y) != 0:
-				new_point.y = round(new_point.y / grid_step.y) * grid_step.y
-	return new_point
