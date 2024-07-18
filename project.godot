@@ -14,11 +14,15 @@ config/name="Pixel Designer"
 config/version="1.0.0"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="PDesigner"
-run/main_loop_type="MainTree"
-run/root_type="MainRoot"
+run/main_loop_type="Loop"
+run/root_type="Root"
 config/features=PackedStringArray("4.2")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Editor="*res://src/editor.gd"
+ED="*res://src/editor.gd"
+
+[editor]
+
+run/main_run_args="-v"

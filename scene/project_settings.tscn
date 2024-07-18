@@ -1,4 +1,11 @@
-[gd_scene format=3 uid="uid://8cqkprwuv0g0"]
+[gd_scene load_steps=2 format=3 uid="uid://8cqkprwuv0g0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qp05h"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
 
 [node name="ProjectSettings" type="TabContainer"]
 anchors_preset = 15
@@ -12,6 +19,7 @@ layout_mode = 2
 
 [node name="FoldableContainer" type="FoldableContainer" parent="Project"]
 layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxFlat_qp05h")
 title = "Viewport"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Project/FoldableContainer"]
@@ -53,6 +61,16 @@ suffix = "px"
 
 [node name="HSeparator" type="HSeparator" parent="Project/FoldableContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="Filter" type="OptionButton" parent="Project/FoldableContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "Nearest Filter"
+popup/item_0/id = 0
+popup/item_1/text = "Linear Filter"
+popup/item_1/id = 1
 
 [node name="SnapTransforms" type="CheckButton" parent="Project/FoldableContainer/VBoxContainer"]
 unique_name_in_owner = true

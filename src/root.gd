@@ -9,15 +9,15 @@
 * https://github.com/WhalesState/godot-pixel-engine                    *
 *********************************************************************"""
 
-class_name MainRoot
+class_name Root
 extends Window
 
 ## The program [Window] (First Node in the SceneTree).
 ##
-## [color=yellow]Warning:[/color] Don't use [MainRoot] class directly,
+## [color=yellow]Warning:[/color] Don't use [Root] class directly,
 ## instead, it can be accessed from any node by using
 ## [method SceneTree.get_root] if [method Node.is_inside_tree].
 ##[codeblock]
 ##func _enter_tree():
-##    var root: MainRoot = get_tree().get_root()
+##    var root: Root = get_tree().get_root()
 ##[/codeblock]

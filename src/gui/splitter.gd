@@ -13,6 +13,18 @@
 class_name Splitter
 extends Control
 
+## Similar to [SplitContainer], but can have more than one child.
+##
+## Usage:
+##[codeblock]
+## var splitter = Splitter.new()
+## splitter.vertical = true
+## splitter.add_child(PanelContainer.new())
+## splitter.add_child(PanelContainer.new())
+## splitter.add_child(PanelContainer.new())
+## add_child(splitter)
+##[/codeblock]
+
 @export_range(4, 16, 2) var separation := 10:
 	set(value):
 		var new_sep = clamp(value, 4, 16)

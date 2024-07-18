@@ -25,9 +25,11 @@ extends Object
 ## Plugins are loaded when the editor is ready and the plugin is enabled, and unloaded when the editor is closed or the plugin is disabled.[br]
 
 
+# Called by [Editor] when it's ready or when plugin is enabled.
 func load_plugin():
 	pass
 
 
+## Called by [Editor] when it's exiting tree or when plugin is disabled.
 func unload_plugin():
 	pass

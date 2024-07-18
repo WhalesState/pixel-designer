@@ -9,17 +9,19 @@
 * https://github.com/WhalesState/godot-pixel-engine                    *
 *********************************************************************"""
 
+class_name Editor
 extends Control
 
 ## The Editor control node.
 ##
 ## [color=yellow]Warning:[/color] Don't use [Editor] class directly,
-## instead, it can be accessed from any node by using if [method Node.is_inside_tree].
+## instead, it can be accessed from any node by using the autoload keyword [color=light_green]ED[/color] if the node is inisde tree, [method Node.is_inside_tree].
 ##[codeblock]
 ##func _enter_tree():
-##    print(Editor.gui_base)
+##    print(ED.gui_base)
 ##[/codeblock]
 
+## List of all the Editor Containers that can be used with [method add_control] or [method remove_control].
 enum Base {
 	TOP_RIGHT_CONTAINER = 0,
 	TOP_LEFT_DOCK = 1,
@@ -29,6 +31,7 @@ enum Base {
 	BOTTOM_DOCK = 5,
 }
 
+## The current version for PixelDesigner.
 var VERSION = ProjectSettings.get_setting_with_override("application/config/version")
 
 ## popups
@@ -56,20 +59,29 @@ var bottom_dock := TabContainer.new()
 var top_right_dock := TabContainer.new()
 var bottom_right_dock := TabContainer.new()
 
-var node_editor: NodeEditor 
+## The main [ImageEditor].
+var image_editor: ImageEditor 
 
+## The projects directory inside user data directory.
 var projects_dir: DirAccess
+## The plugins directory inside user data directory.
 var plugins_dir: DirAccess
+## ConfigFile for saving editor settings file.
 var editor_settings := ConfigFile.new()
+## A list of all project plugins.
 var plugin_list := {}
 
+## The current project directory.
 var project_dir: DirAccess
+## ConfigFile for saving project settings file.
 var project_settings := ConfigFile.new()
 
+## The Editor undo/redo manager.
 var undo_redo = UndoRedo.new()
 
 
-func _init():
+## Used instead of builtin [method Object._init] to allow doc comments.
+func init() -> void:
 	# Get or create projects directory.
 	var user_dir := DirAccess.open(OS.get_user_data_dir())
 	if user_dir:
@@ -89,7 +101,7 @@ func _init():
 		save_editor_settings()
 	# pack plugins
 	if OS.is_debug_build():
-		pack_plugins()
+		_pack_plugins()
 	# GUI
 	gui_base.name = "GuiBase"
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -138,7 +150,6 @@ func _init():
 	top_right_dock.set_meta("dragger_offset", split_offset)
 	right_split.add_child(top_right_dock)
 	right_split.add_child(bottom_right_dock)
-	bottom_right_dock.hide()
 	main_split.add_child(right_split)
 	main_vbox.add_child(main_split)
 	# Load Recent project if exists.
@@ -147,8 +158,8 @@ func _init():
 		project_dir = DirAccess.open(projects_dir.get_current_dir() + "/" + recent_project)
 		project_settings.load(projects_dir.get_current_dir() + "/" + recent_project + "/project.cfg")
 	# Add controls to the editor.
-	node_editor = NodeEditor.new(self)
-	add_center_control(node_editor, preload("res://icons/node_editor.svg"))
+	image_editor = ImageEditor.new(self)
+	add_center_control(image_editor, preload("res://icons/image_editor.svg"))
 	# Popups
 	add_child(create_project_window)
 	add_child(editor_settings_window)
@@ -168,18 +179,25 @@ func _init():
 	add_menu("Help", help_menu)
 
 
-func _input(ev: InputEvent) -> void:
-	var k: InputEventKey = ev as InputEventKey
-	if not k or not k.is_pressed():
-		return
+## Used instead of builtin [method Node._ready] to allow doc comments.
+func ready() -> void:
+	_load_plugins()
+	get_tree().get_root().min_size = gui_base.get_minimum_size()
+	image_editor.call_deferred("center_view")
+
+
+## Used for editor key input.
+func key_input(k: InputEventKey) -> bool:
+	if not k.is_pressed():
+		return false
 	if k.keycode == KEY_Z and k.is_command_or_control_pressed():
 		if k.shift_pressed:
 			undo_redo.redo()
 		else:
 			undo_redo.undo()
-		get_viewport().set_input_as_handled()
+		return true
 	if k.is_echo():
-		return
+		return false
 	if k.keycode == KEY_S and k.is_command_or_control_pressed():
 		if k.shift_pressed:
 			create_project_window.title = "Save Project As.."
@@ -187,24 +205,219 @@ func _input(ev: InputEvent) -> void:
 			create_project_window.popup_centered()
 		else:
 			save()
-		get_viewport().set_input_as_handled()
+		return true
+	return false
 
 
-func _ready():
-	load_plugins()
-	get_tree().get_root().min_size = gui_base.get_minimum_size()
-	node_editor.call_deferred("center_view")
-
-
-func _exit_tree():
-	unload_plugins()
+## Used instead of builtin [method Node._exit_tree] to allow doc comments.
+func exit_tree() -> void:
+	_unload_plugins()
 	for plugin in plugin_list.values():
 		plugin.free()
 	undo_redo.free()
 	save_editor_settings()
 
 
-func pack_plugins():
+## Check if a plugin is enabled using it's name.
+func is_plugin_enabled(plugin: String) -> bool:
+	return editor_settings.get_value("editor", "enabled_plugins", []).has(plugin)
+
+
+## Enable a plugin using it's name.
+func enable_plugin(plugin: String) -> void:
+	_set_plugin_enabled(plugin, true)
+
+
+## Disable a plugin using it's name.
+func disable_plugin(plugin: String) -> void:
+	_set_plugin_enabled(plugin, false)
+
+
+## Save the project and it's settings.
+func save() -> void:
+	if project_dir:
+		var vp_size = get_viewport_size()
+		project_settings.set_value("project", "view_width", vp_size.x)
+		project_settings.set_value("project", "view_height", vp_size.y)
+		project_settings.set_value("project", "snap_2d_transforms_to_pixel", image_editor.root.snap_2d_transforms_to_pixel)
+		project_settings.set_value("project", "snap_2d_vertices_to_pixel", image_editor.root.snap_2d_vertices_to_pixel)
+		save_project_settings()
+	else:
+		create_project_window.title = "Save Project"
+		create_project_window.show_size_settings(false)
+		create_project_window.popup_centered()
+
+
+#TODO: Reload project!
+## Force reload the current project.
+func reload_project() -> void:
+	pass
+
+
+## Returns the current root size.
+func get_viewport_size() -> Vector2:
+	if image_editor:
+		return image_editor.root.size
+	else:
+		print("ERROR: ImageEditor root is not accessible. Returning default size (32, 32).")
+		return Vector2(32, 32)
+
+
+## Add a new [MenuButton] to the top menu and returns it's child index.
+func add_menu(menu_name: String, menu_button: MenuButton) -> int:
+	menu_button.name = menu_name.capitalize()
+	menu_button.text = menu_name
+	menu_button.focus_mode = FOCUS_NONE
+	menu_button.switch_on_hover = true
+	top_menu.add_child(menu_button)
+	menu_button.get_popup().id_pressed.connect(_on_menu_id_pressed.bind(menu_name, menu_button.get_popup()))
+	return menu_button.get_index()
+
+
+## Remove a [MenuButton] from top menu.
+func remove_menu(menu_button: MenuButton) -> void:
+	top_menu.remove_child(menu_button)
+	menu_button.queue_free()
+
+
+## Adds a control node to the editor.
+func add_control(control: Control, base: Base) -> void:
+	var container = get_container(base)
+	if container:
+		if container.has_node(str(control.name)):
+			var _idx = 1
+			while container.has_node(str(control.name) + str(_idx)):
+				_idx += 1
+			control.name = str(control.name) + str(_idx)
+		container.add_child(control)
+
+
+## Removes a control node from the editor.
+func remove_control(control: Control, base: Base) -> void:
+	var container = get_container(base)
+	if container:
+		container.remove_child(control)
+
+
+## Adds a control to the main center node of the editor. [member Node.name] will be used for the generated node button's text.
+func add_center_control(control: Control, icon: Texture2D, custom_name := "") -> void:
+	if not control:
+		return
+	var _name := ""
+	if custom_name.is_empty():
+		_name = control.name
+	else:
+		_name = custom_name
+	var button = Button.new()
+	button.name = _name
+	button.text = _name.capitalize()
+	button.icon = icon
+	button.flat = true
+	button.toggle_mode = true
+	button.button_group = _main_screen_button_group
+	button.theme_type_variation = "MainScreenButton"
+	if _main_screen_buttons.get_child_count() == 0:
+		button.button_pressed = true
+	_main_screen_buttons.add_child(button)
+	button.pressed.connect(func(idx := button.get_index()):
+		center_dock.current_tab = idx
+	)
+	control.set_meta("button", button)
+	center_dock.add_child(control)
+
+
+## Remove a center control from main screen plugins, and it's button.
+func remove_center_control(control: Control) -> void:
+	if not control:
+		return
+	var button = control.get_meta("button")
+	_main_screen_buttons.remove_child(button)
+	button.queue_free()
+	center_dock.remove_child(control)
+	if center_dock.current_tab != -1:
+		center_dock.get_tab_control(center_dock.current_tab).get_meta("button").button_pressed = true
+
+
+## Returns the specific editor container, use enum [enum Base] as a hint.
+func get_container(base: Base) -> Control:
+	match base:
+		Base.TOP_RIGHT_CONTAINER:
+			return top_right_hbox
+		Base.TOP_LEFT_DOCK:
+			return top_left_dock
+		Base.BOTTOM_LEFT_DOCK:
+			return bottom_left_dock
+		Base.TOP_RIGHT_DOCK:
+			return top_right_dock
+		Base.BOTTOM_RIGHT_DOCK:
+			return bottom_right_dock
+		Base.BOTTOM_DOCK:
+			return bottom_dock
+		_:
+			return null
+
+
+## Saves new editor_settings.cfg file with default values in user data directory
+## if it's empty, or the existing one will be saved.
+func save_editor_settings() -> void:
+	if editor_settings.get_sections().size() == 0:
+		editor_settings.set_value("editor", "version", VERSION)
+		editor_settings.set_value("editor", "recent", "")
+		editor_settings.set_value("editor", "loaded_plugins", [])
+		editor_settings.set_value("editor", "enabled_plugins", [])
+		editor_settings.set_value("editor", "left_split_offset", 0.2)
+		editor_settings.set_value("editor", "center_split_offset", 0.8)
+		editor_settings.set_value("editor", "center_dock_offset", 0.7)
+		editor_settings.set_value("editor", "top_left_dock_offset", 0.6)
+		editor_settings.set_value("editor", "top_right_split_offset", 0.6)
+		editor_settings.set_value("editor", "show_grid", true)
+		editor_settings.set_value("editor", "show_rulers", true)
+		editor_settings.set_value("editor", "show_guides", true)
+		editor_settings.set_value("editor", "grid_offset", Vector2.ZERO)
+		editor_settings.set_value("editor", "grid_step", Vector2(16, 16))
+		editor_settings.set_value("editor", "primary_grid_step", Vector2i(8, 8))
+	else:
+		editor_settings.set_value("editor", "left_split_offset", left_split.get_meta("dragger_offset", 0.2))
+		editor_settings.set_value("editor", "center_split_offset", center_split.get_meta("dragger_offset", 0.8))
+		editor_settings.set_value("editor", "center_dock_offset", center_dock.get_meta("dragger_offset", 0.7))
+		editor_settings.set_value("editor", "top_left_dock_offset", top_left_dock.get_meta("dragger_offset", 0.6))
+		editor_settings.set_value("editor", "top_right_dock_offset", top_right_dock.get_meta("dragger_offset", 0.6))
+	editor_settings.save(OS.get_user_data_dir() + "/editor_settings.cfg")
+
+
+## Saves project_settings.cfg file to the current project folder.
+func save_project_settings() -> void:
+	if project_dir:
+		project_settings.save(project_dir.get_current_dir() + "/project.cfg")
+
+
+# Calls [method init].
+func _init() -> void:
+	init()
+
+
+# Calls [method ready].
+func _ready() -> void:
+	ready()
+
+
+# Calls [method key_input].
+func _input(ev: InputEvent) -> void:
+	var accepted := false
+	var k: InputEventKey = ev as InputEventKey
+	if k:
+		accepted = key_input(k)
+	if accepted:
+		get_viewport().set_input_as_handled()
+
+
+# Calls [method exit_tree].
+func _exit_tree() -> void:
+	exit_tree()
+
+
+# Packs all plugins into a Pck file and saves it in user data plugins folder.
+func _pack_plugins() -> void:
 	var internal_plugins_dir = DirAccess.open("res://plugins")
 	if internal_plugins_dir:
 		for plugin in internal_plugins_dir.get_directories():
@@ -218,7 +431,8 @@ func pack_plugins():
 				pck.flush(true)
 
 
-func load_plugins():
+# Load all plugins by calling their [method Plugin.load_plugin] method if they are enabled.
+func _load_plugins() -> void:
 	plugins_dir.list_dir_begin()
 	var file_name = plugins_dir.get_next()
 	while file_name != "":
@@ -240,24 +454,14 @@ func load_plugins():
 	save_editor_settings()
 
 
-func unload_plugins():
+# Unload all plugins by calling their [method Plugin.unload_plugin] method if they are enabled.
+func _unload_plugins() -> void:
 	var enabled_plugins = editor_settings.get_value("editor", "enabled_plugins", [])
 	for plugin in enabled_plugins:
 		plugin_list[plugin].unload_plugin()
 
 
-func is_plugin_enabled(plugin: String) -> bool:
-	return editor_settings.get_value("editor", "enabled_plugins", []).has(plugin)
-
-
-func enable_plugin(plugin: String) -> void:
-	_set_plugin_enabled(plugin, true)
-
-
-func disable_plugin(plugin: String) -> void:
-	_set_plugin_enabled(plugin, false)
-
-
+# Sets a plugin enabled or disabled.
 func _set_plugin_enabled(plugin: String, enabled: bool) -> void:
 	if not plugin_list.keys().has(plugin):
 		return
@@ -275,47 +479,6 @@ func _set_plugin_enabled(plugin: String, enabled: bool) -> void:
 		editor_settings.set_value("editor", "enabled_plugins", enabled_plugins)
 		plugin_list[plugin].unload_plugin()
 	save_editor_settings()
-
-
-func save():
-	if project_dir:
-		var vp_size = get_viewport_size()
-		project_settings.set_value("project", "view_width", vp_size.x)
-		project_settings.set_value("project", "view_height", vp_size.y)
-		project_settings.set_value("project", "snap_2d_transforms_to_pixel", node_editor.root.snap_2d_transforms_to_pixel)
-		project_settings.set_value("project", "snap_2d_vertices_to_pixel", node_editor.root.snap_2d_vertices_to_pixel)
-		save_project_settings()
-	else:
-		create_project_window.title = "Save Project"
-		create_project_window.show_size_settings(false)
-		create_project_window.popup_centered()
-
-
-func reload_project():
-	pass
-
-
-func get_viewport_size() -> Vector2:
-	if node_editor:
-		return node_editor.root.size
-	else:
-		print("ERROR: NodeEditor root is not accessible. Returning default size (16, 16).")
-		return Vector2(16, 16)
-
-
-func add_menu(menu_name: String, menu_button: MenuButton):
-	menu_button.name = menu_name.capitalize()
-	menu_button.text = menu_name
-	menu_button.focus_mode = FOCUS_NONE
-	menu_button.switch_on_hover = true
-	top_menu.add_child(menu_button)
-	menu_button.get_popup().id_pressed.connect(_on_menu_id_pressed.bind(menu_name, menu_button.get_popup()))
-	return menu_button.get_index()
-
-
-func remove_menu(menu_button: MenuButton) -> void:
-	top_menu.remove_child(menu_button)
-	menu_button.queue_free()
 
 
 func _on_menu_id_pressed(_id: int, _name: String, _menu: PopupMenu) -> void:
@@ -344,108 +507,3 @@ func _on_menu_id_pressed(_id: int, _name: String, _menu: PopupMenu) -> void:
 		_:
 			print("Unknown menu: " + _name, " : ", item_name)
 	prints(_name, item_name)
-
-
-## Adds a control node to the editor.
-func add_control(control: Control, base: Base):
-	var container = get_container(base)
-	if container:
-		if container.has_node(str(control.name)):
-			var _idx = 1
-			while container.has_node(str(control.name) + str(_idx)):
-				_idx += 1
-			control.name = str(control.name) + str(_idx)
-		container.add_child(control)
-
-
-## Removes a control node from the editor.
-func remove_control(control: Control, base: Base):
-	var container = get_container(base)
-	if container:
-		container.remove_child(control)
-
-
-func add_center_control(control: Control, icon: Texture2D, custom_name := ""):
-	if not control:
-		return
-	var _name := ""
-	if custom_name.is_empty():
-		_name = control.name
-	else:
-		_name = custom_name
-	var button = Button.new()
-	button.name = _name
-	button.text = _name.capitalize()
-	button.icon = icon
-	button.flat = true
-	button.toggle_mode = true
-	button.button_group = _main_screen_button_group
-	button.theme_type_variation = "MainScreenButton"
-	if _main_screen_buttons.get_child_count() == 0:
-		button.button_pressed = true
-	_main_screen_buttons.add_child(button)
-	button.pressed.connect(func(idx := button.get_index()):
-		center_dock.current_tab = idx
-	)
-	control.set_meta("button", button)
-	center_dock.add_child(control)
-
-
-func remove_center_control(control: Control):
-	if not control:
-		return
-	var button = control.get_meta("button")
-	_main_screen_buttons.remove_child(button)
-	button.queue_free()
-	center_dock.remove_child(control)
-	if center_dock.current_tab != -1:
-		center_dock.get_tab_control(center_dock.current_tab).get_meta("button").button_pressed = true
-
-
-func get_container(base: Base) -> Control:
-	match base:
-		Base.TOP_RIGHT_CONTAINER:
-			return top_right_hbox
-		Base.TOP_LEFT_DOCK:
-			return top_left_dock
-		Base.BOTTOM_LEFT_DOCK:
-			return bottom_left_dock
-		Base.TOP_RIGHT_DOCK:
-			return top_right_dock
-		Base.BOTTOM_RIGHT_DOCK:
-			return bottom_right_dock
-		Base.BOTTOM_DOCK:
-			return bottom_dock
-		_:
-			return null
-
-
-func save_editor_settings():
-	if editor_settings.get_sections().size() == 0:
-		editor_settings.set_value("editor", "version", VERSION)
-		editor_settings.set_value("editor", "recent", "")
-		editor_settings.set_value("editor", "loaded_plugins", [])
-		editor_settings.set_value("editor", "enabled_plugins", [])
-		editor_settings.set_value("editor", "left_split_offset", 0.2)
-		editor_settings.set_value("editor", "center_split_offset", 0.8)
-		editor_settings.set_value("editor", "center_dock_offset", 0.7)
-		editor_settings.set_value("editor", "top_left_dock_offset", 0.6)
-		editor_settings.set_value("editor", "top_right_split_offset", 0.6)
-		editor_settings.set_value("editor", "show_grid", true)
-		editor_settings.set_value("editor", "show_rulers", true)
-		editor_settings.set_value("editor", "show_guides", true)
-		editor_settings.set_value("editor", "grid_offset", Vector2.ZERO)
-		editor_settings.set_value("editor", "grid_step", Vector2(16, 16))
-		editor_settings.set_value("editor", "primary_grid_step", Vector2i(8, 8))
-	else:
-		editor_settings.set_value("editor", "left_split_offset", left_split.get_meta("dragger_offset", 0.2))
-		editor_settings.set_value("editor", "center_split_offset", center_split.get_meta("dragger_offset", 0.8))
-		editor_settings.set_value("editor", "center_dock_offset", center_dock.get_meta("dragger_offset", 0.7))
-		editor_settings.set_value("editor", "top_left_dock_offset", top_left_dock.get_meta("dragger_offset", 0.6))
-		editor_settings.set_value("editor", "top_right_dock_offset", top_right_dock.get_meta("dragger_offset", 0.6))
-	editor_settings.save(OS.get_user_data_dir() + "/editor_settings.cfg")
-
-
-func save_project_settings():
-	if project_dir:
-		project_settings.save(project_dir.get_current_dir() + "/project.cfg")
