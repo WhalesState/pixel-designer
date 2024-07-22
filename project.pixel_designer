@@ -21,7 +21,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-ED="*res://src/editor.gd"
+E="*res://src/editor.gd"
 
 [editor]
 

@@ -62,9 +62,9 @@ func _on_about_to_popup():
 
 
 func clear_and_hide() -> void:
-	var editor_settings = ED.editor_settings
+	var editor_settings = E.editor_settings
 	editor_settings.set_value("editor", "grid_offset", image_editor.grid_offset)
 	editor_settings.set_value("editor", "grid_step", image_editor.grid_step)
 	editor_settings.set_value("editor", "primary_grid_step", image_editor.primary_grid_step)
-	ED.save_editor_settings()
+	E.save_editor_settings()
 	hide()

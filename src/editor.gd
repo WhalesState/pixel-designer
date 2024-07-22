@@ -15,10 +15,10 @@ extends Control
 ## The Editor control node.
 ##
 ## [color=yellow]Warning:[/color] Don't use [Editor] class directly,
-## instead, it can be accessed from any node by using the autoload keyword [color=light_green]ED[/color] if the node is inisde tree, [method Node.is_inside_tree].
+## instead, it can be accessed from any node by using the autoload keyword [color=light_green]E[/color] if the node is inisde tree, [method Node.is_inside_tree].
 ##[codeblock]
 ##func _enter_tree():
-##    print(ED.gui_base)
+##    print(E.gui_base)
 ##[/codeblock]
 
 ## List of all the Editor Containers that can be used with [method add_control] or [method remove_control].
@@ -60,7 +60,8 @@ var top_right_dock := TabContainer.new()
 var bottom_right_dock := TabContainer.new()
 
 ## The main [ImageEditor].
-var image_editor: ImageEditor 
+var image_editor: ImageEditor
+var node_tree: NodeTree
 
 ## The projects directory inside user data directory.
 var projects_dir: DirAccess
@@ -78,105 +79,6 @@ var project_settings := ConfigFile.new()
 
 ## The Editor undo/redo manager.
 var undo_redo = UndoRedo.new()
-
-
-## Used instead of builtin [method Object._init] to allow doc comments.
-func init() -> void:
-	# Get or create projects directory.
-	var user_dir := DirAccess.open(OS.get_user_data_dir())
-	if user_dir:
-		if not user_dir.dir_exists("projects"):
-			user_dir.make_dir("projects")
-		projects_dir = DirAccess.open(OS.get_user_data_dir() + "/projects")
-		if not user_dir.dir_exists("plugins"):
-			user_dir.make_dir("plugins")
-		plugins_dir = DirAccess.open(OS.get_user_data_dir() + "/plugins")
-	# Get or create editor_settings.cfg.
-	if user_dir.file_exists("editor_settings.cfg"):
-		editor_settings.load(user_dir.get_current_dir() + "/editor_settings.cfg")
-		# Apply version changes. should be done in a new script, to loop from the first version to the latest and apply changes.
-		if editor_settings.get_value("editor", "version", "0.0.0") != VERSION:
-			pass
-	else:
-		save_editor_settings()
-	# pack plugins
-	if OS.is_debug_build():
-		_pack_plugins()
-	# GUI
-	gui_base.name = "GuiBase"
-	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	gui_base.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	gui_base.theme_type_variation = "GuiBase"
-	add_child(gui_base)
-	main_vbox.name = "MainVBox"
-	gui_base.add_child(main_vbox)
-	var top_hbox := HBoxContainer.new()
-	top_hbox.name = "TopHBox"
-	top_hbox.add_theme_constant_override("separation", 0)
-	main_vbox.add_child(top_hbox)
-	top_menu.name = "TopMenu"
-	top_hbox.add_child(top_menu)
-	top_hbox.add_spacer(false)
-	_main_screen_buttons.name = "MainScreenButtons"
-	top_hbox.add_child(_main_screen_buttons)
-	top_hbox.add_spacer(false)
-	top_right_hbox.name = "TopRightHBox"
-	top_hbox.add_child(top_right_hbox)
-	# Splitters and docks.
-	main_split.name = "MainSplit"
-	main_split.size_flags_vertical = SIZE_EXPAND_FILL
-	left_split.name = "LeftSplit"
-	var split_offset: float = editor_settings.get_value("editor", "left_split_offset", 0.2)
-	left_split.set_meta("dragger_offset", split_offset)
-	left_split.vertical = true
-	split_offset = editor_settings.get_value("editor", "top_left_dock_offset", 0.6)
-	top_left_dock.set_meta("dragger_offset", split_offset)
-	left_split.add_child(top_left_dock)
-	left_split.add_child(bottom_left_dock)
-	main_split.add_child(left_split)
-	center_split.name = "CenterSplit"
-	split_offset = editor_settings.get_value("editor", "center_split_offset", 0.8)
-	center_split.set_meta("dragger_offset", split_offset)
-	center_split.vertical = true
-	split_offset = editor_settings.get_value("editor", "center_dock_offset", 0.7)
-	center_dock.set_meta("dragger_offset", split_offset)
-	center_dock.tabs_visible = false
-	center_split.add_child(center_dock)
-	center_split.add_child(bottom_dock)
-	main_split.add_child(center_split)
-	right_split.name = "RightSplit"
-	right_split.vertical = true
-	split_offset = editor_settings.get_value("editor", "top_right_dock_offset", 0.6)
-	top_right_dock.set_meta("dragger_offset", split_offset)
-	right_split.add_child(top_right_dock)
-	right_split.add_child(bottom_right_dock)
-	main_split.add_child(right_split)
-	main_vbox.add_child(main_split)
-	# Load Recent project if exists.
-	var recent_project = editor_settings.get_value("editor", "recent", "")
-	if not recent_project.is_empty():
-		project_dir = DirAccess.open(projects_dir.get_current_dir() + "/" + recent_project)
-		project_settings.load(projects_dir.get_current_dir() + "/" + recent_project + "/project.cfg")
-	# Add controls to the editor.
-	image_editor = ImageEditor.new(self)
-	add_center_control(image_editor, preload("res://icons/image_editor.svg"))
-	# Popups
-	add_child(create_project_window)
-	add_child(editor_settings_window)
-	add_child(project_settings_window)
-	# Menus
-	var project_menu := MenuButton.new()
-	project_menu.get_popup().add_item("Save Project")
-	project_menu.get_popup().add_item("Save Project As...")
-	project_menu.get_popup().add_item("Open Project")
-	project_menu.get_popup().add_item("Project Settings")
-	project_menu.get_popup().add_item("Exit")
-	add_menu("Project", project_menu)
-	var editor_menu := MenuButton.new()
-	editor_menu.get_popup().add_item("Editor Settings")
-	add_menu("Editor", editor_menu)
-	var help_menu := MenuButton.new()
-	add_menu("Help", help_menu)
 
 
 ## Used instead of builtin [method Node._ready] to allow doc comments.
@@ -391,11 +293,6 @@ func save_project_settings() -> void:
 		project_settings.save(project_dir.get_current_dir() + "/project.cfg")
 
 
-# Calls [method init].
-func _init() -> void:
-	init()
-
-
 # Calls [method ready].
 func _ready() -> void:
 	ready()
@@ -507,3 +404,103 @@ func _on_menu_id_pressed(_id: int, _name: String, _menu: PopupMenu) -> void:
 		_:
 			print("Unknown menu: " + _name, " : ", item_name)
 	prints(_name, item_name)
+
+
+func _init() -> void:
+	# Get or create projects directory.
+	var user_dir := DirAccess.open(OS.get_user_data_dir())
+	if user_dir:
+		if not user_dir.dir_exists("projects"):
+			user_dir.make_dir("projects")
+		projects_dir = DirAccess.open(OS.get_user_data_dir() + "/projects")
+		if not user_dir.dir_exists("plugins"):
+			user_dir.make_dir("plugins")
+		plugins_dir = DirAccess.open(OS.get_user_data_dir() + "/plugins")
+	# Get or create editor_settings.cfg.
+	if user_dir.file_exists("editor_settings.cfg"):
+		editor_settings.load(user_dir.get_current_dir() + "/editor_settings.cfg")
+		# Apply version changes. should be done in a new script, to loop from the first version to the latest and apply changes.
+		if editor_settings.get_value("editor", "version", "0.0.0") != VERSION:
+			pass
+	else:
+		save_editor_settings()
+	# pack plugins
+	if OS.is_debug_build():
+		_pack_plugins()
+	# GUI
+	gui_base.name = "GuiBase"
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	gui_base.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	gui_base.theme_type_variation = "GuiBase"
+	add_child(gui_base)
+	main_vbox.name = "MainVBox"
+	gui_base.add_child(main_vbox)
+	var top_hbox := HBoxContainer.new()
+	top_hbox.name = "TopHBox"
+	top_hbox.add_theme_constant_override("separation", 0)
+	main_vbox.add_child(top_hbox)
+	top_menu.name = "TopMenu"
+	top_hbox.add_child(top_menu)
+	top_hbox.add_spacer(false)
+	_main_screen_buttons.name = "MainScreenButtons"
+	top_hbox.add_child(_main_screen_buttons)
+	top_hbox.add_spacer(false)
+	top_right_hbox.name = "TopRightHBox"
+	top_hbox.add_child(top_right_hbox)
+	# Splitters and docks.
+	main_split.name = "MainSplit"
+	main_split.size_flags_vertical = SIZE_EXPAND_FILL
+	left_split.name = "LeftSplit"
+	var split_offset: float = editor_settings.get_value("editor", "left_split_offset", 0.2)
+	left_split.set_meta("dragger_offset", split_offset)
+	left_split.vertical = true
+	split_offset = editor_settings.get_value("editor", "top_left_dock_offset", 0.6)
+	top_left_dock.set_meta("dragger_offset", split_offset)
+	left_split.add_child(top_left_dock)
+	left_split.add_child(bottom_left_dock)
+	main_split.add_child(left_split)
+	center_split.name = "CenterSplit"
+	split_offset = editor_settings.get_value("editor", "center_split_offset", 0.8)
+	center_split.set_meta("dragger_offset", split_offset)
+	center_split.vertical = true
+	split_offset = editor_settings.get_value("editor", "center_dock_offset", 0.7)
+	center_dock.set_meta("dragger_offset", split_offset)
+	center_dock.tabs_visible = false
+	center_split.add_child(center_dock)
+	center_split.add_child(bottom_dock)
+	main_split.add_child(center_split)
+	right_split.name = "RightSplit"
+	right_split.vertical = true
+	split_offset = editor_settings.get_value("editor", "top_right_dock_offset", 0.6)
+	top_right_dock.set_meta("dragger_offset", split_offset)
+	right_split.add_child(top_right_dock)
+	right_split.add_child(bottom_right_dock)
+	main_split.add_child(right_split)
+	main_vbox.add_child(main_split)
+	# Load Recent project if exists.
+	var recent_project = editor_settings.get_value("editor", "recent", "")
+	if not recent_project.is_empty():
+		project_dir = DirAccess.open(projects_dir.get_current_dir() + "/" + recent_project)
+		project_settings.load(projects_dir.get_current_dir() + "/" + recent_project + "/project.cfg")
+	# Add controls to the editor.
+	image_editor = ImageEditor.new(self)
+	add_center_control(image_editor, preload("res://icons/image_editor.svg"))
+	node_tree = NodeTree.new(self)
+	add_control(node_tree, Base.TOP_LEFT_DOCK)
+	# Popups
+	add_child(create_project_window)
+	add_child(editor_settings_window)
+	add_child(project_settings_window)
+	# Menus
+	var project_menu := MenuButton.new()
+	project_menu.get_popup().add_item("Save Project")
+	project_menu.get_popup().add_item("Save Project As...")
+	project_menu.get_popup().add_item("Open Project")
+	project_menu.get_popup().add_item("Project Settings")
+	project_menu.get_popup().add_item("Exit")
+	add_menu("Project", project_menu)
+	var editor_menu := MenuButton.new()
+	editor_menu.get_popup().add_item("Editor Settings")
+	add_menu("Editor", editor_menu)
+	var help_menu := MenuButton.new()
+	add_menu("Help", help_menu)

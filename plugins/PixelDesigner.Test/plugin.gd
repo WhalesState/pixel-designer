@@ -21,12 +21,12 @@ func load_plugin():
 	rect = TextureRect.new()
 	rect.texture = preload("./icons/icon.svg")
 	rect.name = "TEST PLUGIN"
-	ED.add_control(rect, ED.Base.TOP_LEFT_DOCK)
+	E.add_control(rect, E.Base.TOP_LEFT_DOCK)
 
 
 # Called by [Editor] when it's exiting tree or when plugin is disabled.
 func unload_plugin():
 	print("Test plugin unloaded")
 	# The editor never frees your nodes, it just removes them from the scene tree.
-	ED.remove_control(rect, ED.Base.TOP_LEFT_DOCK)
+	E.remove_control(rect, E.Base.TOP_LEFT_DOCK)
 	rect.queue_free()

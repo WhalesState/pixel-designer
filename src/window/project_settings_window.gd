@@ -35,6 +35,7 @@ func _init(_editor):
 	add_child(scene)
 	vp_width = scene.get_node("%ViewportWidth")
 	vp_width.value_changed.connect(func(value: float):
+		editor.image_editor.bg_checker_panel.size.x = value
 		editor.image_editor.root_container.size.x = value
 		editor.image_editor.view_size.x = value
 		editor.project_settings.set_value("project", "view_width", value)
@@ -42,6 +43,7 @@ func _init(_editor):
 	)
 	vp_height = scene.get_node("%ViewportHeight")
 	vp_height.value_changed.connect(func(value: float):
+		editor.image_editor.bg_checker_panel.size.y = value
 		editor.image_editor.root_container.size.y = value
 		editor.image_editor.view_size.y = value
 		editor.project_settings.set_value("project", "view_height", value)

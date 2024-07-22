@@ -12,6 +12,10 @@
 class_name ImageEditor
 extends ControlViewport
 
+## The main Image Editor.
+##
+## It can create/edit pixel Images in the project.
+
 enum {
 	ACTION_NONE,
 	ACTION_MOVE,
@@ -32,12 +36,20 @@ enum {
 	DRAG_BOTTOM_LEFT,
 }
 
+## Selection handles for scaling textures in select mode.
 var select_handle := preload("res://icons/select_handle.png")
 
 var selected: Control = null:
 	set(value):
 		selected = value as Control
+		if selected:
+			if selected.get_class() == "ImageTexture":
+				cur_img = selected.get_image()
+		else:
+			cur_img = null
 		get_control_viewport().queue_redraw()
+
+var cur_img: Image = null
 
 var edit_mode = false
 var cur_action := ACTION_NONE
@@ -51,6 +63,7 @@ var editor: Editor
 var undo_redo: UndoRedo
 var root_container := SubViewportContainer.new()
 var root := SubViewport.new()
+var bg_checker_panel := CheckerPanel.new()
 var viewport := SubViewport.new()
 var design_menu := PopupMenu.new()
 var edit_menu := PopupMenu.new()
@@ -69,8 +82,9 @@ func _init(_editor: Editor):
 	view_transform_changed.connect(func(transform: Transform2D):
 		viewport.set_canvas_transform(transform)
 	)
+	viewport.add_child(bg_checker_panel, true)
 	root_container.stretch = true
-	viewport.add_child(root_container, true)
+	bg_checker_panel.add_child(root_container, true)
 	root_container.add_child(root, true)
 	# var spr = TextureRect.new()
 	# spr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -93,6 +107,7 @@ func _init(_editor: Editor):
 	hguides = project_settings.get_value("project", "hguides", PackedInt32Array())
 	view_size.x = project_settings.get_value("project", "view_width", 16)
 	view_size.y = project_settings.get_value("project", "view_height", 16)
+	bg_checker_panel.size = view_size
 	root_container.size = view_size
 	root.snap_2d_transforms_to_pixel = project_settings.get_value("project", "snap_2d_transforms_to_pixel", false)
 	root.snap_2d_vertices_to_pixel = project_settings.get_value("project", "snap_2d_vertices_to_pixel", false)
@@ -116,6 +131,7 @@ func _init(_editor: Editor):
 	popup.add_check_item("Show Guides", 3)
 	popup.set_item_checked(3, show_guides)
 	popup.add_item("Clear Guides", 4)
+	#SECTION - Image editor settings menu.
 	popup.id_pressed.connect(func(id: int):
 		if id == 0:
 			popup.set_item_checked(0, not show_grid)
@@ -140,7 +156,6 @@ func _init(_editor: Editor):
 	get_controls_container().add_child(options_menu, false, INTERNAL_MODE_BACK)
 	# RightMenu
 	add_child(design_menu)
-	add_child(add_texture_window)
 	var menues := ["Create new...", "Edit", "Rename", "Delete"]
 	for i in menues.size():
 		design_menu.add_item(menues[i], i)
@@ -154,7 +169,22 @@ func _init(_editor: Editor):
 		elif id == 3:
 			pass
 	)
+	add_child(add_texture_window)
+	add_texture_window.create_texture.connect(_on_create_texture)
 
+
+func _on_create_texture(type: String) -> void:
+	if type == "Image Texture":
+		var tex = ImageTexture.new()
+		var img = Image.create(int(view_size.x), int(view_size.y), false, Image.FORMAT_RGBA8)
+		img.fill(Color(0, 0, 0, 1))
+		tex.set_image(img)
+		var tex_rect := TextureRect.new()
+		tex_rect.texture = tex
+		root.add_child(tex_rect)
+		tex_rect.name = "ImageTexture"
+		editor.node_tree.refresh()
+	add_texture_window.hide()
 
 func _input(ev: InputEvent):
 	if edit_mode:
