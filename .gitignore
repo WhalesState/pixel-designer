@@ -1,0 +1,18 @@
+# cache
+.pixel_designer/
+
+# vscode
+.vscode/
+
+# bin
+bin/*.zip
+bin/*.exe
+bin/*.pck
+
+# import
+*.svg.import
+*.ttf.import
+
+# export templates
+
+export_templates/*.exe
