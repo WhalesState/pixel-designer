@@ -14,5 +14,7 @@ bin/*.pck
 *.ttf.import
 
 # export templates
-
 export_templates/*.exe
+
+# plugins
+*.pixel_plugin

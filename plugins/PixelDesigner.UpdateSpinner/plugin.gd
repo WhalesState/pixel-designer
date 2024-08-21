@@ -20,6 +20,10 @@ func unload_plugin():
 	rect.free()
 
 
+func plugin_info():
+	return "Spins when the editor redraws."
+
+
 class UpdateSpinner:
 	extends TextureRect
 	

@@ -13,9 +13,6 @@ var plugin_list := {}
 ## The current project directory.
 var project_dir: DirAccess
 
-## The Editor undo/redo manager.
-var undo_redo = UndoRedo.new()
-
 var scene := preload("res://scene/editor.tscn").instantiate()
 
 var top_left_container: HBoxContainer = scene.get_node("%MenuLeftHBox")
@@ -31,24 +28,30 @@ var bottom_right_dock: TabContainer = scene.get_node("%BottomRightDock")
 static var singleton: Editor
 
 
-static func get_singleton() -> Editor:
-	return singleton
+## Check if a plugin is enabled using it's name.
+func is_plugin_enabled(plugin_name: String) -> bool:
+	if not plugin_list.keys().has(plugin_name):
+		return false
+	if plugin_list[plugin_name].is_internal():
+		return true
+	return Settings.get_singleton().get_editor_value("editor", "enabled_plugins", []).has(plugin_name)
 
 
-func get_dir_files(path: String) -> Array:
-	var files := []
-	var dir = DirAccess.open(path)
-	if dir:
-		dir.list_dir_begin()
-		var file_name = dir.get_next()
-		while file_name != "": 
-			if dir.current_is_dir():
-				files.append_array(get_dir_files(dir.get_current_dir() + "/" + file_name))
-			else:
-				files.append(dir.get_current_dir() + "/" + file_name)
-			file_name = dir.get_next()
-		dir.list_dir_end()
-	return files
+## Enable a plugin using it's name.
+func enable_plugin(plugin: String) -> void:
+	if not is_plugin_enabled(plugin):
+		_set_plugin_enabled(plugin, true)
+
+
+## Disable a plugin using it's name.
+func disable_plugin(plugin: String) -> void:
+	if is_plugin_enabled(plugin):
+		_set_plugin_enabled(plugin, false)
+
+
+func _on_action(action_name: String):
+	print_verbose(action_name)
+	pass
 
 
 # Packs all plugins into a Pck file and saves it in user data plugins folder.
@@ -57,13 +60,13 @@ func _pack_plugins() -> void:
 	if dir:
 		for plugin in dir.get_directories():
 			var plugin_path = dir.get_current_dir() + "/" + plugin
-			var files = get_dir_files(plugin_path)
+			var files = _get_dir_files(plugin_path)
 			if files.size() > 0:
 				var pck := PCKPacker.new()
 				pck.pck_start("res://plugins/" + plugin + ".pixel_plugin")
 				for file in files:
 					pck.add_file(file.replace("res://plugins/", "res://loaded_plugins/") , file)
-				pck.flush(true)
+				pck.flush(OS.is_stdout_verbose())
 
 
 # Load all plugins by calling their [method Plugin.load_plugin] method if they are enabled.
@@ -91,8 +94,15 @@ func _load_plugins() -> void:
 				var plugin_script: Plugin = load(plugin_path + "/plugin.gd").new()
 				plugin_script._path = plugin_path
 				plugin_list[plugin] = plugin_script
-				if plugin_script.is_internal() || enabled_plugins.has(plugin):
-					plugin_script.load_plugin()
+		for plugin in plugin_list.values():
+			if plugin.is_internal():
+				plugin.load_plugin()
+		for plugin_name in plugin_list:
+			var plugin = plugin_list[plugin_name]
+			if plugin.is_internal():
+				continue
+			if enabled_plugins.has(plugin_name):
+				plugin.load_plugin()
 		var to_remove := PackedInt32Array([])
 		for i in enabled_plugins.size():
 			if not plugin_list.keys().has(enabled_plugins[i]):
@@ -103,7 +113,6 @@ func _load_plugins() -> void:
 			removed += 1
 		Settings.get_singleton().set_editor_value("editor", "enabled_plugins", enabled_plugins)
 	Settings.get_singleton().set_editor_value("editor", "loaded_plugins", plugin_list.keys())
-	
 
 
 # Unload all plugins by calling their [method Plugin.unload_plugin] method if they are enabled.
@@ -136,25 +145,24 @@ func _set_plugin_enabled(plugin_name: String, enabled: bool) -> void:
 	Settings.get_singleton().set_editor_value("editor", "enabled_plugins", enabled_plugins)
 
 
-## Check if a plugin is enabled using it's name.
-func is_plugin_enabled(plugin_name: String) -> bool:
-	if not plugin_list.keys().has(plugin_name):
-		return false
-	if plugin_list[plugin_name].is_internal():
-		return true
-	return Settings.get_singleton().get_editor_value("editor", "enabled_plugins", []).has(plugin_name)
+func _get_dir_files(path: String) -> Array:
+	var files := []
+	var dir = DirAccess.open(path)
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "": 
+			if dir.current_is_dir():
+				files.append_array(_get_dir_files(dir.get_current_dir() + "/" + file_name))
+			else:
+				files.append(dir.get_current_dir() + "/" + file_name)
+			file_name = dir.get_next()
+		dir.list_dir_end()
+	return files
 
 
-## Enable a plugin using it's name.
-func enable_plugin(plugin: String) -> void:
-	if not is_plugin_enabled(plugin):
-		_set_plugin_enabled(plugin, true)
-
-
-## Disable a plugin using it's name.
-func disable_plugin(plugin: String) -> void:
-	if is_plugin_enabled(plugin):
-		_set_plugin_enabled(plugin, false)
+static func get_singleton() -> Editor:
+	return singleton
 
 
 func _ready() -> void:
@@ -172,7 +180,7 @@ func _exit_tree() -> void:
 
 
 func _init():
-	print_debug("Editor _init()")
+	print_verbose("Editor _init()")
 	name = "Editor"
 	set_margin_all(2)
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -217,5 +225,11 @@ func _init():
 		node.offsets_changed.connect(func():
 			settings.set_editor_value("ui", offset, node.get_offsets())
 		)
+	var actions := Actions.get_singleton()
+	actions.add_action("ED_SAVE", KEY_MASK_CTRL | KEY_S)
+	actions.add_action("ED_SAVE_AS", KEY_MASK_CTRL | KEY_MASK_SHIFT | KEY_S)
+	actions.add_action("ED_OPEN", KEY_MASK_CTRL | KEY_O)
+	actions.add_action("ED_QUIT", KEY_MASK_CTRL | KEY_Q)
+	actions.action_pressed.connect(_on_action)
 	# Final pass.
 	singleton = self

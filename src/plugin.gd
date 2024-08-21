@@ -31,9 +31,14 @@ func unload_plugin():
 	pass
 
 
-## Internal plugins can't be disabled!
+## Internal plugins can't be disabled and loads first!
 func is_internal() -> bool:
 	return false
+
+
+## Plugin information.
+func plugin_info() -> String:
+	return "Plugin has no information."
 
 
 ## Adds a control as a child of the base container.
@@ -73,7 +78,7 @@ func _get_editor_container(base: CONTAINER) -> Control:
 func add_theme_icon(icon_name: String, svg_string: String):
 	var t : EditorTheme = EditorTheme.get_singleton()
 	if t.icons.has(icon_name):
-		print("Error: an icon with same name (%s) already exists." % icon_name)
+		print_verbose("Error: an icon with same name (%s) already exists." % icon_name)
 		return
 	t.icons[icon_name] = svg_string
 	t._update_theme()

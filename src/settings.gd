@@ -33,7 +33,7 @@ static func get_singleton() -> Settings:
 
 
 func _init():
-	print_debug("Settings _init()")
+	print_verbose("Settings _init()")
 	name = "EditorSettingsWindow"
 	title = "Editor Settings"
 	exclusive = true

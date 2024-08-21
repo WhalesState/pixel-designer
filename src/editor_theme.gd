@@ -169,7 +169,7 @@ func _update_theme():
 	for i in to_remove:
 		icon_queue.remove_at(i - removed)
 		removed += 1
-	print("REMOVED: %s icons from queue" % removed)
+	print_verbose("REMOVED: %s icons from queue" % removed)
 
 func icon(icon_name: String) -> ImageTexture:
 	return get_icon(icon_name, "icons")
@@ -180,7 +180,7 @@ static func get_singleton() -> EditorTheme:
 
 
 func _init():
-	print_debug("EditorTheme _init()")
+	print_verbose("EditorTheme _init()")
 	default_font = FontVariation.new()
 	# Generate pixel fonts.
 	if OS.has_feature("editor"):
