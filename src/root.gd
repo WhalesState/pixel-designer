@@ -1,14 +1,19 @@
 class_name Root
 extends Window
 
-static var singleton: Root
+## `PRIVATE` used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
+static var _singleton: Root
 
 
+## Returns the current class unique instance. [br]
+## Don't use this method for classes that will be instantiated more than once.
 static func get_singleton() -> Root:
-	return singleton
+	return _singleton
 
 
 func _ready():
+	if OS.has_feature("editor"):
+		always_on_top = true
 	#Settings.get_singleton().popup_centered()
 	pass
 
@@ -19,7 +24,7 @@ func _init():
 	theme = EditorTheme.new()
 	add_child(Editor.new())
 	# Final pass
-	singleton = self
+	_singleton = self
 
 
 func _enter_tree() -> void:

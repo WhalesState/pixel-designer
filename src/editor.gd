@@ -1,38 +1,40 @@
 class_name Editor
 extends MarginContainer
 
-## The projects directory inside user data directory.
-var projects_dir: DirAccess
-
-## The plugins directory inside user data directory.
-var plugins_dir: DirAccess
-
-## A list of all project plugins.
-var plugin_list := {}
-
 ## The current project directory.
 var project_dir: DirAccess
 
-var scene := preload("res://scene/editor.tscn").instantiate()
+## `PRIVATE` The projects directory inside user data directory.
+var _projects_dir: DirAccess
 
-var top_left_container: HBoxContainer = scene.get_node("%MenuLeftHBox")
-var top_center_container: HBoxContainer = scene.get_node("%MenuCenterHBox")
-var top_right_container: HBoxContainer = scene.get_node("%MenuRightHBox")
-var top_left_dock: TabContainer = scene.get_node("%TopLeftDock")
-var bottom_left_dock: TabContainer = scene.get_node("%BottomLeftDock")
-var center_dock: TabContainer = scene.get_node("%CenterDock")
-var bottom_dock: TabContainer = scene.get_node("%BottomDock")
-var top_right_dock: TabContainer = scene.get_node("%TopRightDock")
-var bottom_right_dock: TabContainer = scene.get_node("%BottomRightDock")
+## `PRIVATE` The plugins directory inside user data directory.
+var _plugins_dir: DirAccess
 
-static var singleton: Editor
+## `PRIVATE` A list of all project plugins.
+var _plugin_list := {}
+
+## `PRIVATE` The editor gui scene.
+var _scene := preload("res://scene/editor.tscn").instantiate()
+
+var top_left_container: HBoxContainer = _scene.get_node("%MenuLeftHBox")
+var top_center_container: HBoxContainer = _scene.get_node("%MenuCenterHBox")
+var top_right_container: HBoxContainer = _scene.get_node("%MenuRightHBox")
+var top_left_dock: TabContainer = _scene.get_node("%TopLeftDock")
+var bottom_left_dock: TabContainer = _scene.get_node("%BottomLeftDock")
+var center_dock: TabContainer = _scene.get_node("%CenterDock")
+var bottom_dock: TabContainer = _scene.get_node("%BottomDock")
+var top_right_dock: TabContainer = _scene.get_node("%TopRightDock")
+var bottom_right_dock: TabContainer = _scene.get_node("%BottomRightDock")
+
+## `PRIVATE` used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
+static var _singleton: Editor
 
 
 ## Check if a plugin is enabled using it's name.
 func is_plugin_enabled(plugin_name: String) -> bool:
-	if not plugin_list.keys().has(plugin_name):
+	if not _plugin_list.keys().has(plugin_name):
 		return false
-	if plugin_list[plugin_name].is_internal():
+	if _plugin_list[plugin_name].is_internal():
 		return true
 	return Settings.get_singleton().get_editor_value("editor", "enabled_plugins", []).has(plugin_name)
 
@@ -48,13 +50,13 @@ func disable_plugin(plugin: String) -> void:
 	if is_plugin_enabled(plugin):
 		_set_plugin_enabled(plugin, false)
 
-
+## `PRIVATE` `Action.action_pressed` signal is connected to this function.
 func _on_action(action_name: String):
 	print_verbose(action_name)
 	pass
 
 
-# Packs all plugins into a Pck file and saves it in user data plugins folder.
+## `PRIVATE` Packs all plugins into a Pck file and saves it in user data plugins folder.
 func _pack_plugins() -> void:
 	var dir = DirAccess.open("res://plugins")
 	if dir:
@@ -69,7 +71,7 @@ func _pack_plugins() -> void:
 				pck.flush(OS.is_stdout_verbose())
 
 
-# Load all plugins by calling their [method Plugin.load_plugin] method if they are enabled.
+## `PRIVATE` Load all plugins by calling their [method Plugin.load_plugin] method if they are enabled.
 func _load_plugins() -> void:
 	var files = DirAccess.get_files_at("res://plugins")
 	var dir = DirAccess.open("res://plugins")
@@ -93,43 +95,43 @@ func _load_plugins() -> void:
 			if loaded_plugins.file_exists(plugin + "/plugin.gd"):
 				var plugin_script: Plugin = load(plugin_path + "/plugin.gd").new()
 				plugin_script._path = plugin_path
-				plugin_list[plugin] = plugin_script
-		for plugin in plugin_list.values():
+				_plugin_list[plugin] = plugin_script
+		for plugin in _plugin_list.values():
 			if plugin.is_internal():
 				plugin.load_plugin()
-		for plugin_name in plugin_list:
-			var plugin = plugin_list[plugin_name]
+		for plugin_name in _plugin_list:
+			var plugin = _plugin_list[plugin_name]
 			if plugin.is_internal():
 				continue
 			if enabled_plugins.has(plugin_name):
 				plugin.load_plugin()
 		var to_remove := PackedInt32Array([])
 		for i in enabled_plugins.size():
-			if not plugin_list.keys().has(enabled_plugins[i]):
+			if not _plugin_list.keys().has(enabled_plugins[i]):
 				to_remove.append(i)
 		var removed := 0
 		for i in to_remove:
 			enabled_plugins.remove_at(i - removed)
 			removed += 1
 		Settings.get_singleton().set_editor_value("editor", "enabled_plugins", enabled_plugins)
-	Settings.get_singleton().set_editor_value("editor", "loaded_plugins", plugin_list.keys())
+	Settings.get_singleton().set_editor_value("editor", "loaded_plugins", _plugin_list.keys())
 
 
-# Unload all plugins by calling their [method Plugin.unload_plugin] method if they are enabled.
+## `PRIVATE` Unload all plugins by calling their [method Plugin.unload_plugin] method if they are enabled.
 func _unload_plugins() -> void:
 	var enabled_plugins = Settings.get_singleton().get_editor_value("editor", "enabled_plugins", [])
-	for plugin_name in plugin_list.keys():
-		var plugin = plugin_list[plugin_name]
+	for plugin_name in _plugin_list.keys():
+		var plugin = _plugin_list[plugin_name]
 		if plugin.is_internal() || enabled_plugins.has(plugin_name):
 			plugin.unload_plugin()
 
 
-# Sets a plugin enabled or disabled.
+# `PRIVATE` Sets a plugin enabled or disabled.
 func _set_plugin_enabled(plugin_name: String, enabled: bool) -> void:
-	if not plugin_list.keys().has(plugin_name):
+	if not _plugin_list.keys().has(plugin_name):
 		return
 	var enabled_plugins = Settings.get_singleton().get_editor_value("editor", "enabled_plugins", [])
-	var plugin: Plugin = plugin_list[plugin_name]
+	var plugin: Plugin = _plugin_list[plugin_name]
 	if plugin.is_internal():
 		return
 	if enabled:
@@ -145,6 +147,7 @@ func _set_plugin_enabled(plugin_name: String, enabled: bool) -> void:
 	Settings.get_singleton().set_editor_value("editor", "enabled_plugins", enabled_plugins)
 
 
+## `PRIVATE` Returns a list of all files in a directory.
 func _get_dir_files(path: String) -> Array:
 	var files := []
 	var dir = DirAccess.open(path)
@@ -161,8 +164,10 @@ func _get_dir_files(path: String) -> Array:
 	return files
 
 
+## Returns the current class unique instance. [br]
+## Don't use this method for classes that will be instantiated more than once.
 static func get_singleton() -> Editor:
-	return singleton
+	return _singleton
 
 
 func _ready() -> void:
@@ -175,7 +180,7 @@ func _enter_tree() -> void:
 
 func _exit_tree() -> void:
 	_unload_plugins()
-	for plugin in plugin_list.values():
+	for plugin in _plugin_list.values():
 		plugin.free()
 
 
@@ -189,37 +194,37 @@ func _init():
 	if user_dir:
 		if not user_dir.dir_exists("projects"):
 			user_dir.make_dir("projects")
-		projects_dir = DirAccess.open(OS.get_user_data_dir() + "/projects")
+		_projects_dir = DirAccess.open(OS.get_user_data_dir() + "/projects")
 		if not user_dir.dir_exists("plugins"):
 			user_dir.make_dir("plugins")
-		plugins_dir = DirAccess.open(OS.get_user_data_dir() + "/plugins")
+		_plugins_dir = DirAccess.open(OS.get_user_data_dir() + "/plugins")
 	# Pack plugins.
 	if OS.has_feature("editor"):
 		_pack_plugins()
 	# Load editor interface.
-	add_child(scene)
+	add_child(_scene)
 	var editor_theme = EditorTheme.get_singleton()
 	var settings = Settings.get_singleton()
-	var btn_expand_left: Button = scene.get_node("%ButtonExpandLeft")
+	var btn_expand_left: Button = _scene.get_node("%ButtonExpandLeft")
 	editor_theme.add_to_icon_queue(btn_expand_left, "normal_icon", "GuiLeft")
 	editor_theme.add_to_icon_queue(btn_expand_left, "pressed_icon", "GuiRight")
-	var btn_expand_right: Button = scene.get_node("%ButtonExpandRight")
+	var btn_expand_right: Button = _scene.get_node("%ButtonExpandRight")
 	editor_theme.add_to_icon_queue(btn_expand_right, "normal_icon", "GuiRight")
 	editor_theme.add_to_icon_queue(btn_expand_right, "pressed_icon", "GuiLeft")
-	var btn_expand_bottom_left: Button = scene.get_node("%ButtonExpandBottomLeft")
-	var btn_expand_bottom: Button = scene.get_node("%ButtonExpandBottom")
-	var btn_expand_bottom_right: Button = scene.get_node("%ButtonExpandBottomRight")
+	var btn_expand_bottom_left: Button = _scene.get_node("%ButtonExpandBottomLeft")
+	var btn_expand_bottom: Button = _scene.get_node("%ButtonExpandBottom")
+	var btn_expand_bottom_right: Button = _scene.get_node("%ButtonExpandBottomRight")
 	for button in [btn_expand_bottom_left, btn_expand_bottom, btn_expand_bottom_right]:
 		editor_theme.add_to_icon_queue(button, "normal_icon", "GuiDown")
 		editor_theme.add_to_icon_queue(button, "pressed_icon", "GuiUp")
-	var btn_about: Button = scene.get_node("%ButtonAbout")
+	var btn_about: Button = _scene.get_node("%ButtonAbout")
 	editor_theme.add_to_icon_queue(btn_about, "icon", "GuiInfo")
-	var btn_help: Button = scene.get_node("%ButtonHelp")
+	var btn_help: Button = _scene.get_node("%ButtonHelp")
 	editor_theme.add_to_icon_queue(btn_help, "icon", "GuiHelp")
 	const split_names: PackedStringArray = ["MainSplit", "LeftSplit", "CenterSplit", "RightSplit"]
 	const offsets := [[0.2, 0.8], [0.6], [0.7], [0.6]]
 	for i in split_names.size():
-		var node: SplitterContainer = scene.get_node("%" + split_names[i])
+		var node: SplitterContainer = _scene.get_node("%" + split_names[i])
 		var offset := split_names[i].to_snake_case() + "_offsets"
 		node.set_offsets(settings.get_editor_value("ui", offset, offsets[i]))
 		node.offsets_changed.connect(func():
@@ -232,4 +237,4 @@ func _init():
 	actions.add_action("ED_QUIT", KEY_MASK_CTRL | KEY_Q)
 	actions.action_pressed.connect(_on_action)
 	# Final pass.
-	singleton = self
+	_singleton = self

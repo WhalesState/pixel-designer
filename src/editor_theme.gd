@@ -54,7 +54,8 @@ var icons := {}
 
 var icon_queue := []
 
-static var singleton: EditorTheme
+## `PRIVATE` used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
+static var _singleton: EditorTheme
 
 
 func add_to_icon_queue(node: Node, property_name: String, icon_name: String):
@@ -175,8 +176,10 @@ func icon(icon_name: String) -> ImageTexture:
 	return get_icon(icon_name, "icons")
 
 
+## Returns the current class unique instance. [br]
+## Don't use this method for classes that will be instantiated more than once.
 static func get_singleton() -> EditorTheme:
-	return singleton
+	return _singleton
 
 
 func _init():
@@ -264,7 +267,7 @@ func _init():
 	editor_scale = Settings.get_singleton().get_editor_value("theme", "editor_scale", 1)
 	current_font = Settings.get_singleton().get_editor_value("theme", "current_font", "")
 	# Final pass.
-	singleton = self
+	_singleton = self
 
 
 class PixelFont:

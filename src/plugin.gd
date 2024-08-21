@@ -17,7 +17,7 @@ enum CONTAINER {
 ## The plugin version.
 var version := "0.1"
 
-# The plugin directory path.
+# `PRIVATE` The plugin directory path.
 var _path := ""
 
 
@@ -41,7 +41,7 @@ func plugin_info() -> String:
 	return "Plugin has no information."
 
 
-## Adds a control as a child of the base container.
+## Adds a control as a child of the base container. [br]
 ## You can optionally pass an editor theme icon name.
 func add_control_to_editor(control: Control, base: CONTAINER, icon := ""):
 	var container = _get_editor_container(base)
@@ -57,23 +57,13 @@ func add_control_to_editor(control: Control, base: CONTAINER, icon := ""):
 	container.add_child(control)
 
 
-## Remove the control from the editor container.
+## Remove the control from the editor container. [br]
 ## Use control.free() to manually delete the control from memory.
 func remove_control_from_editor(control: Control):
 	control.get_parent().remove_child(control)
 
 
-# Gets a container from the editor ui.
-func _get_editor_container(base: CONTAINER) -> Control:
-	const containers := [
-		"top_left_container", "top_center_container", "top_right_container",
-		"top_left_dock", "bottom_left_dock", "center_dock",
-		"bottom_dock", "top_right_dock", "bottom_right_dock",
-	]
-	return Editor.get_singleton().get(containers[base])
-
-
-## Adds an icon and converts it's color to the editor theme.
+## Adds an icon and converts it's color to the editor theme. [br]
 ## Use EditorTheme.icon(icon_name) to get the icon texture.
 func add_theme_icon(icon_name: String, svg_string: String):
 	var t : EditorTheme = EditorTheme.get_singleton()
@@ -84,7 +74,17 @@ func add_theme_icon(icon_name: String, svg_string: String):
 	t._update_theme()
 
 
-## Get the plugin dir path to load or get files within the plugin directory.
+## Get the plugin dir path to load or get files within the plugin directory. [br]
 ## You can use relative paths with preload ie. preload("./my_scene.tscn").
 func get_path() -> String:
 	return _path
+
+
+# `PRIVATE` Gets a container from the editor ui.
+func _get_editor_container(base: CONTAINER) -> Control:
+	const containers := [
+		"top_left_container", "top_center_container", "top_right_container",
+		"top_left_dock", "bottom_left_dock", "center_dock",
+		"bottom_dock", "top_right_dock", "bottom_right_dock",
+	]
+	return Editor.get_singleton().get(containers[base])
