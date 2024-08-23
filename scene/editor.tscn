@@ -99,10 +99,12 @@ vertical = true
 [node name="CenterDock" type="TabContainer" parent="MainHBox/MainSplit/CenterVBox/CenterSplit"]
 unique_name_in_owner = true
 layout_mode = 2
+tabs_visible = false
 
 [node name="BottomDock" type="TabContainer" parent="MainHBox/MainSplit/CenterVBox/CenterSplit"]
 unique_name_in_owner = true
 layout_mode = 2
+tabs_visible = false
 
 [node name="ButtonExpandBottom" type="Button" parent="MainHBox/MainSplit/CenterVBox" node_paths=PackedStringArray("node")]
 unique_name_in_owner = true
