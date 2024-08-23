@@ -164,6 +164,38 @@ func _get_dir_files(path: String) -> Array:
 	return files
 
 
+## Only works in editor build, to update the export presets if they exist
+func _update_export_presets() -> void:
+	if OS.has_feature("editor") and FileAccess.file_exists("res://export_presets.cfg"):
+		var cfg = ConfigFile.new()
+		cfg.load("res://export_presets.cfg")
+		var presets := []
+		for preset in cfg.get_sections():
+			if preset.ends_with(".options"):
+				continue
+			presets.append(preset)
+		if presets.is_empty():
+			cfg.free()
+			return
+		# update presets
+		var excluded := PackedStringArray([])
+		for file in _get_dir_files("res://plugins"):
+			if file.get_extension() in ["import", "pixel_plugin"]:
+				continue
+			excluded.append(file)
+		for file in _get_dir_files("res://theme"):
+			if file.get_extension() in ["svg", "ttf"]:
+				excluded.append(file)
+		var include_filter = "*.pixel_font, *.pixel_icon, *.pixel_plugin"
+		for preset in presets:
+			cfg.set_value(preset, "export_filter", "exclude")
+			if not excluded.is_empty():
+				print(preset)
+				cfg.set_value(preset, "export_files", excluded)
+			cfg.set_value(preset, "include_filter", include_filter)
+		cfg.save("res://export_presets.cfg")
+
+
 ## Returns the current class unique instance. [br]
 ## Don't use this method for classes that will be instantiated more than once.
 static func get_singleton() -> Editor:
@@ -237,4 +269,5 @@ func _init():
 	actions.add_action("ED_QUIT", KEY_MASK_CTRL | KEY_Q)
 	actions.action_pressed.connect(_on_action)
 	# Final pass.
+	_update_export_presets()
 	_singleton = self
