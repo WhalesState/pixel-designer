@@ -2,20 +2,21 @@
 class_name SvgNode
 extends Node
 
+@export var svg : Svg:
+	set(value):
+		if value != svg:
+			if svg:
+				svg.changed.disconnect(update)
+			svg = value
+			if svg:
+				svg.changed.connect(update)
+			update()
+
 @export var visible := true:
 	set(value):
 		if value != visible:
 			visible = value
 			update()
-
-@export var mask_id := "":
-	set(value):
-		if value != mask_id:
-			mask_id = value
-			update()
-
-func get_svg_string() -> String:
-	return ""
 
 
 func update():
@@ -33,11 +34,10 @@ func update():
 		break
 
 
-func color_to_html(color: Color) -> String:
-	var c := color.to_html(false)
-	if c[0] == c[1] and c[2] == c[3] and c[4] == c[5]:
-		c = c[0] + c[2] + c[4]
-	return "#" + c
+func get_svg_string() -> String:
+	if svg:
+		return svg.get_svg_string()
+	return ""
 
 
 func _notification(what: int) -> void:

@@ -61,7 +61,7 @@ func redraw() -> void:
 
 
 func get_svg() -> String:
-	var svg := '<svg width="%s" height="%s" viewBox="%s %s %s %s" xmlns="http://www.w3.org/2000/svg">' % [width, height, viewbox_position.x, viewbox_position.y, viewbox_size.x, viewbox_size.y]
+	var svg := Svg.get_header(width, height, viewbox_position, viewbox_size)
 	svg += get_svg_string()
 	svg += "</svg>"
 	print(svg)
@@ -69,11 +69,23 @@ func get_svg() -> String:
 
 
 func get_svg_string() -> String:
+	var defs := "<defs>"
 	var result = ""
 	var svg_nodes := get_svg_children(self)
 	for node in svg_nodes:
-		result += node.get_svg_string()
-	return result
+		if not node.svg:
+			continue
+		var s := ""
+		if node is SvgMask:
+			s = node.get_svg_string()
+		else:
+			s = node.svg.get_svg_string()
+		if s.begins_with("<mask"):
+			defs += s
+		else:
+			result += s
+	defs += "</defs>"
+	return defs + result
 
 
 func get_svg_children(node: Node) -> Array:
@@ -107,4 +119,4 @@ func _enter_tree() -> void:
 
 
 func _init() -> void:
-	RenderingServer.frame_pre_draw.connect(draw)
+	RenderingServer.frame_post_draw.connect(draw)

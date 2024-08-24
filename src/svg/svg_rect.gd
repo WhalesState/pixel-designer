@@ -1,64 +1,64 @@
 @tool
 class_name SvgRect
-extends SvgNode
+extends Svg
 
 @export var position := Vector2.ZERO:
 	set(value):
 		if value != position:
 			position = value
-			update()
+			emit_changed()
 
 @export var size := Vector2(16, 16):
 	set(value):
 		if value != size:
 			size = value
-			update()
+			emit_changed()
 
 @export var corner_radius := Vector2.ZERO:
 	set(value):
 		if value != corner_radius:
 			corner_radius = value
-			update()
+			emit_changed()
 
 @export_range(0.0, 1.0, 0.01) var opacity := 1.0:
 	set(value):
 		if value != opacity:
 			opacity = value
-			update()
+			emit_changed()
 
 @export var fill_color := Color(1.0, 1.0, 1.0, 1.0):
 	set(value):
 		if value != fill_color:
 			fill_color = value
-			update()
+			emit_changed()
 
 @export var stroke_color := Color(0.0, 0.0, 0.0, 0.0):
 	set(value):
 		if value != stroke_color:
 			stroke_color = value
-			update()
+			emit_changed()
 
 @export var stroke_width := 1.0:
 	set(value):
 		if value != stroke_width:
 			stroke_width = value
-			update()
+			emit_changed()
 
 # "miter-clip", "arcs"
-@export_enum("miter", "round", "bevel") var stroke_linejoin := 0:
+@export var stroke_linejoin := LineJoin.MITER:
 	set(value):
 		if value != stroke_linejoin:
 			stroke_linejoin = value
-			update()
+			emit_changed()
 # @export_enum("butt", "round", "square") var stroke_linecap := 0
 
-@export var stroke_dash_array := PackedFloat32Array():
+@export var stroke_dash_array: PackedFloat32Array:
 	set(value):
 		stroke_dash_array = value
-		update()
+		emit_changed()
 
 # stroke-dasharray="20,10,5,5,5,10"
-func get_svg_string(_mask_id := ""):
+func get_svg_string() -> String:
 	var string = '<rect x="%s" y="%s" width="%s" height="%s"' % [position.x, position.y, size.x, size.y]
 	if corner_radius.x != 0:
 		string += ' rx="%s"' % corner_radius.x
@@ -66,11 +66,10 @@ func get_svg_string(_mask_id := ""):
 		string += ' ry="%s"' % corner_radius.y
 	if opacity != 1.0:
 		string += ' opacity="%s"' % opacity
-	string += ' fill="%s"' % color_to_html(fill_color)
+	string += ' fill="%s"' % Svg.color_to_html(fill_color)
 	if fill_color.a != 1.0:
 		string += ' fill-opacity="%s"' % fill_color.a
-	if stroke_color != Color(0.0, 0.0, 0.0, 0.0):
-		string += ' stroke="%s"' % color_to_html(stroke_color)
+	string += ' stroke="%s"' % Svg.color_to_html(stroke_color)
 	if stroke_width != 1.0:
 		string += ' stroke-width="%s"' % stroke_width
 	if stroke_color.a != 1.0:
