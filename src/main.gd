@@ -22,6 +22,55 @@ static func get_singleton() -> Main:
 	return _singleton
 
 
+## Returns a list of all files in a directory.
+static func _get_dir_files(path: String) -> Array:
+	var files := []
+	var dir = DirAccess.open(path)
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "": 
+			if dir.current_is_dir():
+				files.append_array(_get_dir_files(dir.get_current_dir() + "/" + file_name))
+			else:
+				files.append(dir.get_current_dir() + "/" + file_name)
+			file_name = dir.get_next()
+		dir.list_dir_end()
+	return files
+
+
+## Only works in editor build, to update the export presets if they exist
+func _update_export_presets() -> void:
+	if OS.has_feature("editor") and FileAccess.file_exists("res://export_presets.cfg"):
+		var cfg = ConfigFile.new()
+		cfg.load("res://export_presets.cfg")
+		var presets := []
+		for preset in cfg.get_sections():
+			if preset.ends_with(".options"):
+				continue
+			presets.append(preset)
+		if presets.is_empty():
+			cfg.free()
+			return
+		# update presets
+		var excluded := PackedStringArray([])
+		for file in Main._get_dir_files("res://plugins"):
+			if file.get_extension() in ["import", "pixel_plugin"]:
+				continue
+			excluded.append(file)
+		for file in Main._get_dir_files("res://theme/icons"):
+			if file.get_extension() in ["svg"]:
+				excluded.append(file)
+		var include_filter = "*.pixel_icon, *.pixel_plugin"
+		for preset in presets:
+			cfg.set_value(preset, "export_filter", "exclude")
+			if not excluded.is_empty():
+				print(preset)
+				cfg.set_value(preset, "export_files", excluded)
+			cfg.set_value(preset, "include_filter", include_filter)
+		cfg.save("res://export_presets.cfg")
+
+
 func _finalize() -> void:
 	var log_file = FileAccess.open(OS.get_user_data_dir() + "/pixel_designer.log", FileAccess.WRITE)
 	# NOTE: When exiting the app, the builtin message queue will flush! no more output to console.
@@ -50,4 +99,5 @@ func _init():
 	)
 	root.set_script(preload("res://src/root.gd"))
 	# Final pass.
+	_update_export_presets()
 	_singleton = self

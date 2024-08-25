@@ -17,3 +17,7 @@ config/custom_user_dir_name="PixelDesigner"
 run/main_loop_type="Main"
 config/features=PackedStringArray("4.2")
 run/low_processor_mode=true
+
+[gui]
+
+common/snap_controls_to_pixels=false

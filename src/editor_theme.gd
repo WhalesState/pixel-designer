@@ -2,6 +2,8 @@
 class_name EditorTheme
 extends Theme
 
+const DEFAULT_FONT = preload("res://theme/fonts/NotoSans_Regular.woff2")
+
 @export_color_no_alpha var primary_color: Color:
 	set(value):
 		value.a = 1.0
@@ -37,19 +39,6 @@ extends Theme
 
 var is_dark_theme := false
 
-var current_font: String:
-	set(value):
-		if not fonts.has(value):
-			if not fonts.keys().is_empty():
-				value = fonts.keys()[0]
-			else:
-				return
-		if value != current_font:
-			current_font = value
-			Settings.get_singleton().set_editor_value("theme", "current_font", current_font)
-			update_theme()
-
-var fonts := {}
 var icons := {}
 
 var icon_queue := []
@@ -84,17 +73,6 @@ func update_theme():
 #    (1, 0, 1) = primary_color contrasted (20%) (magneta)
 #    (0, 1, 1) = lerp secondary > primary (60%) (cyan)
 func _update_theme():
-	# Set font.
-	if not current_font.is_empty() and fonts.has(current_font):
-		var font: PixelFont = fonts[current_font]
-		default_font_size = font.size * editor_scale
-		default_font.base_font = font
-		default_font.spacing_glyph = font.spacing_glyph * editor_scale
-		default_font.spacing_space = font.spacing_space * editor_scale
-		default_font.spacing_top = font.spacing_top * editor_scale
-		default_font.spacing_bottom = font.spacing_bottom * editor_scale
-	else:
-		default_font.base_font = null
 	# Set colors.
 	var font_color := Color(0.9, 0.9, 0.9) if is_dark_theme else Color(0.05, 0.05, 0.05)
 	var contrasted_color := contrast_color(primary_color, contrast)
@@ -172,8 +150,40 @@ func _update_theme():
 		removed += 1
 	print_verbose("REMOVED: %s icons from queue" % removed)
 
+
 func icon(icon_name: String) -> ImageTexture:
 	return get_icon(icon_name, "icons")
+
+
+func update_custom_font() -> void:
+	var custom_font: FontFile = EditorTheme.load_font(Settings.get_singleton().get_editor_value("theme", "custom_font", ""))
+	if custom_font:
+		default_font.base_font = custom_font
+	else:
+		default_font.base_font = DEFAULT_FONT
+
+
+func update_font_variation() -> void:
+	default_font.variation_embolden = Settings.get_singleton().get_editor_value("theme", "font_embolden", 0.0)
+	default_font.spacing_glyph = Settings.get_singleton().get_editor_value("theme", "font_spacing_glyph", 0.0)
+	default_font.spacing_space = Settings.get_singleton().get_editor_value("theme", "font_spacing_space", 0.0)
+	default_font.spacing_top = Settings.get_singleton().get_editor_value("theme", "font_spacing_top", -2.0)
+	default_font.spacing_bottom = Settings.get_singleton().get_editor_value("theme", "font_spacing_bottom", 0.0)
+	default_font_size = Settings.get_singleton().get_editor_value("theme", "font_size", 14)
+
+
+static func load_font(font_path: String) -> FontFile:
+	var font: FontFile = null
+	if not font_path.is_empty() and font_path.is_valid_filename():
+		if font_path.get_extension() in ["ttf", "otf", "woff2"]:
+			if FileAccess.file_exists(font_path):
+				var file = FileAccess.open(font_path, FileAccess.READ)
+				if file:
+					var font_data = FileAccess.get_file_as_bytes(font_path)
+					if font_data.size() > 0:
+						font = FontFile.new()
+						font.data = font_data
+	return font
 
 
 ## Returns the current class unique instance. [br]
@@ -184,58 +194,8 @@ static func get_singleton() -> EditorTheme:
 
 func _init():
 	print_verbose("EditorTheme _init()")
+	# Initialize theme font.
 	default_font = FontVariation.new()
-	# Generate pixel fonts.
-	if OS.has_feature("editor"):
-		for file in DirAccess.get_files_at("res://theme/fonts"):
-			if not file.get_extension() == "ttf":
-				continue
-			if not FileAccess.file_exists("res://theme/fonts/" + file + ".import"):
-				continue
-			var config := ConfigFile.new()
-			config.load("res://theme/fonts/" + file + ".import")
-			var params: Array = config.get_value("params", "preload", [])
-			if params.is_empty():
-				continue
-			var font_data: PackedStringArray = params[0]["name"].split(",")
-			var font_file : FontFile = ResourceLoader.load("res://theme/fonts/" + file, "FontFile", ResourceLoader.CACHE_MODE_REUSE)
-			var pixel_font_data := {}
-			pixel_font_data["data"] = font_file.data
-			pixel_font_data["name"] = font_data[0]
-			pixel_font_data["file"] = "res://theme/fonts/" + file.get_basename() + ".pixel_font"
-			var properties := PackedStringArray(["", "size", "spacing_glyph", "spacing_space", "spacing_top", "spacing_bottom"])
-			for i in range(1, properties.size()):
-				if font_data.size() > i:
-					pixel_font_data[properties[i]] = font_data[i].to_int()
-				else:
-					pixel_font_data[properties[i]] = 0
-			var new_file = FileAccess.open(pixel_font_data["file"], FileAccess.WRITE)
-			new_file.store_var(pixel_font_data)
-			new_file.close()
-	# Load internal fonts.
-	var font_files := PackedStringArray()
-	for file in DirAccess.get_files_at("res://theme/fonts"):
-		if not file.get_extension() == "pixel_font":
-			continue
-		if OS.has_feature("editor"):
-			if not FileAccess.file_exists("res://theme/fonts/" + file.get_basename() + ".ttf"):
-				DirAccess.remove_absolute("res://theme/fonts/" + file)
-				continue
-		font_files.append("res://theme/fonts/" + file)
-	# Load user fonts.
-	if not DirAccess.dir_exists_absolute(OS.get_user_data_dir() + "/fonts"):
-		DirAccess.make_dir_absolute(OS.get_user_data_dir() + "/fonts")
-	else:
-		for file in DirAccess.get_files_at(OS.get_user_data_dir() + "/fonts"):
-			if not file.get_extension() == "pixel_font":
-				continue
-			font_files.append(OS.get_user_data_dir() + "/fonts/" + file)
-	for file in font_files:
-		var pixel_font_data = FileAccess.open(file, FileAccess.READ).get_var()
-		var pixel_font := PixelFont.new()
-		for key in pixel_font_data.keys():
-			pixel_font.set(key, pixel_font_data[key])
-		fonts[pixel_font.name] = pixel_font
 	# Generate pixel icons.
 	for file in DirAccess.get_files_at("res://theme/icons"):
 		if file.get_extension() != "svg":
@@ -265,24 +225,5 @@ func _init():
 	secondary_color = Settings.get_singleton().get_editor_value("theme", "secondary_color", Color(0.226313, 0.478181, 0.921924, 1))
 	contrast = Settings.get_singleton().get_editor_value("theme", "contrast", 0.1)
 	editor_scale = Settings.get_singleton().get_editor_value("theme", "editor_scale", 1)
-	current_font = Settings.get_singleton().get_editor_value("theme", "current_font", "")
 	# Final pass.
 	_singleton = self
-
-
-class PixelFont:
-	extends FontFile
-	
-	var name := "Pixel Font"
-	var size := 16
-	var spacing_glyph := 0
-	var spacing_space := 0
-	var spacing_top := 0
-	var spacing_bottom := 0
-	var file := ""
-	
-	
-	func _init():
-		antialiasing = TextServer.FONT_ANTIALIASING_NONE
-		subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
-		hinting = TextServer.HINTING_NONE

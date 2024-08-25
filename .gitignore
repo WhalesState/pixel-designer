@@ -10,11 +10,13 @@ bin/*.exe
 bin/*.pck
 
 # import
-*.svg.import
-*.ttf.import
+theme/icons/*.svg.import
 
 # export templates
 export_templates/*.exe
 
 # plugins
 *.pixel_plugin
+
+# custom
+plugins/PixelDesigner.UpdateSpinner/icons/*.svg.import
