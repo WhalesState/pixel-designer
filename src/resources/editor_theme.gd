@@ -52,6 +52,13 @@ const DEFAULT_FONT = preload("res://theme/fonts/NotoSans_Regular.woff2")
 			Settings.get_singleton().set_editor_value("theme", "flat_corners", flat_corners)
 			update_theme()
 
+@export_range(0, 2) var font_outline: int:
+	set(value):
+		if value != font_outline:
+			font_outline = value
+			Settings.get_singleton().set_editor_value("theme", "font_outline", font_outline)
+			update_theme()
+
 @export_range(1, 2) var editor_scale := 1:
 	set(value):
 		value = clampi(value, 1, 2)
@@ -65,6 +72,28 @@ var is_dark_theme := false
 var icons := {}
 
 var icon_queue := []
+
+## For "panel" in [Panel, PanelContainer, TabContainer].
+var panel_style := PixelStyleBox.new()
+## For "tab_selected" in [TabContainer].
+var tab_selected_style := PixelStyleBox.new()
+## For "tab_unselectd" and "tab_hovered" in [TabContainer].
+var tab_unselected_style := PixelStyleBox.new()
+## For "tab_disabled" in [TabContainer].
+var tab_disabled_style := PixelStyleBox.new()
+## For "tab_focus" in [TabContainer].
+var tab_focus_style := PixelStyleBox.new()
+## For "normal" in [Button].
+var button_normal_style := PixelStyleBox.new()
+## For "hover" in [Button].
+var button_hover_style := PixelStyleBox.new()
+## For "pressed" in [Button].
+var button_pressed_style := PixelStyleBox.new()
+## For "focus" in [Button].
+var button_focus_style := PixelStyleBox.new()
+## For "disabled" in [Button].
+var button_disabled_style := PixelStyleBox.new()
+
 
 ## `PRIVATE` used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
 static var _singleton: EditorTheme
@@ -95,6 +124,7 @@ func update_theme():
 #    (1, 1, 0) = primary_color3 contrasted (40%) (yellow)
 #    (1, 0, 1) = primary_color4 contrasted (20%) (magneta)
 #    (0, 1, 1) = secondary_color2 lerp to primary (60%) (cyan)
+# FIXME: Icons should use modulation to change colors instead of setting them directly to their svg file. Modulate doesn't work for black color.
 func _update_theme():
 	# Set colors.
 	var font_color := Color(0.9, 0.9, 0.9) if is_dark_theme else Color(0.05, 0.05, 0.05)
@@ -117,72 +147,123 @@ func _update_theme():
 		var img := Image.new()
 		img.load_svg_from_string(svg, editor_scale)
 		set_icon(pixel_icon, "icons", ImageTexture.create_from_image(img))
-	# Panel.
-	var base_style := PixelStyleBox.new()
-	base_style.scale = editor_scale
-	base_style.border_color = font_color
-	base_style.border_width = border_width
-	base_style.flat_corners = flat_corners
-	base_style.set_corner_all(corner_radius)
-	var style := base_style.duplicate() as PixelStyleBox
-	style.fill_color = primary_color3
-	set_stylebox("panel", "PanelContainer", style)
-	set_stylebox("panel", "Panel", style)
-	# TabContainer.
-	set_stylebox("panel", "TabContainer", style)
-	style = style.duplicate() as PixelStyleBox
-	style.expand_bottom = 8 * editor_scale
-	style.expand_margin_bottom = 2 * editor_scale
-	set_stylebox("tab_selected", "TabContainer", style)
-	style = style.duplicate() as PixelStyleBox
-	style.fill_color = primary_color4
-	style.expand_margin_bottom = 0
-	set_stylebox("tab_unselected", "TabContainer", style)
-	set_stylebox("tab_hovered", "TabContainer", style)
-	style = style.duplicate() as PixelStyleBox
-	style.fill_color.a = 0.6
-	style.border_color.a = 0.6
-	set_stylebox("tab_disabled", "TabContainer", style)
-	style = style.duplicate() as PixelStyleBox
-	style.border_color = secondary_color
-	style.border_color.a = 1.0
-	style.fill_color = Color(0, 0, 0, 0)
-	style.expand_margin_bottom = 2 * editor_scale
-	set_stylebox("tab_focus", "TabContainer", style)
-	# Button.
-	style = base_style.duplicate() as PixelStyleBox
-	style.fill_color = primary_color4
-	set_stylebox("normal", "Button", style)
-	style = style.duplicate() as PixelStyleBox
-	style.fill_color.a = 0.6
-	set_stylebox("disabled", "Button", style)
-	style = style.duplicate() as PixelStyleBox
-	style.fill_color = primary_color2
-	set_stylebox("hover", "Button", style)
-	style = style.duplicate() as PixelStyleBox
-	style.fill_color = primary_color
-	set_stylebox("pressed", "Button", style)
-	style = style.duplicate() as PixelStyleBox
-	style.fill_color = Color(0, 0, 0, 0)
-	style.border_color = secondary_color
-	set_stylebox("focus", "Button", style)
-	set_color("icon_focus_color", "Button", font_color)
-	set_color("font_focus_color", "Button", font_color)
-	set_color("font_hover_color", "Button", font_color)
-	set_color("icon_hover_color", "Button", font_color)
-	var icon_color = font_color
-	icon_color.a = 0.8
-	set_color("icon_normal_color", "Button", icon_color)
-	set_color("font_color", "Button", icon_color)
-	set_color("icon_pressed_color", "Button", icon_color)
-	set_color("font_pressed_color", "Button", icon_color)
-	icon_color.a = 0.7
-	set_color("icon_disabled_color", "Button", icon_color)
-	set_color("font_disabled_color", "Button", icon_color)
+	# base_style.scale = editor_scale
+	# base_style.border_color = font_color
+	# base_style.border_width = border_width
+	# base_style.flat_corners = flat_corners
+	# base_style.set_corner_all(corner_radius)
+
+	# For "panel" in [Panel, PanelContainer, TabContainer].
+	panel_style.scale = editor_scale
+	panel_style.fill_color = primary_color3
+	panel_style.border_color = font_color
+	panel_style.border_width = border_width
+	panel_style.flat_corners = flat_corners
+	panel_style.set_corner_all(corner_radius)
+	# For "tab_selected" in [TabContainer].
+	tab_selected_style.scale = editor_scale
+	tab_selected_style.fill_color = primary_color3
+	tab_selected_style.border_color = font_color
+	tab_selected_style.border_width = border_width
+	tab_selected_style.flat_corners = flat_corners
+	tab_selected_style.set_corner_all(corner_radius)
+	tab_selected_style.expand_bottom = 8 * editor_scale
+	tab_selected_style.expand_margin_bottom = border_width * editor_scale
+	# For "tab_unselected" and "tab_hovered" in [TabContainer].
+	tab_unselected_style.scale = editor_scale
+	tab_unselected_style.fill_color = primary_color4
+	tab_unselected_style.border_color = font_color
+	tab_unselected_style.border_width = border_width
+	tab_unselected_style.flat_corners = flat_corners
+	tab_unselected_style.set_corner_all(corner_radius)
+	tab_unselected_style.expand_bottom = 8 * editor_scale
+	# For "tab_disabled" in [TabContainer].
+	tab_disabled_style.scale = editor_scale
+	tab_disabled_style.fill_color = primary_color4
+	tab_disabled_style.fill_color.a = 0.6
+	tab_disabled_style.border_color = font_color
+	tab_disabled_style.border_color.a = 0.6
+	tab_disabled_style.border_width = border_width
+	tab_disabled_style.flat_corners = flat_corners
+	tab_disabled_style.set_corner_all(corner_radius)
+	tab_disabled_style.expand_bottom = 8 * editor_scale
+	# For "tab_focus" in [TabContainer].
+	tab_focus_style.scale = editor_scale
+	tab_focus_style.fill_color.a = 0.0
+	tab_focus_style.border_color = secondary_color
+	tab_focus_style.border_width = maxi(1, border_width)
+	tab_focus_style.flat_corners = flat_corners
+	tab_focus_style.set_corner_all(corner_radius)
+	tab_focus_style.expand_bottom = 8 * editor_scale
+	# TabContainer colors.
+	var color = font_color
+	set_color("font_hovered_color", "TabContainer", color)
+	set_color("drop_mark_color", "TabContainer", color)
+	color.a = 0.9
+	set_color("font_selected_color", "TabContainer", color)
+	color.a = 0.8
+	set_color("font_unselected_color", "TabContainer", color)
+	color.a = 0.6
+	set_color("font_disabled_color", "TabContainer", color)
+	set_color("font_outline_color", "TabContainer", bg_color)
+	# TabContainer constants.
+	set_constant("side_margin", "TabContainer", maxi(corner_radius, border_width) * editor_scale)
+	set_constant("icon_separation", "TabContainer", 2 * editor_scale)
+	set_constant("font_outline_size", "TabContainer", font_outline * editor_scale)
+	# TODO: Create new icons for TabContainer.
+	# Button styleboxes.
+	button_normal_style.scale = editor_scale
+	button_normal_style.fill_color = primary_color4
+	button_normal_style.border_color = font_color
+	button_normal_style.border_width = border_width
+	button_normal_style.flat_corners = flat_corners
+	button_normal_style.set_corner_all(corner_radius)
+	button_hover_style.scale = editor_scale
+	button_hover_style.fill_color = primary_color2
+	button_hover_style.border_color = font_color
+	button_hover_style.border_width = border_width
+	button_hover_style.flat_corners = flat_corners
+	button_hover_style.set_corner_all(corner_radius)
+	button_pressed_style.scale = editor_scale
+	button_pressed_style.fill_color = primary_color
+	button_pressed_style.border_color = font_color
+	button_pressed_style.border_width = border_width
+	button_pressed_style.flat_corners = flat_corners
+	button_pressed_style.set_corner_all(corner_radius)
+	button_focus_style.scale = editor_scale
+	button_focus_style.fill_color = Color(0, 0, 0, 0)
+	button_focus_style.border_color = secondary_color
+	button_focus_style.border_width = maxi(border_width, 1)
+	button_focus_style.flat_corners = flat_corners
+	button_focus_style.set_corner_all(corner_radius)
+	button_disabled_style.scale = editor_scale
+	button_disabled_style.fill_color = primary_color4
+	button_disabled_style.fill_color.a = 0.6
+	button_disabled_style.border_color = font_color
+	button_disabled_style.border_color.a = 0.6
+	button_disabled_style.border_width = border_width
+	button_disabled_style.flat_corners = flat_corners
+	button_disabled_style.set_corner_all(corner_radius)
+	# Button Color.
+	color.a = 1.0
+	set_color("font_hover_color", "Button", color)
+	set_color("icon_hover_color", "Button", color)
+	color.a = 0.9
+	set_color("icon_pressed_color", "Button", color)
+	set_color("font_pressed_color", "Button", color)
+	color.a = 0.8
+	set_color("icon_focus_color", "Button", color)
+	set_color("font_focus_color", "Button", color)
+	color.a = 0.7
+	set_color("icon_normal_color", "Button", color)
+	set_color("font_color", "Button", color)
+	color.a = 0.6
+	set_color("icon_disabled_color", "Button", color)
+	set_color("font_disabled_color", "Button", color)
 	# SplitterContainer.
-	set_color("hover_color", "SplitterContainer", icon_color)
-	icon_color.a = 0.6
-	set_color("normal_color", "SplitterContainer", icon_color)
+	set_color("hover_color", "SplitterContainer", color)
+	color.a = 0.5
+	set_color("normal_color", "SplitterContainer", color)
 	set_color("pressed_color", "SplitterContainer", secondary_color)
 	# BG
 	Root.get_singleton().clear_color = bg_color
@@ -272,6 +353,20 @@ func _init():
 		if pixel_icon:
 			icons[file.get_basename().to_pascal_case()] = pixel_icon.get_as_text()
 			pixel_icon.close()
+	# Set style boxes.
+	set_stylebox("panel", "PanelContainer", panel_style)
+	set_stylebox("panel", "Panel", panel_style)
+	set_stylebox("panel", "TabContainer", panel_style)
+	set_stylebox("tab_selected", "TabContainer", tab_selected_style)
+	set_stylebox("tab_unselected", "TabContainer", tab_unselected_style)
+	set_stylebox("tab_hovered", "TabContainer", tab_unselected_style)
+	set_stylebox("tab_disabled", "TabContainer", tab_disabled_style)
+	set_stylebox("tab_focus", "TabContainer", tab_focus_style)
+	set_stylebox("normal", "Button", button_normal_style)
+	set_stylebox("hover", "Button", button_hover_style)
+	set_stylebox("pressed", "Button", button_pressed_style)
+	set_stylebox("focus", "Button", button_focus_style)
+	set_stylebox("disabled", "Button", button_disabled_style)
 	# get default values
 	primary_color = Settings.get_singleton().get_editor_value("theme", "primary_color", Color(0.131259, 0.15223, 0.2342, 1))
 	secondary_color = Settings.get_singleton().get_editor_value("theme", "secondary_color", Color(0.226313, 0.478181, 0.921924, 1))
@@ -280,5 +375,6 @@ func _init():
 	border_width = Settings.get_singleton().get_editor_value("theme", "border_width", 2.0)
 	corner_radius = Settings.get_singleton().get_editor_value("theme", "corner_radius", 6.0)
 	flat_corners = Settings.get_singleton().get_editor_value("theme", "flat_corners", false)
+	font_outline = Settings.get_singleton().get_editor_value("theme", "font_outline", 0)
 	# Final pass.
 	_singleton = self

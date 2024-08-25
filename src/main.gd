@@ -1,11 +1,9 @@
 class_name Main
 extends SceneTree
 
-## Stores the project version.
-var version := ProjectSettings.get_setting("application/config/version", "0.1") as String
-
 ## `PRIVATE` A class that can be used to queue calls a function many times and it will be excuted only once or as many times as needed.
 var _message_queue := MessageQueue.new()
+
 ## `PRIVATE` A class that contains all the project actions.
 var _actions := Actions.new()
 
@@ -14,6 +12,11 @@ var _log_queue := PackedStringArray([])
 
 ## `PRIVATE` used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
 static var _singleton: Main
+
+
+## Use `Main.get_version()` to get the current version.
+static func get_version() -> String:
+	return ProjectSettings.get_setting("application/config/version", "0.1")
 
 
 ## Returns the current class unique instance. [br]
@@ -39,7 +42,7 @@ static func _get_dir_files(path: String) -> Array:
 	return files
 
 
-## Only works in editor build, to update the export presets if they exist
+## for Editor builds: Update the export presets if `res://export_presets.cfg` exists.
 func _update_export_presets() -> void:
 	if OS.has_feature("editor") and FileAccess.file_exists("res://export_presets.cfg"):
 		var cfg = ConfigFile.new()
@@ -97,7 +100,7 @@ func _init():
 	_actions.action_map_changed.connect(func():
 		_message_queue.queue_call(_actions._store_actions)
 	)
-	root.set_script(preload("res://src/root.gd"))
 	# Final pass.
 	_update_export_presets()
 	_singleton = self
+	root.set_script(preload("res://src/root.gd"))
