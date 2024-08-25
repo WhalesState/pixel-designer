@@ -118,6 +118,21 @@ var needs_update := true
 			expand_bottom = value
 			update()
 
+
+func set_corner_all(value: int) -> void:
+	corner_top_left = value
+	corner_top_right = value
+	corner_bottom_right = value
+	corner_bottom_left = value
+
+
+func set_margin_all(value: int) -> void:
+	margin_left = value
+	margin_top = value
+	margin_right = value
+	margin_bottom = value
+
+
 func update():
 	if not needs_update:
 		needs_update = true
@@ -241,4 +256,4 @@ func _validate_property(property: Dictionary) -> void:
 
 func _init():
 	needs_update = true
-	RenderingServer.frame_post_draw.connect(redraw)
+	Main.get_singleton().process_frame.connect(redraw)

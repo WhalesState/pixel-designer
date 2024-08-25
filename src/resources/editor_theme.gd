@@ -29,6 +29,29 @@ const DEFAULT_FONT = preload("res://theme/fonts/NotoSans_Regular.woff2")
 			Settings.get_singleton().set_editor_value("theme", "contrast", contrast)
 			update_theme()
 
+@export_range(0, 3) var border_width: int:
+	set(value):
+		value = clampi(value, 0, 3)
+		if value != border_width:
+			border_width = value
+			Settings.get_singleton().set_editor_value("theme", "border_width", border_width)
+			update_theme()
+
+@export_range(0, 8) var corner_radius: int:
+	set(value):
+		value = clampi(value, 0, 8)
+		if value != corner_radius:
+			corner_radius = value
+			Settings.get_singleton().set_editor_value("theme", "corner_radius", corner_radius)
+			update_theme()
+
+@export var flat_corners: bool:
+	set(value):
+		if value != flat_corners:
+			flat_corners = value
+			Settings.get_singleton().set_editor_value("theme", "flat_corners", flat_corners)
+			update_theme()
+
 @export_range(1, 2) var editor_scale := 1:
 	set(value):
 		value = clampi(value, 1, 2)
@@ -68,14 +91,18 @@ func update_theme():
 #    (1, 1, 1) = font_color                     (white)
 #    (1, 0, 0) = primary_color                  (red)
 #    (0, 1, 0) = secondary_color                (green)
-#    (0, 0, 1) = primary_color contrasted (60%) (blue)
-#    (1, 1, 0) = primary_color contrasted (40%) (yellow)
-#    (1, 0, 1) = primary_color contrasted (20%) (magneta)
-#    (0, 1, 1) = lerp secondary > primary (60%) (cyan)
+#    (0, 0, 1) = primary_color2 contrasted (60%) (blue)
+#    (1, 1, 0) = primary_color3 contrasted (40%) (yellow)
+#    (1, 0, 1) = primary_color4 contrasted (20%) (magneta)
+#    (0, 1, 1) = secondary_color2 lerp to primary (60%) (cyan)
 func _update_theme():
 	# Set colors.
 	var font_color := Color(0.9, 0.9, 0.9) if is_dark_theme else Color(0.05, 0.05, 0.05)
 	var contrasted_color := contrast_color(primary_color, contrast)
+	var primary_color2 := primary_color.lerp(contrasted_color, 0.6)
+	var primary_color3 := primary_color.lerp(contrasted_color, 0.4)
+	var primary_color4 := primary_color.lerp(contrasted_color, 0.2)
+	var secondary_color2 := secondary_color.lerp(primary_color, 0.6)
 	var bg_color := primary_color.lerp(contrasted_color, 0.8)
 	# set icons.
 	for pixel_icon in icons.keys():
@@ -83,39 +110,62 @@ func _update_theme():
 		svg = svg.replace("\"#fff\"", "\"#%s\"" % font_color.to_html(false))
 		svg = svg.replace("\"#f00\"", "\"#%s\"" % primary_color.to_html(false))
 		svg = svg.replace("\"#0f0\"", "\"#%s\"" % secondary_color.to_html(false))
-		svg = svg.replace("\"#00f\"", "\"#%s\"" % primary_color.lerp(contrasted_color, 0.6).to_html(false))
-		svg = svg.replace("\"#ff0\"", "\"#%s\"" % primary_color.lerp(contrasted_color, 0.4).to_html(false))
-		svg = svg.replace("\"#f0f\"", "\"#%s\"" % primary_color.lerp(contrasted_color, 0.2).to_html(false))
-		svg = svg.replace("\"#0ff\"", "\"#%s\"" % secondary_color.lerp(primary_color, 0.6).to_html(false))
+		svg = svg.replace("\"#00f\"", "\"#%s\"" % primary_color2.to_html(false))
+		svg = svg.replace("\"#ff0\"", "\"#%s\"" % primary_color3.to_html(false))
+		svg = svg.replace("\"#f0f\"", "\"#%s\"" % primary_color4.to_html(false))
+		svg = svg.replace("\"#0ff\"", "\"#%s\"" % secondary_color2.to_html(false))
 		var img := Image.new()
 		img.load_svg_from_string(svg, editor_scale)
 		set_icon(pixel_icon, "icons", ImageTexture.create_from_image(img))
 	# Panel.
-	var style := StyleBoxTexture.new()
-	style.texture = icon("GuiPanel")
-	style.set_texture_margin_all(2 * editor_scale)
+	var base_style := PixelStyleBox.new()
+	base_style.scale = editor_scale
+	base_style.border_color = font_color
+	base_style.border_width = border_width
+	base_style.flat_corners = flat_corners
+	base_style.set_corner_all(corner_radius)
+	var style := base_style.duplicate() as PixelStyleBox
+	style.fill_color = primary_color3
 	set_stylebox("panel", "PanelContainer", style)
 	set_stylebox("panel", "Panel", style)
+	# TabContainer.
+	set_stylebox("panel", "TabContainer", style)
+	style = style.duplicate() as PixelStyleBox
+	style.expand_bottom = 8 * editor_scale
+	style.expand_margin_bottom = 2 * editor_scale
+	set_stylebox("tab_selected", "TabContainer", style)
+	style = style.duplicate() as PixelStyleBox
+	style.fill_color = primary_color4
+	style.expand_margin_bottom = 0
+	set_stylebox("tab_unselected", "TabContainer", style)
+	set_stylebox("tab_hovered", "TabContainer", style)
+	style = style.duplicate() as PixelStyleBox
+	style.fill_color.a = 0.6
+	style.border_color.a = 0.6
+	set_stylebox("tab_disabled", "TabContainer", style)
+	style = style.duplicate() as PixelStyleBox
+	style.border_color = secondary_color
+	style.border_color.a = 1.0
+	style.fill_color = Color(0, 0, 0, 0)
+	style.expand_margin_bottom = 2 * editor_scale
+	set_stylebox("tab_focus", "TabContainer", style)
 	# Button.
-	style = StyleBoxTexture.new()
-	style.texture = icon("GuiButtonNormal")
-	style.set_texture_margin_all(4 * editor_scale)
+	style = base_style.duplicate() as PixelStyleBox
+	style.fill_color = primary_color4
 	set_stylebox("normal", "Button", style)
-	style = StyleBoxTexture.new()
-	style.texture = icon("GuiButtonHover")
-	style.set_texture_margin_all(4 * editor_scale)
+	style = style.duplicate() as PixelStyleBox
+	style.fill_color.a = 0.6
+	set_stylebox("disabled", "Button", style)
+	style = style.duplicate() as PixelStyleBox
+	style.fill_color = primary_color2
 	set_stylebox("hover", "Button", style)
-	style = StyleBoxTexture.new()
-	style.texture = icon("GuiButtonPressed")
-	style.set_texture_margin_all(4 * editor_scale)
+	style = style.duplicate() as PixelStyleBox
+	style.fill_color = primary_color
 	set_stylebox("pressed", "Button", style)
-	style = StyleBoxTexture.new()
-	style.texture = icon("GuiFocus")
-	style.set_texture_margin_all(4 * editor_scale)
+	style = style.duplicate() as PixelStyleBox
+	style.fill_color = Color(0, 0, 0, 0)
+	style.border_color = secondary_color
 	set_stylebox("focus", "Button", style)
-	var empty := StyleBoxEmpty.new()
-	empty.set_content_margin_all(4 * editor_scale)
-	set_stylebox("disabled", "Button", empty)
 	set_color("icon_focus_color", "Button", font_color)
 	set_color("font_focus_color", "Button", font_color)
 	set_color("font_hover_color", "Button", font_color)
@@ -167,7 +217,7 @@ func update_font_variation() -> void:
 	default_font.variation_embolden = Settings.get_singleton().get_editor_value("theme", "font_embolden", 0.0)
 	default_font.spacing_glyph = Settings.get_singleton().get_editor_value("theme", "font_spacing_glyph", 0.0)
 	default_font.spacing_space = Settings.get_singleton().get_editor_value("theme", "font_spacing_space", 0.0)
-	default_font.spacing_top = Settings.get_singleton().get_editor_value("theme", "font_spacing_top", -2.0)
+	default_font.spacing_top = Settings.get_singleton().get_editor_value("theme", "font_spacing_top", 0.0)
 	default_font.spacing_bottom = Settings.get_singleton().get_editor_value("theme", "font_spacing_bottom", 0.0)
 	default_font_size = Settings.get_singleton().get_editor_value("theme", "font_size", 14)
 
@@ -196,6 +246,8 @@ func _init():
 	print_verbose("EditorTheme _init()")
 	# Initialize theme font.
 	default_font = FontVariation.new()
+	update_custom_font()
+	update_font_variation()
 	# Generate pixel icons.
 	for file in DirAccess.get_files_at("res://theme/icons"):
 		if file.get_extension() != "svg":
@@ -225,5 +277,8 @@ func _init():
 	secondary_color = Settings.get_singleton().get_editor_value("theme", "secondary_color", Color(0.226313, 0.478181, 0.921924, 1))
 	contrast = Settings.get_singleton().get_editor_value("theme", "contrast", 0.1)
 	editor_scale = Settings.get_singleton().get_editor_value("theme", "editor_scale", 1)
+	border_width = Settings.get_singleton().get_editor_value("theme", "border_width", 2.0)
+	corner_radius = Settings.get_singleton().get_editor_value("theme", "corner_radius", 6.0)
+	flat_corners = Settings.get_singleton().get_editor_value("theme", "flat_corners", false)
 	# Final pass.
 	_singleton = self
