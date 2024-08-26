@@ -10,21 +10,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
-"PO-Revision-Date: 2024-08-26 13:54\n"
+"PO-Revision-Date: 2024-08-26 14:16\n"
 
 msgctxt "Menu"
 msgid "Editor"
-msgstr ""
+msgstr "المحرر"
 
 msgctxt "Menu"
 msgid "Open User Data Folder"
-msgstr ""
+msgstr "فتح مجلد بيانات المستخدم"
 
 msgctxt "Menu"
 msgid "Editor Settings"
-msgstr ""
+msgstr "إعدادات المحرر"
 
 msgctxt "Menu"
 msgid "Exit"
-msgstr ""
+msgstr "خروج"
 
