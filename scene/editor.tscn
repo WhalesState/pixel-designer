@@ -1,163 +1,28 @@
-[gd_scene load_steps=2 format=3 uid="uid://in32t74bg266"]
+[gd_scene format=3 uid="uid://in32t74bg266"]
 
-[ext_resource type="Script" path="res://src/gui/visibility_button.gd" id="2_f1uaq"]
-
-[node name="MainVBox" type="VBoxContainer"]
+[node name="Main" type="VBoxContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 0
 metadata/_edit_lock_ = true
 
-[node name="MenuHBox" type="HBoxContainer" parent="."]
-layout_mode = 2
-
-[node name="MenuLeftHBox" type="HBoxContainer" parent="MenuHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="Label" type="Label" parent="MenuHBox/MenuLeftHBox"]
-layout_mode = 2
-text = "Hello World Test"
-
-[node name="MenuCenterHBox" type="HBoxContainer" parent="MenuHBox"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 6
-
-[node name="MenuRightHBox" type="HBoxContainer" parent="MenuHBox"]
+[node name="MainMenu" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
 
 [node name="MainHBox" type="HBoxContainer" parent="."]
-layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 2
-
-[node name="LeftExpandVBox" type="VBoxContainer" parent="MainHBox"]
-layout_mode = 2
-
-[node name="ButtonExpandLeft" type="Button" parent="MainHBox/LeftExpandVBox" node_paths=PackedStringArray("node")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-toggle_mode = true
-button_pressed = true
-script = ExtResource("2_f1uaq")
-node = NodePath("../../MainSplit/LeftVBox")
 
-[node name="ButtonAbout" type="Button" parent="MainHBox/LeftExpandVBox"]
+[node name="SideMenu" type="VBoxContainer" parent="MainHBox"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="MainSplit" type="SplitterContainer" parent="MainHBox"]
+[node name="MainScreen" type="MarginContainer" parent="MainHBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 20)
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="LeftVBox" type="VBoxContainer" parent="MainHBox/MainSplit"]
-layout_mode = 2
-
-[node name="LeftSplit" type="SplitterContainer" parent="MainHBox/MainSplit/LeftVBox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 8)
-layout_mode = 2
-size_flags_vertical = 3
-vertical = true
-
-[node name="TopLeftDock" type="TabContainer" parent="MainHBox/MainSplit/LeftVBox/LeftSplit"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="BottomLeftDock" type="TabContainer" parent="MainHBox/MainSplit/LeftVBox/LeftSplit"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="ButtonExpandBottomLeft" type="Button" parent="MainHBox/MainSplit/LeftVBox" node_paths=PackedStringArray("node")]
-unique_name_in_owner = true
-clip_contents = true
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-button_pressed = true
-icon_alignment = 1
-script = ExtResource("2_f1uaq")
-node = NodePath("../LeftSplit/BottomLeftDock")
-
-[node name="CenterVBox" type="VBoxContainer" parent="MainHBox/MainSplit"]
-layout_mode = 2
-
-[node name="CenterSplit" type="SplitterContainer" parent="MainHBox/MainSplit/CenterVBox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 8)
-layout_mode = 2
-size_flags_vertical = 3
-vertical = true
-
-[node name="CenterDock" type="TabContainer" parent="MainHBox/MainSplit/CenterVBox/CenterSplit"]
-unique_name_in_owner = true
-layout_mode = 2
-tabs_visible = false
-
-[node name="BottomDock" type="TabContainer" parent="MainHBox/MainSplit/CenterVBox/CenterSplit"]
-unique_name_in_owner = true
-layout_mode = 2
-tabs_visible = false
-
-[node name="ButtonExpandBottom" type="Button" parent="MainHBox/MainSplit/CenterVBox" node_paths=PackedStringArray("node")]
-unique_name_in_owner = true
-clip_contents = true
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-button_pressed = true
-icon_alignment = 1
-script = ExtResource("2_f1uaq")
-node = NodePath("../CenterSplit/BottomDock")
-
-[node name="RightVBox" type="VBoxContainer" parent="MainHBox/MainSplit"]
-layout_mode = 2
-
-[node name="RightSplit" type="SplitterContainer" parent="MainHBox/MainSplit/RightVBox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 8)
-layout_mode = 2
-size_flags_vertical = 3
-vertical = true
-
-[node name="TopRightDock" type="TabContainer" parent="MainHBox/MainSplit/RightVBox/RightSplit"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="BottomRightDock" type="TabContainer" parent="MainHBox/MainSplit/RightVBox/RightSplit"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="ButtonExpandBottomRight" type="Button" parent="MainHBox/MainSplit/RightVBox" node_paths=PackedStringArray("node")]
-unique_name_in_owner = true
-clip_contents = true
-layout_mode = 2
-size_flags_horizontal = 3
-toggle_mode = true
-button_pressed = true
-icon_alignment = 1
-script = ExtResource("2_f1uaq")
-node = NodePath("../RightSplit/BottomRightDock")
-
-[node name="RightExpandVBox" type="VBoxContainer" parent="MainHBox"]
-layout_mode = 2
-
-[node name="ButtonExpandRight" type="Button" parent="MainHBox/RightExpandVBox" node_paths=PackedStringArray("node")]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 3
-toggle_mode = true
-button_pressed = true
-script = ExtResource("2_f1uaq")
-node = NodePath("../../MainSplit/RightVBox")
-
-[node name="ButtonHelp" type="Button" parent="MainHBox/RightExpandVBox"]
-unique_name_in_owner = true
-layout_mode = 2

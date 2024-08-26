@@ -101,6 +101,7 @@ static var _singleton: EditorTheme
 
 func add_to_icon_queue(node: Node, property_name: String, icon_name: String):
 	icon_queue.append([node, property_name, icon_name])
+	update_theme()
 
 
 func contrast_color(color: Color, value: float) -> Color:
@@ -245,24 +246,25 @@ func _update_theme():
 	button_disabled_style.flat_corners = flat_corners
 	button_disabled_style.set_corner_all(corner_radius)
 	# Button Color.
+	set_color("icon_pressed_color", "Button", secondary_color)
+	set_color("icon_hover_pressed_color", "Button", secondary_color)
+	set_color("font_pressed_color", "Button", secondary_color)
 	color.a = 1.0
 	set_color("font_hover_color", "Button", color)
 	set_color("icon_hover_color", "Button", color)
-	color.a = 0.9
-	set_color("icon_pressed_color", "Button", color)
-	set_color("font_pressed_color", "Button", color)
 	color.a = 0.8
 	set_color("icon_focus_color", "Button", color)
 	set_color("font_focus_color", "Button", color)
-	color.a = 0.7
+	color.a = 0.6
 	set_color("icon_normal_color", "Button", color)
 	set_color("font_color", "Button", color)
-	color.a = 0.6
+	color.a = 0.4
 	set_color("icon_disabled_color", "Button", color)
 	set_color("font_disabled_color", "Button", color)
 	# SplitterContainer.
+	color.a = 0.6
 	set_color("hover_color", "SplitterContainer", color)
-	color.a = 0.5
+	color.a = 0.4
 	set_color("normal_color", "SplitterContainer", color)
 	set_color("pressed_color", "SplitterContainer", secondary_color)
 	# BG
@@ -365,6 +367,7 @@ func _init():
 	set_stylebox("normal", "Button", button_normal_style)
 	set_stylebox("hover", "Button", button_hover_style)
 	set_stylebox("pressed", "Button", button_pressed_style)
+	set_stylebox("hover_pressed", "Button", button_pressed_style)
 	set_stylebox("focus", "Button", button_focus_style)
 	set_stylebox("disabled", "Button", button_disabled_style)
 	# get default values

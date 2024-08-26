@@ -16,15 +16,12 @@ var _plugin_list := {}
 ## `PRIVATE` The editor gui scene.
 var _scene := preload("res://scene/editor.tscn").instantiate()
 
-var top_left_container: HBoxContainer = _scene.get_node("%MenuLeftHBox")
-var top_center_container: HBoxContainer = _scene.get_node("%MenuCenterHBox")
-var top_right_container: HBoxContainer = _scene.get_node("%MenuRightHBox")
-var top_left_dock: TabContainer = _scene.get_node("%TopLeftDock")
-var bottom_left_dock: TabContainer = _scene.get_node("%BottomLeftDock")
-var center_dock: TabContainer = _scene.get_node("%CenterDock")
-var bottom_dock: TabContainer = _scene.get_node("%BottomDock")
-var top_right_dock: TabContainer = _scene.get_node("%TopRightDock")
-var bottom_right_dock: TabContainer = _scene.get_node("%BottomRightDock")
+var _main_menu: HBoxContainer = _scene.get_node("%MainMenu")
+var _main_hbox: HBoxContainer = _scene.get_node("%MainHBox")
+var _side_menu: VBoxContainer = _scene.get_node("%SideMenu")
+var _main_screen: MarginContainer = _scene.get_node("%MainScreen")
+
+var _side_menu_group := ButtonGroup.new()
 
 ## `PRIVATE` used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
 static var _singleton: Editor
@@ -50,10 +47,23 @@ func disable_plugin(plugin: String) -> void:
 	if is_plugin_enabled(plugin):
 		_set_plugin_enabled(plugin, false)
 
+
 ## `PRIVATE` `Action.action_pressed` signal is connected to this function.
 func _on_action(action_name: String):
 	print_verbose(action_name)
-	pass
+	if action_name.begins_with("ED_SCREEN_"):
+		var screen_idx = int(action_name)
+		if screen_idx <= _side_menu.get_child_count():
+			var screen_button = _side_menu.get_child(screen_idx - 1)
+			if not screen_button.button_pressed:
+				screen_button.button_pressed = true
+				screen_button.emit_signal("toggled", true)
+	if action_name == "ED_SAVE":
+		var cur = TranslationServer.get_locale()
+		if cur == "en":
+			TranslationServer.set_locale("ar")
+		else:
+			TranslationServer.set_locale("en")
 
 
 ## `PRIVATE` Packs all plugins into a Pck file and saves it in user data plugins folder.
@@ -153,6 +163,7 @@ static func get_singleton() -> Editor:
 	return _singleton
 
 
+# FIXME: Minimum size should update when plugins enabled or disabled.
 func _ready() -> void:
 	Root.get_singleton().min_size = get_minimum_size()
 
@@ -184,40 +195,24 @@ func _init():
 	# Pack plugins.
 	if OS.has_feature("editor"):
 		_pack_plugins()
-	# Load editor interface.
-	add_child(_scene)
-	var editor_theme = EditorTheme.get_singleton()
-	var settings = Settings.get_singleton()
-	var btn_expand_left: Button = _scene.get_node("%ButtonExpandLeft")
-	editor_theme.add_to_icon_queue(btn_expand_left, "normal_icon", "GuiLeft")
-	editor_theme.add_to_icon_queue(btn_expand_left, "pressed_icon", "GuiRight")
-	var btn_expand_right: Button = _scene.get_node("%ButtonExpandRight")
-	editor_theme.add_to_icon_queue(btn_expand_right, "normal_icon", "GuiRight")
-	editor_theme.add_to_icon_queue(btn_expand_right, "pressed_icon", "GuiLeft")
-	var btn_expand_bottom_left: Button = _scene.get_node("%ButtonExpandBottomLeft")
-	var btn_expand_bottom: Button = _scene.get_node("%ButtonExpandBottom")
-	var btn_expand_bottom_right: Button = _scene.get_node("%ButtonExpandBottomRight")
-	for button in [btn_expand_bottom_left, btn_expand_bottom, btn_expand_bottom_right]:
-		editor_theme.add_to_icon_queue(button, "normal_icon", "GuiDown")
-		editor_theme.add_to_icon_queue(button, "pressed_icon", "GuiUp")
-	var btn_about: Button = _scene.get_node("%ButtonAbout")
-	editor_theme.add_to_icon_queue(btn_about, "icon", "GuiInfo")
-	var btn_help: Button = _scene.get_node("%ButtonHelp")
-	editor_theme.add_to_icon_queue(btn_help, "icon", "GuiHelp")
-	const split_names: PackedStringArray = ["MainSplit", "LeftSplit", "CenterSplit", "RightSplit"]
-	const offsets := [[0.2, 0.8], [0.6], [0.7], [0.6]]
-	for i in split_names.size():
-		var node: SplitterContainer = _scene.get_node("%" + split_names[i])
-		var offset := split_names[i].to_snake_case() + "_offsets"
-		node.set_offsets(settings.get_editor_value("ui", offset, offsets[i]))
-		node.offsets_changed.connect(func():
-			settings.set_editor_value("ui", offset, node.get_offsets())
-		)
+	# Actions.
 	var actions := Actions.get_singleton()
 	actions.add_action("ED_SAVE", KEY_MASK_CTRL | KEY_S)
 	actions.add_action("ED_SAVE_AS", KEY_MASK_CTRL | KEY_MASK_SHIFT | KEY_S)
 	actions.add_action("ED_OPEN", KEY_MASK_CTRL | KEY_O)
 	actions.add_action("ED_QUIT", KEY_MASK_CTRL | KEY_Q)
+	var keys = [KEY_1, KEY_2, KEY_3, KEY_4, KEY_5, KEY_6, KEY_7, KEY_8, KEY_9]
+	for i in range(9):
+		actions.add_action("ED_SCREEN_%s" % (i + 1), KEY_MASK_CTRL | keys[i])
 	actions.action_pressed.connect(_on_action)
 	# Final pass.
 	_singleton = self
+	add_child(_scene)
+	# Used to push back internal nodes to the right in main menu.
+	var main_menu_separator := Control.new()
+	main_menu_separator.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_SHRINK_END
+	_main_menu.add_child(main_menu_separator, false, Node.INTERNAL_MODE_BACK)
+	# Used to push back internal nodes to the bottom in side menu.
+	var side_menu_separator := Control.new()
+	side_menu_separator.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_SHRINK_END
+	_side_menu.add_child(side_menu_separator, false, Node.INTERNAL_MODE_BACK)

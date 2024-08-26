@@ -59,6 +59,7 @@ func _run_action(action_code: Key):
 	if _actions.values().has(action_code):
 		var action_name = _actions.find_key(action_code)
 		action_pressed.emit(action_name)
+		# print(OS.get_keycode_string(action_code))
 
 
 ## `PRIVATE` Saves the current action map to user dir.

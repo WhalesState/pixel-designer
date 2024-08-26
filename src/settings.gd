@@ -5,10 +5,6 @@ extends Window
 ## use get_editor_value() and set_editor_value() to access them.
 var _editor_settings := ConfigFile.new()
 
-## `PRIVATE` contains all the project settings. [br]
-## use get_project_value() and set_project_value() to access them.
-var _project_settings := ConfigFile.new()
-
 ## `PRIVATE` used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
 static var _singleton: Settings
 

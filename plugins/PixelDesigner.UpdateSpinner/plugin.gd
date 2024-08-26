@@ -9,18 +9,17 @@ func load_plugin():
 	if icon_file:
 		add_theme_icon("UpdateSpinner", icon_file.get_as_text())
 		EditorTheme.get_singleton().add_to_icon_queue(rect, "texture", "UpdateSpinner")
-	rect.texture = EditorTheme.get_singleton().icon("UpdateSpinner")
 	rect.hframes = 8
 	rect.name = "UpdateSpinner"
-	add_control_to_editor(rect, CONTAINER.TOP_RIGHT)
+	add_control_to_main_menu(rect, get_plugin_info(), Node.INTERNAL_MODE_BACK)
 
 
 func unload_plugin():
-	remove_control_from_editor(rect)
+	remove_control_from_main_menu(rect)
 	rect.free()
 
 
-func plugin_info():
+func get_plugin_info():
 	return "Spins when the editor redraws."
 
 

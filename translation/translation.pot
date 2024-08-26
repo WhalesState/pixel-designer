@@ -1,0 +1,20 @@
+msgid ""
+msgstr ""
+
+msgid "Editor"
+msgstr ""
+
+msgid "Open User Data Folder"
+msgstr ""
+
+msgid "Editor Settings"
+msgstr ""
+
+msgid "Exit"
+msgstr ""
+
+msgid "Update Spinner"
+msgstr ""
+
+msgid "Spins when the editor redraws."
+msgstr ""
