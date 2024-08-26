@@ -1,0 +1,15 @@
+msgctxt "Menu"
+msgid "Editor"
+msgstr ""
+
+msgctxt "Menu"
+msgid "Open User Data Folder"
+msgstr ""
+
+msgctxt "Menu"
+msgid "Editor Settings"
+msgstr ""
+
+msgctxt "Menu"
+msgid "Exit"
+msgstr ""
