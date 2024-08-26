@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Arabic\n"
 "Language: ar_SA\n"
-"PO-Revision-Date: 2024-08-26 14:16\n"
+"PO-Revision-Date: 2024-08-26 14:35\n"
 
 msgctxt "Menu"
 msgid "Editor"
@@ -27,4 +27,10 @@ msgstr "إعدادات المحرر"
 msgctxt "Menu"
 msgid "Exit"
 msgstr "خروج"
+
+msgid "Update Spinner"
+msgstr "عجلة التحديث"
+
+msgid "Spins when the editor redraws."
+msgstr "تدور عندما يتم تحديث الرسم بالمحرر."
 
