@@ -21,7 +21,3 @@ run/low_processor_mode=true
 [gui]
 
 common/snap_controls_to_pixels=false
-
-[internationalization]
-
-locale/translations=PackedStringArray("res://translation/af-ZA.po", "res://translation/ar-SA.po", "res://translation/ca-ES.po", "res://translation/cs-CZ.po", "res://translation/da-DK.po", "res://translation/de-DE.po", "res://translation/el-GR.po", "res://translation/en-US.po", "res://translation/es-ES.po", "res://translation/fi-FI.po", "res://translation/fr-FR.po", "res://translation/he-IL.po", "res://translation/hu-HU.po", "res://translation/it-IT.po", "res://translation/ja-JP.po", "res://translation/ko-KR.po", "res://translation/nl-NL.po", "res://translation/no-NO.po", "res://translation/pl-PL.po", "res://translation/pt-BR.po", "res://translation/pt-PT.po", "res://translation/ro-RO.po", "res://translation/ru-RU.po", "res://translation/sr-SP.po", "res://translation/sv-SE.po", "res://translation/tr-TR.po", "res://translation/uk-UA.po", "res://translation/vi-VN.po", "res://translation/zh-CN.po", "res://translation/zh-TW.po")
