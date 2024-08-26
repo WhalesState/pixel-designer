@@ -10,21 +10,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: English\n"
 "Language: en_US\n"
-"PO-Revision-Date: 2024-08-26 13:54\n"
+"PO-Revision-Date: 2024-08-26 14:17\n"
 
 msgctxt "Menu"
 msgid "Editor"
-msgstr ""
+msgstr "Editor"
 
 msgctxt "Menu"
 msgid "Open User Data Folder"
-msgstr ""
+msgstr "Open User Data Folder"
 
 msgctxt "Menu"
 msgid "Editor Settings"
-msgstr ""
+msgstr "Editor Settings"
 
 msgctxt "Menu"
 msgid "Exit"
-msgstr ""
+msgstr "Exit"
 
