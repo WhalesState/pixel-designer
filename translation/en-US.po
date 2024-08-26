@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: English\n"
 "Language: en_US\n"
-"PO-Revision-Date: 2024-08-26 14:17\n"
+"PO-Revision-Date: 2024-08-26 14:35\n"
 
 msgctxt "Menu"
 msgid "Editor"
@@ -27,4 +27,10 @@ msgstr "Editor Settings"
 msgctxt "Menu"
 msgid "Exit"
 msgstr "Exit"
+
+msgid "Update Spinner"
+msgstr "Update Spinner"
+
+msgid "Spins when the editor redraws."
+msgstr "Spins when the editor redraws."
 
