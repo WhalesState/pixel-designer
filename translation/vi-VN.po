@@ -10,21 +10,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: Vietnamese\n"
 "Language: vi_VN\n"
-"PO-Revision-Date: 2024-08-26 14:35\n"
+"PO-Revision-Date: 2024-08-26 15:21\n"
 
-msgctxt "Menu"
 msgid "Editor"
 msgstr ""
 
-msgctxt "Menu"
 msgid "Open User Data Folder"
 msgstr ""
 
-msgctxt "Menu"
 msgid "Editor Settings"
 msgstr ""
 
-msgctxt "Menu"
 msgid "Exit"
 msgstr ""
 
