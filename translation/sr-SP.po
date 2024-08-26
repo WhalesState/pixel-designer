@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Crowdin-Project: pixel-designer\n"
+"X-Crowdin-Project-ID: 710613\n"
+"X-Crowdin-Language: sr\n"
+"X-Crowdin-File: /main/translation/translation.pot\n"
+"X-Crowdin-File-ID: 6\n"
+"Project-Id-Version: pixel-designer\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: Serbian (Cyrillic)\n"
+"Language: sr_SP\n"
+"PO-Revision-Date: 2024-08-26 13:54\n"
+
+msgctxt "Menu"
+msgid "Editor"
+msgstr ""
+
+msgctxt "Menu"
+msgid "Open User Data Folder"
+msgstr ""
+
+msgctxt "Menu"
+msgid "Editor Settings"
+msgstr ""
+
+msgctxt "Menu"
+msgid "Exit"
+msgstr ""
+
