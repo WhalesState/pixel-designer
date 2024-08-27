@@ -1,10 +1,10 @@
 class_name MessageQueue
 extends Object
 
-## `PRIVATE` Stores the message queue.
+## [b]PRIVATE[/b] Stores the message queue.
 var _messages := []
 
-## `PRIVATE` used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
+## [b]PRIVATE[/b] used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
 static var _singleton: MessageQueue
 
 

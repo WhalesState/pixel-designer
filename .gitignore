@@ -5,18 +5,26 @@
 .vscode/
 
 # bin
-bin/*.zip
-bin/*.exe
-bin/*.pck
+bin/*
+!bin/readme.md
 
-# import
+# icons
+theme/generated_icons/*
+!theme/generated_icons/readme.md
 theme/icons/*.svg.import
 
 # export templates
-export_templates/*.exe
+export_templates/*
+!export_templates/readme.md
+export_presets.cfg
 
 # plugins
-*.pixel_plugin
+packed_plugins/*
+!packed_plugins/readme.md
+
+# playground
+playground/*
+!playground/README.md
 
 # custom
 plugins/PixelDesigner.UpdateSpinner/icons/*.svg.import

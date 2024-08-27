@@ -95,7 +95,7 @@ var button_focus_style := PixelStyleBox.new()
 var button_disabled_style := PixelStyleBox.new()
 
 
-## `PRIVATE` used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
+## [b]PRIVATE[/b] used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
 static var _singleton: EditorTheme
 
 
@@ -331,27 +331,12 @@ func _init():
 	default_font = FontVariation.new()
 	update_custom_font()
 	update_font_variation()
-	# Generate pixel icons.
-	for file in DirAccess.get_files_at("res://theme/icons"):
-		if file.get_extension() != "svg":
-			continue
-		var svg_file := FileAccess.open("res://theme/icons/" + file, FileAccess.READ)
-		if not svg_file:
-			continue
-		var svg = svg_file.get_as_text()
-		svg_file.close()
-		var pixel_icon := FileAccess.open("res://theme/icons/" + file.get_basename() + ".pixel_icon", FileAccess.WRITE)
-		pixel_icon.store_string(svg)
-		pixel_icon.close()
 	# Load icons.
-	for file in DirAccess.get_files_at("res://theme/icons"):
+	var generated_icons_dir := DirAccess.open("res://theme/generated_icons")
+	for file in generated_icons_dir.get_files():
 		if file.get_extension() != "pixel_icon":
 			continue
-		if OS.has_feature("editor"):
-			if not FileAccess.file_exists("res://theme/icons/" + file.get_basename() + ".svg"):
-				DirAccess.remove_absolute("res://theme/icons/" + file)
-				continue
-		var pixel_icon := FileAccess.open("res://theme/icons/" + file, FileAccess.READ)
+		var pixel_icon := FileAccess.open("res://theme/generated_icons/" + file, FileAccess.READ)
 		if pixel_icon:
 			icons[file.get_basename().to_pascal_case()] = pixel_icon.get_as_text()
 			pixel_icon.close()

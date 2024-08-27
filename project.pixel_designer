@@ -15,6 +15,7 @@ config/version="0.1"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="PixelDesigner"
 run/main_loop_type="Main"
+config/auto_accept_quit=false
 config/features=PackedStringArray("4.2")
 run/low_processor_mode=true
 

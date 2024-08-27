@@ -1,7 +1,7 @@
 class_name Root
 extends Window
 
-## `PRIVATE` used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
+## [b]PRIVATE[/b] used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
 static var _singleton: Root
 
 
@@ -46,6 +46,8 @@ func _init():
 	print_verbose("Root _init()")
 	add_child(Settings.new())
 	theme = EditorTheme.new()
-	add_child(Editor.new())
+	var editor = Editor.new()
+	add_child(editor)
+	close_requested.connect(editor._request_quit)
 	# Final pass
 	_singleton = self

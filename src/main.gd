@@ -1,16 +1,16 @@
 class_name Main
 extends SceneTree
 
-## `PRIVATE` A class that can be used to queue calls a function many times and it will be excuted only once or as many times as needed.
+## [b]PRIVATE[/b] A class that can be used to queue calls a function many times and it will be excuted only once or as many times as needed.
 var _message_queue := MessageQueue.new()
 
-## `PRIVATE` A class that contains all the project actions.
+## [b]PRIVATE[/b] A class that contains all the project actions.
 var _actions := Actions.new()
 
-## `PRIVATE` Stores the log messages when exiting in the user date log file.
+## [b]PRIVATE[/b] Stores the log messages when exiting in the user date log file.
 var _log_queue := PackedStringArray([])
 
-## `PRIVATE` used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
+## [b]PRIVATE[/b] used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
 static var _singleton: Main
 
 
@@ -44,34 +44,85 @@ static func _get_dir_files(path: String) -> Array:
 
 ## for Editor builds: Update the export presets if `res://export_presets.cfg` exists.
 func _update_export_presets() -> void:
-	if OS.has_feature("editor") and FileAccess.file_exists("res://export_presets.cfg"):
-		var cfg = ConfigFile.new()
-		cfg.load("res://export_presets.cfg")
-		var presets := []
-		for preset in cfg.get_sections():
-			if preset.ends_with(".options"):
-				continue
-			presets.append(preset)
-		if presets.is_empty():
-			cfg.free()
-			return
-		# update presets
-		var excluded := PackedStringArray([])
-		for file in Main._get_dir_files("res://plugins"):
-			if file.get_extension() in ["import", "pixel_plugin"]:
-				continue
-			excluded.append(file)
-		for file in Main._get_dir_files("res://theme/icons"):
-			if file.get_extension() in ["svg"]:
-				excluded.append(file)
-		var include_filter = "*.pixel_icon, *.pixel_plugin"
-		for preset in presets:
-			cfg.set_value(preset, "export_filter", "exclude")
-			if not excluded.is_empty():
-				print(preset)
-				cfg.set_value(preset, "export_files", excluded)
-			cfg.set_value(preset, "include_filter", include_filter)
-		cfg.save("res://export_presets.cfg")
+	if not FileAccess.file_exists("res://export_presets.cfg"):
+		return
+	var cfg = ConfigFile.new()
+	cfg.load("res://export_presets.cfg")
+	var presets := []
+	for preset in cfg.get_sections():
+		if preset.ends_with(".options"):
+			continue
+		presets.append(preset)
+	if presets.is_empty():
+		cfg.free()
+		return
+	# update presets
+	var include_filter = "*.pixel_icon,*.pixel_plugin"
+	var exclude_filter = "plugins/*,theme/icons/*,playground/*,bin/*,export_templates/*,*.md"
+	for preset in presets:
+		cfg.set_value(preset, "include_filter", include_filter)
+		cfg.set_value(preset, "exclude_filter", exclude_filter)
+	cfg.save("res://export_presets.cfg")
+
+
+## [b]PRIVATE[/b] Packs all plugins into a Pck file and saves it in user data plugins folder.
+func _pack_plugins() -> void:
+	var plugins_dir = DirAccess.open("res://plugins")
+	if not plugins_dir:
+		print_verbose("Error: Failed to pack plugins. res://plugins/ : %s" % plugins_dir)
+		return
+	## Pack all plugins.
+	for plugin in plugins_dir.get_directories():
+		var plugin_path = "res://plugins/" + plugin
+		var files = Main._get_dir_files(plugin_path)
+		if files.size() > 0:
+			var pck := PCKPacker.new()
+			pck.pck_start("res://packed_plugins/" + plugin + ".pixel_plugin")
+			for file in files:
+				pck.add_file(file.replace("res://plugins/", "res://loaded_plugins/") , file)
+			pck.flush(OS.is_stdout_verbose())
+	## Delete all orphan plugins.
+	var packed_plugins_dir = DirAccess.open("res://packed_plugins")
+	if not packed_plugins_dir:
+		print_verbose("Error: Failed to pack plugins. res://packed_plugins/ : %s" % packed_plugins_dir)
+		return
+	var packed_plugins = DirAccess.get_files_at("res://packed_plugins")
+	for plugin_file in packed_plugins:
+		if not plugin_file.get_extension() == "pixel_plugin":
+			continue
+		if not plugins_dir.dir_exists(plugin_file.get_basename()):
+			packed_plugins_dir.remove(plugin_file)
+
+
+## [b]PRIVATE[/b] Generates the theme icons.
+func _generate_theme_icons():
+	# Generate pixel icons.
+	var icons_dir := DirAccess.open("res://theme/icons")
+	if not icons_dir:
+		print_verbose("Error: Failed to generate theme icons. res://theme/icons/ : %s" % icons_dir)
+		return
+	for file in icons_dir.get_files():
+		if file.get_extension() != "svg":
+			continue
+		var svg_file := FileAccess.open("res://theme/icons/" + file, FileAccess.READ)
+		if not svg_file:
+			continue
+		var svg = svg_file.get_as_text()
+		svg_file.close()
+		var pixel_icon := FileAccess.open("res://theme/generated_icons/" + file.get_basename() + ".pixel_icon", FileAccess.WRITE)
+		pixel_icon.store_string(svg)
+		pixel_icon.close()
+	# Delete all orphan pixel icons.
+	var generated_icons_dir := DirAccess.open("res://theme/generated_icons")
+	if not generated_icons_dir:
+		print_verbose("Error: Failed to generate theme icons. res://theme/generated_icons/ : %s" % generated_icons_dir)
+		return
+	for file in generated_icons_dir.get_files():
+		if file.get_extension() != "pixel_icon":
+			continue
+		if not icons_dir.file_exists(file.get_basename() + ".svg"):
+			generated_icons_dir.remove(file)
+			continue
 
 
 func _finalize() -> void:
@@ -101,6 +152,9 @@ func _init():
 		_message_queue.queue_call(_actions._store_actions)
 	)
 	# Final pass.
-	_update_export_presets()
 	_singleton = self
+	if OS.has_feature("editor"):
+		_update_export_presets()
+		_pack_plugins()
+		_generate_theme_icons()
 	root.set_script(preload("res://src/root.gd"))

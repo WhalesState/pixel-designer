@@ -4,11 +4,11 @@ extends Object
 ## The plugin version.
 var version := "0.1"
 
-# `PRIVATE` The plugin directory path.
+## [b]PRIVATE[/b] The plugin directory path.
 var _path := ""
 
 
-## Runs when the plugin is enables.
+## Runs when the plugin is enabled.
 func load_plugin():
 	pass
 
@@ -28,7 +28,10 @@ func get_plugin_info() -> String:
 	return ""
 
 
-## Adds the control to the main screen, and display it's icon in the side menu.
+## Adds the control to the main screen, and display it's icon in the side menu. [br]
+## The tooltip of the generated button is your control.name.capitalize() MyControl -> My Control, see [method String.capitalize]. [br]
+## Optionally you can pass a tooltip text to be added in a new line after the control name. [br]
+## Each of The capitalized name of your control and the optional tooltip will be translated separetly if their translation is available.
 func add_control_to_main_screen(control: Control, icon: Texture2D, tooltip := ""):
 	if not control or not icon:
 		print_verbose("Error: Failed to add control: %s and icon: %s to main screen." % [control, icon])
@@ -68,6 +71,8 @@ func add_control_to_main_screen(control: Control, icon: Texture2D, tooltip := ""
 	)
 
 
+## Removes a control from the main screen and frees it's button only.
+## Use [method Object.free] to manually delete your control from memory.
 func remove_control_from_main_screen(control: Control):
 	if not control:
 		print_verbose("Error: Failed to remove control: %s from main screen." % control)
@@ -90,8 +95,11 @@ func remove_control_from_main_screen(control: Control):
 		return
 	var is_current = button.button_pressed
 	side_menu.remove_child(button)
-	button.queue_free()
 	control.get_parent().remove_child(control)
+	var callable = button.toggled.get_connections()[0]["callable"]
+	if callable:
+		button.toggled.disconnect(callable)
+	button.free()
 	if is_current:
 		if side_menu.get_child_count() > 0:
 			var next = side_menu.get_child(0)
@@ -99,7 +107,12 @@ func remove_control_from_main_screen(control: Control):
 			next.emit_signal("toggled", true)
 
 
-## Adds a control to the main menu.
+## Adds the control to the main menu. [br]
+## The tooltip of the generated button is your control.name.capitalize() MyControl -> My Control, see [method String.capitalize]. [br]
+## Optionally you can pass a tooltip text to be added in a new line after the control name. [br]
+## Each of The capitalized name of your control and the optional tooltip will be translated separetly if their translation is available. [br]
+## If your control has children that prevents it from showing the tooltip, you should handle the tooltip manually in your controls. [br]
+## Example: [code] my_button.tooltip_text = tr(my_button.name.capitalize()) + "\n" + tr("Prints 'Hello World!' to the console.") [/code]
 func add_control_to_main_menu(control: Control, tooltip := "", internal_mode := Node.INTERNAL_MODE_DISABLED):
 	if not control:
 		print_verbose("Error: Failed to add control: %s to main menu." % control)
@@ -119,7 +132,7 @@ func add_control_to_main_menu(control: Control, tooltip := "", internal_mode := 
 
 
 ## Remove the control from main menu. [br]
-## Use control.free() to manually delete the control from memory.
+## Use [method Object.free] to manually delete your control from memory.
 func remove_control_from_main_menu(control: Control):
 	if not control:
 		print_verbose("Error: Failed to remove control: %s from main menu." % control)
@@ -136,7 +149,15 @@ func remove_control_from_main_menu(control: Control):
 
 
 ## Adds an icon and converts it's color to the editor theme. [br]
-# FIXME: icon queue should be used after this to update the controls property with the icon name after the theme updates.
+## See [method EditorTheme.add_to_icon_queue].
+## [codeblock]
+## var rect = TextureRect.new()
+## var icon_file = FileAccess.open(get_path() + "/icons/my_icon.svg", FileAccess.READ)
+## if icon_file:
+##     add_theme_icon("MyIcon", icon_file.get_as_text())
+##     EditorTheme.get_singleton().add_to_icon_queue(rect, "texture", "MyIcon")
+##     icon_file.close()
+## [/codeblock]
 func add_theme_icon(icon_name: String, svg_string: String):
 	var t : EditorTheme = EditorTheme.get_singleton()
 	if t.icons.has(icon_name):
@@ -147,6 +168,26 @@ func add_theme_icon(icon_name: String, svg_string: String):
 
 
 ## Get the plugin dir path to load or get files within the plugin directory. [br]
-## You can use relative paths with preload ie. preload("./my_scene.tscn").
+## Example: [code]load(get_path() + "/src/my_script.gd")[/code] [br]
+## You can use relative paths with preload ie. [code]preload("./my_scene.tscn")[/code].
 func get_path() -> String:
 	return _path
+
+
+## Return [code]true[/code] if the plugin can exit, or false if the plugin should handle the exit manually. ie. unsaved changes. [br]
+## Example:
+## [codeblock]
+## func can_exit() -> bool:
+##     var confirm = ConfirmationDialog.new()
+##     Editor.get_singleton().add_child(confirm)
+##     confirm.dialog_text = tr("<Plugin Name> has unsaved changes!")
+##     confirm.ok_button_text = "Save and exit"
+##     confirm.popup_centered()
+##     confirm.confirmed.connect(func():
+##         # Save your changes and call quit() manually.
+##         Main.get_singleton().quit()
+##     )
+##     return false # To prevent the app from closing
+## [/codeblock]
+func can_exit() -> bool:
+	return true

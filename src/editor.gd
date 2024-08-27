@@ -1,19 +1,13 @@
 class_name Editor
 extends MarginContainer
 
-## The current project directory.
-var project_dir: DirAccess
-
-## `PRIVATE` The projects directory inside user data directory.
-var _projects_dir: DirAccess
-
-## `PRIVATE` The plugins directory inside user data directory.
+## [b]PRIVATE[/b] The plugins directory inside user data directory.
 var _plugins_dir: DirAccess
 
-## `PRIVATE` A list of all project plugins.
+## [b]PRIVATE[/b] A list of all project plugins.
 var _plugin_list := {}
 
-## `PRIVATE` The editor gui scene.
+## [b]PRIVATE[/b] The editor gui scene.
 var _scene := preload("res://scene/editor.tscn").instantiate()
 
 var _main_menu: HBoxContainer = _scene.get_node("%MainMenu")
@@ -23,7 +17,7 @@ var _main_screen: MarginContainer = _scene.get_node("%MainScreen")
 
 var _side_menu_group := ButtonGroup.new()
 
-## `PRIVATE` used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
+## [b]PRIVATE[/b] used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
 static var _singleton: Editor
 
 
@@ -48,7 +42,7 @@ func disable_plugin(plugin: String) -> void:
 		_set_plugin_enabled(plugin, false)
 
 
-## `PRIVATE` `Action.action_pressed` signal is connected to this function.
+## [b]PRIVATE[/b] [signal Actions.action_pressed] is connected to this function.
 func _on_action(action_name: String):
 	print_verbose(action_name)
 	if action_name.begins_with("ED_SCREEN_"):
@@ -58,41 +52,17 @@ func _on_action(action_name: String):
 			if not screen_button.button_pressed:
 				screen_button.button_pressed = true
 				screen_button.emit_signal("toggled", true)
-	if action_name == "ED_SAVE":
-		var cur = TranslationServer.get_locale()
-		if cur == "en":
-			TranslationServer.set_locale("ar")
-		else:
-			TranslationServer.set_locale("en")
+	if action_name == "ED_QUIT":
+		_request_quit()
 
 
-## `PRIVATE` Packs all plugins into a Pck file and saves it in user data plugins folder.
-func _pack_plugins() -> void:
-	var dir = DirAccess.open("res://plugins")
-	if dir:
-		for plugin in dir.get_directories():
-			var plugin_path = dir.get_current_dir() + "/" + plugin
-			var files = Main._get_dir_files(plugin_path)
-			if files.size() > 0:
-				var pck := PCKPacker.new()
-				pck.pck_start("res://plugins/" + plugin + ".pixel_plugin")
-				for file in files:
-					pck.add_file(file.replace("res://plugins/", "res://loaded_plugins/") , file)
-				pck.flush(OS.is_stdout_verbose())
-
-
-## `PRIVATE` Load all plugins by calling their [method Plugin.load_plugin] method if they are enabled.
+## [b]PRIVATE[/b] Load all plugins by calling their [method Plugin.load_plugin] method if they are enabled.
 func _load_plugins() -> void:
-	var files = DirAccess.get_files_at("res://plugins")
-	var dir = DirAccess.open("res://plugins")
+	var files = DirAccess.get_files_at("res://packed_plugins")
 	for file in files:
 		if file.get_extension() != "pixel_plugin":
 			continue
-		if OS.has_feature("editor"):
-			if not dir.dir_exists(file.get_basename()):
-				dir.remove(file)
-				continue
-		ProjectSettings.load_resource_pack(dir.get_current_dir() + "/" + file)
+		ProjectSettings.load_resource_pack("res://packed_plugins/" + file)
 	files = DirAccess.get_files_at(OS.get_user_data_dir() + "/plugins")
 	for file in files:
 		if file.get_extension() == "pixel_plugin":
@@ -127,7 +97,7 @@ func _load_plugins() -> void:
 	Settings.get_singleton().set_editor_value("editor", "loaded_plugins", _plugin_list.keys())
 
 
-## `PRIVATE` Unload all plugins by calling their [method Plugin.unload_plugin] method if they are enabled.
+## [b]PRIVATE[/b] Unload all plugins by calling their [method Plugin.unload_plugin] method if they are enabled.
 func _unload_plugins() -> void:
 	var enabled_plugins = Settings.get_singleton().get_editor_value("editor", "enabled_plugins", [])
 	for plugin_name in _plugin_list.keys():
@@ -136,7 +106,7 @@ func _unload_plugins() -> void:
 			plugin.unload_plugin()
 
 
-# `PRIVATE` Sets a plugin enabled or disabled.
+# [b]PRIVATE[/b] Sets a plugin enabled or disabled.
 func _set_plugin_enabled(plugin_name: String, enabled: bool) -> void:
 	if not _plugin_list.keys().has(plugin_name):
 		return
@@ -155,6 +125,14 @@ func _set_plugin_enabled(plugin_name: String, enabled: bool) -> void:
 		enabled_plugins.erase(plugin_name)
 		plugin.unload_plugin()
 	Settings.get_singleton().set_editor_value("editor", "enabled_plugins", enabled_plugins)
+
+
+func _request_quit():
+	var enabled_plugins = Settings.get_singleton().get_editor_value("editor", "enabled_plugins", [])
+	for plugin_name in enabled_plugins:
+		if not _plugin_list[plugin_name].can_exit():
+			return
+	get_tree().quit()
 
 
 ## Returns the current class unique instance. [br]
@@ -186,15 +164,9 @@ func _init():
 	# Get or create projects directory.
 	var user_dir := DirAccess.open(OS.get_user_data_dir())
 	if user_dir:
-		if not user_dir.dir_exists("projects"):
-			user_dir.make_dir("projects")
-		_projects_dir = DirAccess.open(OS.get_user_data_dir() + "/projects")
 		if not user_dir.dir_exists("plugins"):
 			user_dir.make_dir("plugins")
 		_plugins_dir = DirAccess.open(OS.get_user_data_dir() + "/plugins")
-	# Pack plugins.
-	if OS.has_feature("editor"):
-		_pack_plugins()
 	# Actions.
 	var actions := Actions.get_singleton()
 	actions.add_action("ED_SAVE", KEY_MASK_CTRL | KEY_S)

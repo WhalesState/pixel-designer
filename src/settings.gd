@@ -1,11 +1,11 @@
 class_name Settings
 extends Window
 
-## `PRIVATE` contains all the editor settings. [br]
+## [b]PRIVATE[/b] contains all the editor settings. [br]
 ## use get_editor_value() and set_editor_value() to access them.
 var _editor_settings := ConfigFile.new()
 
-## `PRIVATE` used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
+## [b]PRIVATE[/b] used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
 static var _singleton: Settings
 
 
@@ -30,7 +30,7 @@ func save_editor_settings():
 	MessageQueue.get_singleton().queue_call(_save_editor_settings)
 
 
-## `PRIVATE` don't use directly unless you want to save the editor settings file on the same frame.
+## [b]PRIVATE[/b] don't use directly unless you want to save the editor settings file on the same frame.
 func _save_editor_settings():
 	_editor_settings.save(OS.get_user_data_dir() + "/editor_settings.cfg")
 
