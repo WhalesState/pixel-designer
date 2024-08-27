@@ -4,8 +4,11 @@ extends SceneTree
 ## [b]PRIVATE[/b] A class that can be used to queue calls a function many times and it will be excuted only once or as many times as needed.
 var _message_queue := MessageQueue.new()
 
-## [b]PRIVATE[/b] A class that contains all the project actions.
+## [b]PRIVATE[/b] A class that contains all the editor actions.
 var _actions := Actions.new()
+
+## [b]PRIVATE[/b] A class that manages the editor settings.
+var _settings := Settings.new()
 
 ## [b]PRIVATE[/b] Stores the log messages when exiting in the user date log file.
 var _log_queue := PackedStringArray([])
@@ -136,6 +139,7 @@ func _finalize() -> void:
 		log_file.close()
 	_message_queue.free()
 	_actions.free()
+	_settings.free()
 
 
 func _process(_delta):
@@ -150,6 +154,9 @@ func _init():
 	print_verbose("Main _init()")
 	_actions.action_map_changed.connect(func():
 		_message_queue.queue_call(_actions._store_actions)
+	)
+	_settings.settings_changed.connect(func():
+		_message_queue.queue_call(_settings._save_editor_settings)
 	)
 	# Final pass.
 	_singleton = self

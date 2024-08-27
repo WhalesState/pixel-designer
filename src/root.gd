@@ -44,7 +44,6 @@ func _shortcut_input(ev: InputEvent) -> void:
 
 func _init():
 	print_verbose("Root _init()")
-	add_child(Settings.new())
 	theme = EditorTheme.new()
 	var editor = Editor.new()
 	add_child(editor)
