@@ -30,7 +30,6 @@ func _shortcut_input(ev: InputEvent) -> void:
 		return
 	if k.keycode in [KEY_ALT, KEY_CTRL, KEY_SHIFT, KEY_META]:
 		return
-
 	if k.is_pressed():
 		var key = k.keycode
 		if k.is_command_or_control_pressed():
@@ -48,5 +47,6 @@ func _init():
 	var editor = Editor.new()
 	add_child(editor)
 	close_requested.connect(editor._request_quit)
+	add_child(Settings.get_singleton().window)
 	# Final pass
 	_singleton = self

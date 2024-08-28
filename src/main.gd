@@ -156,7 +156,10 @@ func _init():
 		_message_queue.queue_call(_actions._store_actions)
 	)
 	_settings.settings_changed.connect(func():
-		_message_queue.queue_call(_settings._save_editor_settings)
+		_message_queue.queue_call(_settings._save_settings)
+	)
+	_settings.defaults_changed.connect(func():
+		_message_queue.queue_call(_settings._save_defaults)
 	)
 	# Final pass.
 	_singleton = self

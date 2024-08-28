@@ -1,8 +1,8 @@
 class_name Plugin
 extends Object
 
-## The plugin version.
-var version := "0.1"
+## Emits when translation changes.
+signal translation_changed
 
 ## [b]PRIVATE[/b] The plugin directory path.
 var _path := ""
@@ -28,6 +28,11 @@ func get_plugin_info() -> String:
 	return ""
 
 
+## Plugin version.
+func get_plugin_version() -> String:
+	return "0.0.0"
+
+
 ## Adds the control to the main screen, and display it's icon in the side menu. [br]
 ## The tooltip of the generated button is your control.name.capitalize() MyControl -> My Control, see [method String.capitalize]. [br]
 ## Optionally you can pass a tooltip text to be added in a new line after the control name. [br]
@@ -48,18 +53,11 @@ func add_control_to_main_screen(control: Control, icon: Texture2D, tooltip := ""
 	if not side_menu:
 		print_verbose("Error: Failed to add control: %s and icon: %s to main screen. Side menu not found." % [control, icon])
 		return
-	var theme = EditorTheme.get_singleton()
-	if not theme:
-		print_verbose("Error: Failed to add control: %s and icon: %s to main screen. Editor Theme not found." % [control, icon])
-		return
 	var button := Button.new()
 	control.set_meta("_button", button)
 	button.toggle_mode = true
 	button.icon = icon
 	button.button_group = editor._side_menu_group
-	button.tooltip_text = tr(control.name.capitalize())
-	if not tooltip.is_empty():
-		button.tooltip_text += "\n" + tr(tooltip)
 	if main_screen.get_child_count() == 0:
 		button.button_pressed = true
 	main_screen.add_child(control)
@@ -69,6 +67,12 @@ func add_control_to_main_screen(control: Control, icon: Texture2D, tooltip := ""
 			for child in main_screen.get_children():
 				child.visible = child == control
 	)
+	button.set_meta("_tooltip_name", control.name.capitalize())
+	button.set_meta("_tooltip", tooltip)
+	button.set_meta("_action", "ED_SCREEN_%s" % (button.get_index() + 1))
+	update_tooltip(button)
+	translation_changed.connect(update_tooltip.bind(button))
+	Actions.get_singleton().action_map_changed.connect(update_tooltip.bind(button))
 
 
 ## Removes a control from the main screen and frees it's button only.
@@ -99,12 +103,16 @@ func remove_control_from_main_screen(control: Control):
 	var callable = button.toggled.get_connections()[0]["callable"]
 	if callable:
 		button.toggled.disconnect(callable)
+	translation_changed.disconnect(update_tooltip.bind(button))
+	Actions.get_singleton().action_map_changed.disconnect(update_tooltip.bind(button))
 	button.free()
 	if is_current:
 		if side_menu.get_child_count() > 0:
 			var next = side_menu.get_child(0)
 			next.button_pressed = true
 			next.emit_signal("toggled", true)
+			for _button in side_menu.get_children():
+				update_tooltip(_button)
 
 
 ## Adds the control to the main menu. [br]
@@ -125,10 +133,12 @@ func add_control_to_main_menu(control: Control, tooltip := "", internal_mode := 
 	if not main_menu:
 		print_verbose("Error: Failed to add control: %s to main menu. Main menu not found." % control)
 		return
-	control.tooltip_text = tr(control.name.capitalize())
-	if not tooltip.is_empty():
-		control.tooltip_text += "\n" + tr(tooltip)
 	main_menu.add_child(control, false, internal_mode)
+	control.set_meta("_tooltip_name", control.name.capitalize())
+	control.set_meta("_tooltip", tooltip)
+	update_tooltip(control)
+	translation_changed.connect(update_tooltip.bind(control))
+	Actions.get_singleton().action_map_changed.connect(update_tooltip.bind(control))
 
 
 ## Remove the control from main menu. [br]
@@ -146,6 +156,23 @@ func remove_control_from_main_menu(control: Control):
 		print_verbose("Error: Failed to remove control: %s from main menu. Main menu not found." % control)
 		return
 	main_menu.remove_child(control)
+	translation_changed.disconnect(update_tooltip.bind(control))
+	Actions.get_singleton().action_map_changed.disconnect(update_tooltip.bind(control))
+
+
+func update_tooltip(control: Control):
+	if not control:
+		print_verbose("Error: Failed to update tooltip of control: %s." % control)
+		return
+	control.tooltip_text = tr(control.get_meta("_tooltip_name"))
+	var action = control.get_meta("_action", "")
+	if not action.is_empty():
+		var actions := Actions.get_singleton()._actions
+		if actions.has(action) and actions[action] != KEY_NONE:
+			control.tooltip_text += " (%s)" % OS.get_keycode_string(actions[action])
+	var tooltip = control.get_meta("_tooltip", "")
+	if not tooltip.is_empty():
+		control.tooltip_text += "\n" + tr(tooltip)
 
 
 ## Adds an icon and converts it's color to the editor theme. [br]

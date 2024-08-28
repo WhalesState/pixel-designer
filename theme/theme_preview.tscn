@@ -1,0 +1,251 @@
+[gd_scene load_steps=3 format=3 uid="uid://bytksnbdd1so2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cde2w"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 2.0
+content_margin_bottom = 2.0
+
+[sub_resource type="GDScript" id="GDScript_ijnlf"]
+script/source = "@tool
+extends PanelContainer
+
+
+func _ready() -> void:
+	get_node(\"%VSplitContainer\").add_child(SomeTree.new())
+	get_node(\"%HSlider\").share(get_node(\"%ProgressBar\"))
+	get_node(\"%TabContainer\").set_tab_disabled(2, true)
+
+
+
+class SomeTree:
+	extends Tree
+
+	func _ready():
+		var root = create_item()
+		set_column_title(0, \"Column Title\")
+		root.set_text(0, \"Root\")
+		var item = create_item(root)
+		item.set_text(0, \"Item\")
+		var editable_item := create_item(root)
+		editable_item.set_text(0, \"Editable Item\")
+		editable_item.set_editable(0, true)
+		var sub_tree = create_item(root)
+		sub_tree.set_text(0, \"Sub Tree\")
+		var check_item := create_item(sub_tree)
+		check_item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
+		check_item.set_text(0, \"Check Item\")
+		check_item.set_editable(0, true)
+		check_item.set_checked(0, true)
+		var range_item = create_item(sub_tree)
+		range_item.set_cell_mode(0, TreeItem.CELL_MODE_RANGE)
+		range_item.set_range_config(0, -10, 10, 0.1)
+		range_item.set_editable(0, true)
+		var options_item = create_item(sub_tree)
+		options_item.set_cell_mode(0, TreeItem.CELL_MODE_RANGE)
+		options_item.set_editable(0, true)
+		options_item.set_text(0, \"Has,Many,Options\")
+		options_item.set_range(0, 2)
+"
+
+[node name="ThemePreview" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cde2w")
+script = SubResource("GDScript_ijnlf")
+metadata/_edit_lock_ = true
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+tooltip_text = "PanelContainer"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/ScrollContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "VBoxContainer"
+
+[node name="ZoomWidget" type="ZoomWidget" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+tooltip_text = "ZoomWidget"
+
+[node name="Button" type="Button" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+text = "Button"
+
+[node name="ToggleButton" type="Button" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+text = "Toggle Button"
+
+[node name="DisabledButton" type="Button" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "Disabled Button"
+
+[node name="CheckBox" type="CheckBox" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+text = "Check Box"
+
+[node name="CheckButton" type="CheckButton" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+text = "Check Button"
+
+[node name="LinkButton" type="LinkButton" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+text = "LinkButton"
+
+[node name="MenuButton" type="MenuButton" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+text = "Menu Button"
+item_count = 7
+popup/item_0/text = "Item"
+popup/item_0/id = 0
+popup/item_1/text = "Disabled Item"
+popup/item_1/checked = true
+popup/item_1/id = 1
+popup/item_1/disabled = true
+popup/item_2/text = "Checkbox Unchecked"
+popup/item_2/checkable = 1
+popup/item_2/id = 2
+popup/item_3/text = "Checkbox Checked"
+popup/item_3/checkable = 1
+popup/item_3/checked = true
+popup/item_3/id = 3
+popup/item_4/text = "Separator"
+popup/item_4/id = 4
+popup/item_4/separator = true
+popup/item_5/text = "Radio Button UnChecked"
+popup/item_5/checkable = 2
+popup/item_5/id = 5
+popup/item_6/text = "RadioButton Checked"
+popup/item_6/checkable = 2
+popup/item_6/checked = true
+popup/item_6/id = 6
+
+[node name="OptionButton" type="OptionButton" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+item_count = 4
+selected = 0
+popup/item_0/text = "OptionsButton"
+popup/item_0/id = 0
+popup/item_1/text = "Has"
+popup/item_1/id = 1
+popup/item_2/text = "Many"
+popup/item_2/id = 2
+popup/item_3/text = "Options"
+popup/item_3/id = 3
+
+[node name="ProgressBar" type="ProgressBar" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "ProgressBar"
+step = 1.0
+value = 50.0
+
+[node name="HSlider" type="HSlider" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "HSlider"
+value = 50.0
+
+[node name="HSeparator" type="HSeparator" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "HSeparator"
+
+[node name="HScrollBar" type="HScrollBar" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "HScrollBar"
+
+[node name="HSplitContainer" type="HSplitContainer" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+tooltip_text = "HSplitContainer"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VSlider" type="VSlider" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer/HSplitContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "VSlider"
+
+[node name="VSeparator" type="VSeparator" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer/HSplitContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "VSeparator"
+
+[node name="VScrollBar" type="VScrollBar" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer/HSplitContainer/HBoxContainer"]
+layout_mode = 2
+tooltip_text = "VScrollBar"
+
+[node name="Panel" type="Panel" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer/HSplitContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Panel"
+
+[node name="TextEdit" type="TextEdit" parent="PanelContainer/ScrollContainer/HSplitContainer/VBoxContainer/HSplitContainer"]
+custom_minimum_size = Vector2(200, 96)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Text Edit .."
+
+[node name="VSplitContainer" type="VSplitContainer" parent="PanelContainer/ScrollContainer/HSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "VSplitContainer"
+
+[node name="TabContainer" type="TabContainer" parent="PanelContainer/ScrollContainer/HSplitContainer/VSplitContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+current_tab = 0
+
+[node name="ColorPicker" type="ColorPicker" parent="PanelContainer/ScrollContainer/HSplitContainer/VSplitContainer/TabContainer"]
+layout_mode = 2
+theme_override_constants/sv_width = 200
+theme_override_constants/sv_height = 128
+presets_visible = false
+metadata/_tab_index = 0
+
+[node name="FoldableContainer" type="FoldableContainer" parent="PanelContainer/ScrollContainer/HSplitContainer/VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+title = "FoldableContainer"
+metadata/_tab_index = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/ScrollContainer/HSplitContainer/VSplitContainer/TabContainer/FoldableContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/ScrollContainer/HSplitContainer/VSplitContainer/TabContainer/FoldableContainer/VBoxContainer"]
+layout_mode = 2
+text = "Label"
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/ScrollContainer/HSplitContainer/VSplitContainer/TabContainer/FoldableContainer/VBoxContainer"]
+layout_mode = 2
+text = "LineEdit"
+placeholder_text = "LineEdit .."
+
+[node name="SpinBox" type="SpinBox" parent="PanelContainer/ScrollContainer/HSplitContainer/VSplitContainer/TabContainer/FoldableContainer/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "SpinBox"
+suffix = "px"
+select_all_on_focus = true
+
+[node name="Disabled Tab" type="Control" parent="PanelContainer/ScrollContainer/HSplitContainer/VSplitContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2

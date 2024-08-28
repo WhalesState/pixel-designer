@@ -5,6 +5,7 @@ var rect: TextureRect
 
 func load_plugin():
 	rect = UpdateSpinner.new()
+	rect.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
 	var icon_file = FileAccess.open(get_path() + "/icons/update_spinner.svg", FileAccess.READ)
 	if icon_file:
 		add_theme_icon("UpdateSpinner", icon_file.get_as_text())
@@ -25,11 +26,11 @@ func get_plugin_info():
 
 class UpdateSpinner:
 	extends TextureRect
-	
+
 	var frames_drawn := 0
 	var step := 0
-	
-	
+
+
 	func _process(_delta: float) -> void:
 		var frames =  Engine.get_frames_drawn()
 		var tick = Time.get_ticks_msec()
