@@ -4,6 +4,12 @@ extends StyleBox
 
 var needs_update = true
 
+@export var visible := true:
+	set(value):
+		if value != visible:
+			visible = value
+			update()
+
 @export var fill_color := Color(1, 1, 1, 1.0):
 	set(value):
 		if value != fill_color:
@@ -34,7 +40,7 @@ var needs_update = true
 			flat_corners = value
 			update()
 
-@export var scale := 1.0:
+@export_range(1, 16) var scale := 1:
 	set(value):
 		if value != scale:
 			scale = value
@@ -118,18 +124,6 @@ var needs_update = true
 			grow_bottom = value
 			update()
 
-func set_corner_all(value: int) -> void:
-	corner_top_left = value
-	corner_top_right = value
-	corner_bottom_right = value
-	corner_bottom_left = value
-
-
-func update():
-	if not needs_update:
-		needs_update = true
-		emit_changed()
-
 var texture_margin_left: float
 var texture_margin_right: float
 var texture_margin_top: float
@@ -138,7 +132,37 @@ var texture_margin_bottom: float
 var texture: ImageTexture
 
 
+func set_corner_all(value: int) -> void:
+	corner_top_left = value
+	corner_top_right = value
+	corner_bottom_right = value
+	corner_bottom_left = value
+
+
+func set_grow_all(value: int) -> void:
+	grow_left = value
+	grow_top = value
+	grow_right = value
+	grow_bottom = value
+
+
+func set_expand_all(value: int) -> void:
+	expand_left = value
+	expand_top = value
+	expand_right = value
+	expand_bottom = value
+
+
+func update():
+	if not needs_update:
+		needs_update = true
+		emit_changed()
+
+
 func _draw(rid: RID, rect: Rect2) -> void:
+	if not visible:
+		needs_update = false
+		return
 	# Generate texture.
 	if needs_update:
 		var svg := Svg.get_header(16, 16)
