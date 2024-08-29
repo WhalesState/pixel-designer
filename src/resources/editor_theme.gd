@@ -201,6 +201,8 @@ var icon_queue := []
 
 ## For "panel" in [Panel, PanelContainer, TabContainer].
 var panel_style := PixelStyleBox.new()
+## For "panel" in [PopupMenu].
+var popup_panel_style := PixelStyleBox.new()
 ## For "tab_selected" in [TabContainer].
 var tab_selected_style := PixelStyleBox.new()
 ## For "tab_unselectd" and "tab_hovered" in [TabContainer].
@@ -228,6 +230,10 @@ static var _singleton: EditorTheme
 func add_to_icon_queue(node: Node, property_name: String, icon_name: String):
 	icon_queue.append([node, property_name, icon_name])
 	update_theme()
+
+
+func remove_from_icon_queue(node: Node, property_name: String, icon_name: String):
+	icon_queue.erase([node, property_name, icon_name])
 
 
 func contrast_color(color: Color, value: float) -> Color:
@@ -266,8 +272,8 @@ func _update_theme():
 	for pixel_icon in icons.keys():
 		var svg: String = icons[pixel_icon]
 		var atr = svg.left(32)
-		var convert_colors = atr.findn("no_convert") == -1
-		var scale = atr.findn("no_scale") == -1
+		var convert_colors = atr.findn("no-convert") == -1
+		var scale = atr.findn("no-scale") == -1
 		if convert_colors:
 			svg = svg.replace("\"#fff\"", "\"#%s\"" % font_color.to_html(false))
 			svg = svg.replace("\"#f00\"", "\"#%s\"" % primary_color.to_html(false))
@@ -287,6 +293,12 @@ func _update_theme():
 	panel_style.border_width = border_width
 	panel_style.flat_corners = flat_corners
 	panel_style.set_corner_all(corner_radius)
+	popup_panel_style.scale = editor_scale
+	popup_panel_style.fill_color = bg_color
+	popup_panel_style.border_color = secondary_color
+	popup_panel_style.border_width = border_width
+	popup_panel_style.flat_corners = flat_corners
+	popup_panel_style.set_corner_all(corner_radius)
 	# For "tab_selected" in [TabContainer].
 	tab_selected_style.scale = editor_scale
 	tab_selected_style.fill_color = primary_color3
@@ -395,7 +407,7 @@ func _update_theme():
 	set_color("pressed_color", "SplitterContainer", secondary_color)
 	# BG
 	Root.get_singleton().clear_color = bg_color
-	Settings.get_singleton().window.clear_color = bg_color
+	Settings.get_singleton().window.clear_color = font_color
 	# Queue
 	var to_remove: PackedInt32Array = []
 	for i in icon_queue.size():
@@ -459,6 +471,7 @@ func _init():
 	set_stylebox("panel", "PanelContainer", panel_style)
 	set_stylebox("panel", "Panel", panel_style)
 	set_stylebox("panel", "TabContainer", panel_style)
+	set_stylebox("panel", "PopupMenu", popup_panel_style)
 	set_stylebox("tab_selected", "TabContainer", tab_selected_style)
 	set_stylebox("tab_unselected", "TabContainer", tab_unselected_style)
 	set_stylebox("tab_hovered", "TabContainer", tab_unselected_style)

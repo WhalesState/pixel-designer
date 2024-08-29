@@ -124,11 +124,6 @@ var needs_update = true
 			grow_bottom = value
 			update()
 
-var texture_margin_left: float
-var texture_margin_right: float
-var texture_margin_top: float
-var texture_margin_bottom: float
-
 var texture: ImageTexture
 
 
@@ -236,7 +231,7 @@ func _draw(rid: RID, rect: Rect2) -> void:
 				if start != next:
 					svg += ' L %s,%s' % [next.x, next.y]
 				else:
-					# Fix render issue when start point is equal end point.
+					# Fix render issue when start point is equal to end point.
 					if border_linejoin == Svg.LineJoin.MITER:
 						svg = svg.replace('stroke-linejoin="miter"', 'stroke-linejoin="round"')
 			else:
@@ -246,16 +241,7 @@ func _draw(rid: RID, rect: Rect2) -> void:
 		image.load_svg_from_string(svg, scale)
 		texture = ImageTexture.create_from_image(image)
 		needs_update = false
-	# Calculate texture margin.
-	var tm_left = maxi(border_width, ceili(maxi(border_width + corner_top_left, border_width + corner_bottom_left) / 2.0))
-	var tm_right = maxi(border_width, ceili(maxi(border_width + corner_top_right, border_width + corner_bottom_right) / 2.0))
-	var tm_top = maxi(border_width, ceili(maxi(border_width + corner_top_left, border_width + corner_top_right) / 2.0))
-	var tm_bottom = maxi(border_width, ceili(maxi(border_width + corner_bottom_left, border_width + corner_bottom_right) / 2.0))
-	texture_margin_left = maxi(tm_left - expand_left, 0) * scale
-	texture_margin_right = maxi(tm_right - expand_right, 0) * scale
-	texture_margin_top = maxi(tm_top - expand_top, 0) * scale
-	texture_margin_bottom = maxi(tm_bottom - expand_bottom, 0) * scale
-	RenderingServer.canvas_item_add_nine_patch(rid, _get_draw_rect(rect), Rect2(Vector2.ZERO, texture.get_size()), texture.get_rid(), Vector2(texture_margin_left, texture_margin_top), Vector2(texture_margin_right, texture_margin_bottom))
+	RenderingServer.canvas_item_add_nine_patch(rid, _get_draw_rect(rect), Rect2(Vector2.ZERO, texture.get_size()), texture.get_rid(), Vector2(_get_style_margin(SIDE_LEFT), _get_style_margin(SIDE_TOP)), Vector2(_get_style_margin(SIDE_RIGHT), _get_style_margin(SIDE_BOTTOM)))
 
 
 func _get_draw_rect(rect: Rect2) -> Rect2:
@@ -266,11 +252,15 @@ func _get_style_margin(side: Side) -> float:
 	var margin := 0.0
 	match side:
 		SIDE_LEFT:
-			margin = maxf(texture_margin_left - grow_left, 0)
-		SIDE_TOP:
-			margin = maxf(texture_margin_top - grow_top, 0)
+			var tm_left = maxi(maxi(border_width, ceili(maxi(border_width + corner_top_left, border_width + corner_bottom_left) / 2.0)) - expand_left, 0) * scale
+			margin = maxf(tm_left - grow_left, 0)
 		SIDE_RIGHT:
-			margin = maxf(texture_margin_right - grow_right, 0)
+			var tm_right = maxi(maxi(border_width, ceili(maxi(border_width + corner_top_right, border_width + corner_bottom_right) / 2.0)) - expand_right, 0) * scale
+			margin = maxf(tm_right - grow_top, 0)
+		SIDE_TOP:
+			var tm_top = maxi(maxi(border_width, ceili(maxi(border_width + corner_top_left, border_width + corner_top_right) / 2.0)) - expand_top, 0) * scale
+			margin = maxf(tm_top - grow_right, 0)
 		SIDE_BOTTOM:
-			margin = maxf(texture_margin_bottom - grow_bottom, 0)
+			var tm_bottom = maxi(maxi(border_width, ceili(maxi(border_width + corner_bottom_left, border_width + corner_bottom_right) / 2.0)) - expand_bottom, 0) * scale
+			margin = maxf(tm_bottom - grow_bottom, 0)
 	return margin

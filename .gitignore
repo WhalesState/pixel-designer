@@ -24,7 +24,10 @@ packed_plugins/*
 
 # playground
 playground/*
-!playground/README.md
+!playground/readme.md
+
+# ignore
+!*.gdignore
 
 # custom
 plugins/PixelDesigner.UpdateSpinner/icons/*.svg.import

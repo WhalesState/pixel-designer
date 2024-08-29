@@ -16,6 +16,7 @@ func load_plugin():
 
 
 func unload_plugin():
+	EditorTheme.get_singleton().remove_from_icon_queue(rect, "texture", "UpdateSpinner")
 	remove_control_from_main_menu(rect)
 	rect.free()
 
