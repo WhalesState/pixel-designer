@@ -44,9 +44,15 @@ func _shortcut_input(ev: InputEvent) -> void:
 func _init():
 	print_verbose("Root _init()")
 	theme = EditorTheme.new()
+	var settings = Settings.get_singleton()
+	var picker = ColorPickerWindow.new()
+	await theme.icons_changed
 	var editor = Editor.new()
 	add_child(editor)
 	close_requested.connect(editor._request_quit)
-	add_child(Settings.get_singleton().window)
+	add_child(settings.window)
+	add_child(picker)
 	# Final pass
 	_singleton = self
+	await editor.ready
+	min_size = editor.get_minimum_size()

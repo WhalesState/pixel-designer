@@ -1,0 +1,35 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+"X-Crowdin-Project: pixel-designer\n"
+"X-Crowdin-Project-ID: 710613\n"
+"X-Crowdin-Language: ar\n"
+"X-Crowdin-File: /main/translation/translation.pot\n"
+"X-Crowdin-File-ID: 6\n"
+"Project-Id-Version: pixel-designer\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: Arabic\n"
+"Language: ar_SA\n"
+"PO-Revision-Date: 2024-09-18 19:35\n"
+
+msgid "Button"
+msgstr "زر"
+
+msgid "Editor"
+msgstr "المحرر"
+
+msgid "Open User Data Folder"
+msgstr "فتح مجلد بيانات المستخدم"
+
+msgid "Editor Settings"
+msgstr "إعدادات المحرر"
+
+msgid "Exit"
+msgstr "خروج"
+
+msgid "Update Spinner"
+msgstr "عجلة التحديث"
+
+msgid "Spins when the editor redraws."
+msgstr "تدور عندما يتم تحديث الرسم بالمحرر."
+

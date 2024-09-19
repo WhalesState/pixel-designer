@@ -28,12 +28,13 @@ static var _singleton: Settings
 
 
 ## Sets an editor settings value and saves the editor settings file on the next frame. [br]
-## If [param save_default] is false, the value will be saved without a default value backup.
-func set_value(section: String, key: String, value: Variant, save_default := true) -> void:
+## If [param save_default] is true, a default value will be saved.
+func set_value(section: String, key: String, value: Variant, save_default := false) -> void:
 	_editor_settings.set_value(section, key, value)
 	if save_default:
 		if _editor_settings_defaults.has_section_key(section, key):
-			print_verbose("WARNING: default value for %s:%s has been overwritten" % [section, key])
+			print_verbose("Error: default value for %s:%s already exists." % [section, key])
+			return
 		_editor_settings_defaults.set_value(section, key, value)
 		defaults_changed.emit()
 	settings_changed.emit()
@@ -41,7 +42,7 @@ func set_value(section: String, key: String, value: Variant, save_default := tru
 
 ## Returns a value from the editor settings config file. [br]
 ## If the value doesn't exists, it will call `set_value(section, key, default)` and will return the default value.
-func get_value(section: String, key: String, default: Variant, save_default := true) -> Variant:
+func get_value(section: String, key: String, default: Variant, save_default := false) -> Variant:
 	if not _editor_settings.has_section_key(section, key):
 		set_value(section, key, default, save_default)
 		return default
@@ -64,7 +65,7 @@ func get_default_value(section: String, key: String, default: Variant = null) ->
 ## [b]PRIVATE[/b] Sets the default value for the given section key, and saves the editor settings defaults file. [br]
 ## Example: [code]get_value("my_section", "my_key", "my_default")[/code] will create a new value and a new 
 ## default value for the given section key and will return [code]"my_default"[/code] if the value doesn't exists. [br]
-## Optionally you can set `save_default` to `false` to not save the default value, check [method set_value] and [method get_value].
+## Optionally you can set `save_default` to `true` to save the default value if it doesn't exists, check [method set_value] and [method get_value].
 func _set_default_value(section: String, key: String, value: Variant) -> void:
 	_editor_settings_defaults.set_value(section, key, value)
 	defaults_changed.emit()
@@ -89,6 +90,7 @@ static func get_singleton() -> Settings:
 func _init():
 	print_verbose("Settings _init()")
 	window.name = "SettingsWindow"
+	window.size = Vector2i(800, 600)
 	window.title = "Settings"
 	window.visible = false
 	window.transient = true
@@ -97,6 +99,7 @@ func _init():
 	window.close_requested.connect(window.hide)
 	var panel = PanelContainer.new()
 	panel.name = "SettingsPanel"
+	panel.theme_type_variation = "FlatPanel"
 	panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	window.add_child(panel)
 	var split = HSplitContainer.new()

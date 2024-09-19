@@ -1,6 +1,9 @@
 msgid ""
 msgstr ""
 
+msgid "Button"
+msgstr ""
+
 msgid "Editor"
 msgstr ""
 

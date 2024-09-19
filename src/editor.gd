@@ -1,5 +1,5 @@
 class_name Editor
-extends MarginContainer
+extends PanelContainer
 
 enum {
 	MENU_SETTINGS = 128,
@@ -32,7 +32,7 @@ func is_plugin_enabled(plugin_name: String) -> bool:
 		return false
 	if _plugin_list[plugin_name].is_internal():
 		return true
-	return Settings.get_singleton().get_value("editor", "enabled_plugins", [], false).has(plugin_name)
+	return Settings.get_singleton().get_value("editor", "enabled_plugins", []).has(plugin_name)
 
 
 ## Enable a plugin using it's name.
@@ -72,7 +72,7 @@ func _load_plugins() -> void:
 			ProjectSettings.load_resource_pack(OS.get_user_data_dir() + "/plugins/" + file)
 	var loaded_plugins = DirAccess.open("res://loaded_plugins")
 	if loaded_plugins:
-		var enabled_plugins: Array = Settings.get_singleton().get_value("editor", "enabled_plugins", [], false)
+		var enabled_plugins: Array = Settings.get_singleton().get_value("editor", "enabled_plugins", ["UpdateSpinner", "ThemeEditor", "Test"])
 		for plugin in loaded_plugins.get_directories():
 			var plugin_path = loaded_plugins.get_current_dir() + "/" + plugin
 			if loaded_plugins.file_exists(plugin + "/plugin.gd"):
@@ -96,12 +96,12 @@ func _load_plugins() -> void:
 		for i in to_remove:
 			enabled_plugins.remove_at(i - removed)
 			removed += 1
-		Settings.get_singleton().set_value("editor", "enabled_plugins", enabled_plugins, false)
+		Settings.get_singleton().set_value("editor", "enabled_plugins", enabled_plugins)
 
 
 ## [b]PRIVATE[/b] Unload all plugins by calling their [method Plugin.unload_plugin] method if they are enabled.
 func _unload_plugins() -> void:
-	var enabled_plugins = Settings.get_singleton().get_value("editor", "enabled_plugins", [], false)
+	var enabled_plugins = Settings.get_singleton().get_value("editor", "enabled_plugins", [])
 	for plugin_name in _plugin_list.keys():
 		var plugin = _plugin_list[plugin_name]
 		if plugin.is_internal() || enabled_plugins.has(plugin_name):
@@ -112,7 +112,7 @@ func _unload_plugins() -> void:
 func _set_plugin_enabled(plugin_name: String, enabled: bool) -> void:
 	if not _plugin_list.keys().has(plugin_name):
 		return
-	var enabled_plugins = Settings.get_singleton().get_value("editor", "enabled_plugins", [], false)
+	var enabled_plugins = Settings.get_singleton().get_value("editor", "enabled_plugins", [])
 	var plugin: Plugin = _plugin_list[plugin_name]
 	if plugin.is_internal():
 		return
@@ -126,11 +126,11 @@ func _set_plugin_enabled(plugin_name: String, enabled: bool) -> void:
 			return
 		enabled_plugins.erase(plugin_name)
 		plugin.unload_plugin()
-	Settings.get_singleton().set_value("editor", "enabled_plugins", enabled_plugins, false)
+	Settings.get_singleton().set_value("editor", "enabled_plugins", enabled_plugins)
 
 
 func _request_quit():
-	var enabled_plugins = Settings.get_singleton().get_value("editor", "enabled_plugins", [], false)
+	var enabled_plugins = Settings.get_singleton().get_value("editor", "enabled_plugins", [])
 	for plugin_name in enabled_plugins:
 		if not _plugin_list[plugin_name].can_exit():
 			return
@@ -172,14 +172,15 @@ func _notification(what: int) -> void:
 				plugin.free()
 		NOTIFICATION_TRANSLATION_CHANGED:
 			_update_editor_menu()
-			var enabled_plugins = Settings.get_singleton().get_value("editor", "enabled_plugins", [], false)
+			if _plugin_list.is_empty():
+				return
+			var enabled_plugins = Settings.get_singleton().get_value("editor", "enabled_plugins", [])
 			for plugin_name in enabled_plugins:
 				_plugin_list[plugin_name].translation_changed.emit()
 
 
 # FIXME: Minimum size should update when a plugin is enabled or disabled.
 func _ready() -> void:
-	Root.get_singleton().min_size = get_minimum_size()
 	Actions.get_singleton().action_map_changed.connect(_update_editor_menu)
 
 
@@ -203,7 +204,7 @@ func _init():
 	# Final pass.
 	_singleton = self
 	# Editor UI.
-	set_margin_all(2)
+	theme_type_variation = "FlatPanel"
 	set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	_main_vbox.name = "MainVBox"
 	add_child(_main_vbox)

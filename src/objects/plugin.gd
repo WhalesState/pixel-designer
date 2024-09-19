@@ -48,13 +48,14 @@ func add_control_to_main_screen(control: Control, icon := "", tooltip := ""):
 	var main_screen := editor._main_screen
 	var side_menu := editor._side_menu
 	var theme = EditorTheme.get_singleton()
-	if icon.is_empty() or not theme.icons.has(icon):
+	if icon.is_empty() or not theme._icons.has(icon):
 		print_verbose("Warning: Your control: %s doesn't have a valid icon, the default Plugin icon was set instead." % control)
 		icon = "Plugin"
 	var button := Button.new()
 	button.set_meta("_icon", icon)
 	control.set_meta("_button", button)
 	button.toggle_mode = true
+	button.icon = theme.icon(icon)
 	theme.add_to_icon_queue(button, "icon", icon)
 	button.button_group = editor._side_menu_group
 	if main_screen.get_child_count() == 0:
@@ -157,7 +158,7 @@ func add_control_to_settings(control: Control, icon := "", tooltip := ""):
 	var main_screen := settings._main_screen
 	var side_menu := settings._side_menu
 	var theme = EditorTheme.get_singleton()
-	if icon.is_empty() or not theme.icons.has(icon):
+	if icon.is_empty() or not theme._icons.has(icon):
 		print_verbose("Warning: Your control: %s doesn't have a valid icon, the default Settings icon will be used instead." % control)
 		icon = "Settings"
 	var button := Button.new()
@@ -168,6 +169,7 @@ func add_control_to_settings(control: Control, icon := "", tooltip := ""):
 	button.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	button.icon_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	button.add_theme_constant_override("h_separation", 0)
+	button.icon = theme.icon(icon)
 	theme.add_to_icon_queue(button, "icon", icon)
 	button.button_group = settings._side_menu_group
 	if main_screen.get_child_count() == 0:
@@ -229,7 +231,7 @@ func update_tooltip(control: Control):
 		control.tooltip_text += "\n" + tr(tooltip)
 	var text = control.get_meta("_text", "")
 	if not text.is_empty():
-		control.text += text
+		control.text = text
 
 
 ## Adds an icon and converts it's color to the editor theme. [br]
@@ -244,16 +246,16 @@ func update_tooltip(control: Control):
 ## [/codeblock]
 func add_theme_icon(icon_name: String, svg_string: String):
 	var t : EditorTheme = EditorTheme.get_singleton()
-	if t.icons.has(icon_name):
+	if t._icons.has(icon_name):
 		print_verbose("Error: an icon with same name (%s) already exists." % icon_name)
 		return
-	t.icons[icon_name] = svg_string
+	t._icons[icon_name] = svg_string
 	t.update_theme()
 
 
 func get_theme_icon(icon_name: String) -> Texture2D:
 	var t : EditorTheme = EditorTheme.get_singleton()
-	if not t.icons.has(icon_name):
+	if not t._icons.has(icon_name):
 		print_verbose("Error: an icon with name (%s) does not exist." % icon_name)
 		return null
 	return t.get_icon(icon_name, "Icons")

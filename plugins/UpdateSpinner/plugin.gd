@@ -5,7 +5,7 @@ var rect: TextureRect
 
 func load_plugin():
 	rect = UpdateSpinner.new()
-	rect.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
+	rect.size_flags_vertical = Control.SIZE_EXPAND | Control.SIZE_SHRINK_CENTER
 	var icon_file = FileAccess.open(get_path() + "/icons/update_spinner.svg", FileAccess.READ)
 	if icon_file:
 		add_theme_icon("UpdateSpinner", icon_file.get_as_text())

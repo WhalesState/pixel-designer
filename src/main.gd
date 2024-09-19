@@ -144,10 +144,11 @@ func _finalize() -> void:
 
 func _process(_delta):
 	if _message_queue._messages.size() > 0:
-		for callable in _message_queue._messages:
+		var _messages = _message_queue._messages.duplicate()
+		_message_queue._messages.clear()
+		for callable in _messages:
 			if callable.is_valid():
 				callable.call()
-		_message_queue._messages.clear()
 
 
 func _init():

@@ -1,0 +1,35 @@
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"X-Crowdin-Project: pixel-designer\n"
+"X-Crowdin-Project-ID: 710613\n"
+"X-Crowdin-Language: ru\n"
+"X-Crowdin-File: /main/translation/translation.pot\n"
+"X-Crowdin-File-ID: 6\n"
+"Project-Id-Version: pixel-designer\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language-Team: Russian\n"
+"Language: ru_RU\n"
+"PO-Revision-Date: 2024-09-18 19:36\n"
+
+msgid "Button"
+msgstr "кнопка"
+
+msgid "Editor"
+msgstr "Редактор"
+
+msgid "Open User Data Folder"
+msgstr "Открыть папку данных пользователя"
+
+msgid "Editor Settings"
+msgstr "Настройки редактора"
+
+msgid "Exit"
+msgstr "Выход"
+
+msgid "Update Spinner"
+msgstr "Спинер обновления"
+
+msgid "Spins when the editor redraws."
+msgstr "Выигрывает при перерисовании редактора."
+

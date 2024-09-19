@@ -64,7 +64,6 @@ func get_svg() -> String:
 	var svg := Svg.get_header(width, height, viewbox_position, viewbox_size)
 	svg += get_svg_string()
 	svg += "</svg>"
-	print(svg)
 	return svg
 
 
