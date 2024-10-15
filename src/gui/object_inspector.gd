@@ -171,12 +171,14 @@ func add_color_property(property_name: String, property_value: Color, tooltip :=
 
 func _get_name_control(property_name: String, tooltip:= "") -> Control:
 	var label := Label.new()
+	label.mouse_filter = Control.MOUSE_FILTER_STOP
+	label.tooltip_text = tooltip
 	label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	label.set_meta("_name", property_name)
 	label.set_meta("_tooltip", tooltip)
 	label.text = property_name.capitalize()
 	label.tooltip_text = tr(property_name.capitalize())
-	label.tooltip_text += "/n %s" % tr(tooltip)
+	label.tooltip_text += "\n%s" % tr(tooltip)
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if object.property_can_revert(property_name):
 		var revert_button = Button.new()

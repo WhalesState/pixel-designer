@@ -2,7 +2,11 @@ class_name Root
 extends Window
 
 ## [b]PRIVATE[/b] used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
-static var _singleton: Root
+static var _singleton: Root:
+	set(value):
+		if _singleton:
+			return
+		_singleton = value
 
 
 ## Returns the current class unique instance. [br]

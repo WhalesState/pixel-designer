@@ -13,7 +13,11 @@ signal action_pressed(action: String)
 var _actions := {}
 
 ## [b]PRIVATE[/b] used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
-static var _singleton: Actions
+static var _singleton: Actions:
+	set(value):
+		if _singleton:
+			return
+		_singleton = value
 
 ## Returns the current class unique instance. [br]
 ## Don't use this method for classes that will be instantiated more than once.

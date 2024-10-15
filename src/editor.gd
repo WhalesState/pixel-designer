@@ -20,10 +20,15 @@ var _side_menu := VBoxContainer.new()
 var _main_screen := MarginContainer.new()
 var _editor_menu := MenuButton.new()
 
+@warning_ignore("unused_private_class_variable")
 var _side_menu_group := ButtonGroup.new()
 
 ## [b]PRIVATE[/b] used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
-static var _singleton: Editor
+static var _singleton: Editor:
+	set(value):
+		if _singleton:
+			return
+		_singleton = value
 
 
 ## Check if a plugin is enabled using it's name.
@@ -97,6 +102,7 @@ func _load_plugins() -> void:
 			enabled_plugins.remove_at(i - removed)
 			removed += 1
 		Settings.get_singleton().set_value("editor", "enabled_plugins", enabled_plugins)
+		PluginManager.get_singleton()._update_plugins()
 
 
 ## [b]PRIVATE[/b] Unload all plugins by calling their [method Plugin.unload_plugin] method if they are enabled.

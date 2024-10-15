@@ -13,7 +13,11 @@ var callable: Callable:
 			if callable.is_valid():
 				picker.color_changed.connect(callable)
 
-static var _singleton: ColorPickerWindow
+static var _singleton: ColorPickerWindow:
+	set(value):
+		if _singleton:
+			return
+		_singleton = value
 
 
 func pop(_callable: Callable, edit_alpha := true, display_old_color := false, old_color := Color.BLACK):

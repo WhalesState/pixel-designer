@@ -13,6 +13,7 @@ var window := Window.new()
 var _side_menu := VBoxContainer.new()
 var _main_screen := MarginContainer.new()
 
+@warning_ignore("unused_private_class_variable")
 var _side_menu_group := ButtonGroup.new()
 
 ## [b]PRIVATE[/b] contains all the editor settings. [br]
@@ -24,7 +25,11 @@ var _editor_settings := ConfigFile.new()
 var _editor_settings_defaults := ConfigFile.new()
 
 ## [b]PRIVATE[/b] used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
-static var _singleton: Settings
+static var _singleton: Settings:
+	set(value):
+		if _singleton:
+			return
+		_singleton = value
 
 
 ## Sets an editor settings value and saves the editor settings file on the next frame. [br]
@@ -97,6 +102,11 @@ func _init():
 	window.exclusive = true
 	window.wrap_controls = true
 	window.close_requested.connect(window.hide)
+	window.window_input.connect(func(ev: InputEvent):
+		if not ev.is_action_pressed("ui_cancel"):
+			return
+		window.hide()
+	)
 	var panel = PanelContainer.new()
 	panel.name = "SettingsPanel"
 	panel.theme_type_variation = "FlatPanel"

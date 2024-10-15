@@ -60,6 +60,8 @@ func add_control_to_main_screen(control: Control, icon := "", tooltip := ""):
 	button.button_group = editor._side_menu_group
 	if main_screen.get_child_count() == 0:
 		button.button_pressed = true
+	else:
+		control.hide()
 	main_screen.add_child(control)
 	side_menu.add_child(button)
 	button.toggled.connect(func(_pressed: bool):
@@ -174,6 +176,8 @@ func add_control_to_settings(control: Control, icon := "", tooltip := ""):
 	button.button_group = settings._side_menu_group
 	if main_screen.get_child_count() == 0:
 		button.button_pressed = true
+	else:
+		control.hide()
 	main_screen.add_child(control)
 	side_menu.add_child(button)
 	button.toggled.connect(func(_pressed: bool):
@@ -250,7 +254,16 @@ func add_theme_icon(icon_name: String, svg_string: String):
 		print_verbose("Error: an icon with same name (%s) already exists." % icon_name)
 		return
 	t._icons[icon_name] = svg_string
-	t.update_theme()
+	t.update_icons()
+
+
+func remove_theme_icon(icon_name: String):
+	var t : EditorTheme = EditorTheme.get_singleton()
+	if not t._icons.has(icon_name):
+		print_verbose("Error: an icon with name (%s) does not exist." % icon_name)
+		return
+	t._icons.erase(icon_name)
+	t.update_icons()
 
 
 func get_theme_icon(icon_name: String) -> Texture2D:

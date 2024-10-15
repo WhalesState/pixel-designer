@@ -45,6 +45,7 @@ func _draw() -> void:
 	var end = Vector2(checker_style.get_margin(SIDE_RIGHT), checker_style.get_margin(SIDE_BOTTOM))
 	draw_rect(Rect2(begin, size - begin - end), color, true)
 	if has_focus():
+		focus_style.border_color = Color(0.05, 0.05, 0.05) if color.get_luminance() >= 0.5 else Color(0.9, 0.9, 0.9)
 		draw_style_box(focus_style, Rect2(Vector2.ZERO, size))
 
 

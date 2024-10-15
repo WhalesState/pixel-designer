@@ -49,7 +49,9 @@ var updating_icons = false
 			set_color("icon_pressed_color", "Button", secondary_color)
 			set_color("icon_hover_pressed_color", "Button", secondary_color)
 			set_color("font_pressed_color", "Button", secondary_color)
+			set_color("font_pressed_color", "LinkButton", secondary_color)
 			set_color("font_hover_pressed_color", "Button", secondary_color)
+			set_color("font_hover_pressed_color", "LinkButton", secondary_color)
 			set_color("grabber_pressed", "SplitContainer", secondary_color)
 			set_color("clear_button_color_pressed", "LineEdit", secondary_color)
 			update_theme()
@@ -109,7 +111,6 @@ var updating_icons = false
 			if not first_load:
 				Settings.get_singleton().set_value("theme", "font_outline", font_outline)
 
-
 @export_range(1, 4, 0.1) var editor_scale: float:
 	set(value):
 		value = clamp(value, 1, 4)
@@ -160,7 +161,7 @@ var updating_icons = false
 			set_constant("parent_hl_line_width", "Tree", int_1x_border)
 			set_constant("relationship_line_width", "Tree", round(editor_scale))
 			set_constant("v_separation", "Tree", int_2x_border)
-			MessageQueue.get_singleton().queue_call(_update_icons)
+			update_icons()
 
 @export_range(0.0, 1.0) var primary_color2_value:
 	set(value):
@@ -309,13 +310,20 @@ var _font_color: Color:
 			set_color("font_color", "ProgressBar", color)
 			set_color("hover_font_color", "FoldableContainer", color)
 			set_color("font_hover_color", "Button", color)
+			set_color("font_hover_color", "LinkButton", color)
 			set_color("icon_hover_color", "Button", color)
-			ColorButton.focus_style.border_color = color
 			color.a = 0.9
 			set_color("font_selected_color", "TabContainer", color)
+			set_color("font_selected_color", "Tree", color)
+			set_color("children_hl_line_color", "Tree", color)
+			set_color("parent_hl_line_color", "Tree", color)
 			set_color("icon_focus_color", "Button", color)
 			set_color("font_focus_color", "Button", color)
+			set_color("font_focus_color", "LinkButton", color)
 			color.a = 0.8
+			set_color("font_color", "Tree", color)
+			set_color("relationship_line_color", "Tree", color)
+			set_color("font_color", "LinkButton", color)
 			set_color("icon_normal_color", "Button", color)
 			set_color("font_color", "Button", color)
 			set_color("grabber_hovered", "SplitContainer", color)
@@ -343,7 +351,11 @@ var _font_color: Color:
 			set_color("font_disabled_color", "TabContainer", color)
 			set_color("icon_disabled_color", "Button", color)
 			set_color("font_disabled_color", "Button", color)
-			MessageQueue.get_singleton().queue_call(_update_icons)
+			set_color("font_disabled_color", "Tree", color)
+			set_color("icon_disabled_color", "LinkButton", color)
+			set_color("guide_color", "Tree", color)
+			colors_changed.emit()
+			update_icons()
 
 var _int_corners: int:
 	set(value):
@@ -452,7 +464,11 @@ var h_separator_style := StyleBoxLine.new()
 var v_separator_style := StyleBoxLine.new()
 
 ## [b]PRIVATE[/b] used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
-static var _singleton: EditorTheme
+static var _singleton: EditorTheme:
+	set(value):
+		if _singleton:
+			return
+		_singleton = value
 
 
 func add_to_icon_queue(node: Node, property_name: String, icon_name: String):
@@ -476,10 +492,14 @@ func update_theme():
 	MessageQueue.get_singleton().queue_call(_update_theme)
 
 
+func update_icons():
+	MessageQueue.get_singleton().queue_call(_update_icons)
+
+
 func _update_theme():
 	# Keep deferring the call until the theme finish updating.
 	if updating:
-		MessageQueue.get_singleton().queue_call(_update_theme)
+		update_theme()
 		return
 	updating = true
 	var time := Time.get_ticks_msec()
@@ -493,6 +513,7 @@ func _update_theme():
 	colors_changed.emit()
 	set_color("selection_color", "LineEdit", _secondary_color2)
 	set_color("selection_color", "TextEdit", _secondary_color2)
+	set_color("current_line_color", "TextEdit", _bg_color)
 	popup_panel_style.bg_color = _bg_color
 	button_hover_style.bg_color = _primary_color2
 	menu_button_hover_style.bg_color = _primary_color2
@@ -518,7 +539,7 @@ func _update_theme():
 	tab_disabled_style.bg_color.a = 0.4
 	button_disabled_style.bg_color.a = 0.4
 	menu_button_disabled_style.bg_color.a = 0.4
-	MessageQueue.get_singleton().queue_call(_update_icons)
+	update_icons()
 	await icons_changed
 	updating = false
 	print_verbose("update theme: %s" % (Time.get_ticks_msec() - time))
@@ -548,7 +569,7 @@ func _update_font_color() -> void:
 #    (0, 0, 0) = _bg_color                       (black)
 func _update_icons() -> void:
 	if updating_icons:
-		MessageQueue.get_singleton().queue_call(_update_icons)
+		update_icons()
 		return
 	updating_icons = true
 	var time = Time.get_ticks_msec()
@@ -654,7 +675,6 @@ func _update_icons() -> void:
 				_icon.update(icon(queue[2]).get_image())
 			else:
 				queue[0].set(queue[1], icon(queue[2]))
-		await main.process_frame
 	var removed := 0
 	for i in to_remove:
 		_icon_queue.remove_at(i - removed)
@@ -667,8 +687,10 @@ func _update_icons() -> void:
 func _update_margin() -> void:
 	set_constant("h_separation", "Button", _int_margin)
 	set_constant("h_separation", "FoldableContainer", _int_margin)
-	set_constant("button_margin", "Tree", _int_margin)
 	set_constant("h_separation", "Tree", _int_margin)
+	set_constant("h_separation", "ScrollContainer", _int_margin)
+	set_constant("v_separation", "ScrollContainer", _int_margin)
+	set_constant("button_margin", "Tree", _int_margin)
 	set_constant("inner_item_margin_bottom", "Tree", _int_margin)
 	set_constant("inner_item_margin_top", "Tree", _int_margin)
 	set_constant("inner_margin_left", "Tree", _int_margin)
@@ -879,7 +901,7 @@ func _init():
 	editor_scale = settings.get_value("theme", "editor_scale", 1.0, true)
 	primary_color = settings.get_value("theme", "primary_color", Color(0.131, 0.152, 0.234, 1), true)
 	secondary_color = settings.get_value("theme", "secondary_color", Color(0.226, 0.478, 0.921, 1), true)
-	contrast = settings.get_value("theme", "contrast", 0.1, true)
+	contrast = settings.get_value("theme", "contrast", 0.2, true)
 	margin = settings.get_value("theme", "margin", 4, true)
 	padding = settings.get_value("theme", "padding", 4, true)
 	border_width = settings.get_value("theme", "border_width", 0, true)

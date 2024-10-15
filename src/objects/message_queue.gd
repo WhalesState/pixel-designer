@@ -5,7 +5,11 @@ extends Object
 var _messages := []
 
 ## [b]PRIVATE[/b] used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
-static var _singleton: MessageQueue
+static var _singleton: MessageQueue:
+	set(value):
+		if _singleton:
+			return
+		_singleton = value
 
 
 ## Calls a method on the next frame, if once is true, the method will not be added twice to the queue.

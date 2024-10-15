@@ -14,7 +14,11 @@ var _settings := Settings.new()
 var _log_queue := PackedStringArray([])
 
 ## [b]PRIVATE[/b] used for unique classes to easily access them with `ClassName.get_singleton()` from any other script.
-static var _singleton: Main
+static var _singleton: Main:
+	set(value):
+		if _singleton:
+			return
+		_singleton = value
 
 
 ## Use `Main.get_version()` to get the current version.

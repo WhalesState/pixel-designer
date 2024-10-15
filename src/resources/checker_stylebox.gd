@@ -84,7 +84,7 @@ func _draw(rid: RID, rect: Rect2) -> void:
 		return
 	# Generate texture.
 	if needs_update:
-		var svg := Svg.get_header(checker_size * 2, checker_size * 2)
+		var svg := '<svg width="%s" height="%s" xmlns="http://www.w3.org/2000/svg">' % [checker_size * 2, checker_size * 2]
 		svg += '<rect x="0" y="0" width="%s" height="%s" fill="%s"/>' % [checker_size, checker_size, Svg.color_to_html(checker_light_color)]
 		svg += '<rect x="%s" y="0" width="%s" height="%s" fill="%s"/>' % [checker_size, checker_size, checker_size, Svg.color_to_html(checker_dark_color)]
 		svg += '<rect x="%s" y="%s" width="%s" height="%s" fill="%s"/>' % [checker_size, checker_size, checker_size, checker_size, Svg.color_to_html(checker_light_color)]
